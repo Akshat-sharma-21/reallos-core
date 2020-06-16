@@ -1,0 +1,27 @@
+.main{
+    background-color: #efefef;
+}
+.nav{
+    border-radius: 10px;
+    background-color: white !important;
+}
+.btn{
+    margin-left: auto !important;
+}
+.logo{
+    padding-left: 20px !important;
+    font-weight: 900 !important;
+    font-size: 25px !important;
+    color: #150578 !important;
+}
+.user{
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+.navlink{
+    margin-left: 5px !important;
+    margin-top: 7px !important;
+}

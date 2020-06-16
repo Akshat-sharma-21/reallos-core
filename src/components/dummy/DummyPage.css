@@ -1,0 +1,8 @@
+#dummy-page-container {
+    width: min-content;
+}
+
+#dummy-page-container > * {
+    margin: 20px;
+    display: block;
+}
