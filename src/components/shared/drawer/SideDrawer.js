@@ -7,10 +7,6 @@ import './SideDrawer.css';
  * @augments {React.Component<Props>}
  */
 class SideDrawer extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     static propTypes = {
         /**
          * The title to be displayed on the Side Drawer

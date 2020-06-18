@@ -84,3 +84,10 @@ body {
 .invite-people-text-subheading{
     font-size: 16px;
 }
+.third-step-person-chip{
+    font-weight: 700;
+    margin-bottom: 20px !important;
+}
+.people-involved-grid{
+    margin-left: 28px !important;
+}

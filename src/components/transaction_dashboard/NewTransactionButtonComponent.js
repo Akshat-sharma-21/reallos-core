@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Modal from '../shared/modal/Modal';
 import './Transaction.css';
 import TransactionNoPeople from '../../assets/transaction-no-people.png';
+import InvitationCard from './InvitationCard';
+import PeopleChip from './PersonChip';
 
 import {
     PlusIcon,
@@ -11,7 +13,7 @@ import {
     PersonIcon,
     MailIcon,
     QuestionIcon,
-    CheckIcon
+    CheckIcon,
 } from '@primer/octicons-react';
 
 import {
@@ -26,7 +28,8 @@ import {
     Fab,
     Button,
     Select,
-    MenuItem
+    MenuItem,
+    Dialog,
 } from '@material-ui/core';
 
 class NewTransactionButton extends Component {
@@ -224,7 +227,8 @@ class NewTransactionButton extends Component {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item>
+                    <Grid item className="invited-person-card">
+                            <InvitationCard />
                         {/*Add a card component that shows you how many invites you'll be sending*/}
                     </Grid>
                 </Grid>
@@ -287,7 +291,9 @@ class NewTransactionButton extends Component {
                     </Grid>
                     <Grid item>
                         <h2>People involved</h2>
-                        {/* Data of all the people invited will be sent here*/}
+                        <Grid item className="people-involved-grid">
+                            <PeopleChip />
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid container direction="row" justify="space-between">
@@ -341,12 +347,24 @@ class NewTransactionButton extends Component {
             <Modal title="Invite People" visible={this.state.isInsideModalOpen} modalWidth={750} dismissCallback={this.toggleInsideModal}>
             <FormControl>
                     <FormGroup row className="form-group">
-                        <MailIcon size={25} className="tag-icon"/>
+                        <PersonIcon size={25} className="tag-icon"/>
                         <TextField variant="outlined" label="Name" className="input-new-transaction-form"/>
                     </FormGroup>
                     <FormGroup row className="form-group">
+                        <MailIcon size={25} className="tag-icon"/>
+                        <TextField variant="outlined" label="E-mail" className="input-new-transaction-form"/>
+                    </FormGroup>
+                    <FormGroup row className="form-group">
                         <QuestionIcon size={25} className="tag-icon" />
-                        <Select variant="outlined" className="input-new-transaction-form" />
+                        <Select variant="outlined" id="select" className="input-new-transaction-form" >
+                            <MenuItem >Buyer</MenuItem>
+                            <MenuItem >Seller</MenuItem>
+                            <MenuItem >Buyer Agent</MenuItem>
+                            <MenuItem >Seller Agent</MenuItem>
+                            <MenuItem >Title Agent</MenuItem>
+                            <MenuItem >Escrow Agent</MenuItem>
+                            <MenuItem >Home Inspector</MenuItem>
+                        </Select>
                     </FormGroup>
             </FormControl>
                     <div className="button-group">

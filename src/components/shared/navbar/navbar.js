@@ -59,60 +59,60 @@ class RenderNav extends Component {
                                 <IconButton><InboxIcon size={20}/></IconButton>
                                 <IconButton><ChecklistIcon size={20}/></IconButton>
                                 <IconButton onClick={this.openUserProfile}><Avatar src={UserAvatar} /></IconButton>
-                                <Menu
-                                    anchorEl ={this.state.userProfileAnchor}
-                                    keepMounted
-                                    open={Boolean(this.state.userProfileAnchor)}
-                                    onClose={this.closeUserProfile}
-                                    getContentAnchorEl={null}
-                                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                                    transformOrigin={{ vertical: "top", horizontal: "center" }}
-                                    >
-                                    <Grid container direction="column" justify="center" alignItems="center" className="menu-design">
-                                        <Grid item>
-                                            <Grid container direction="row" alignItems="center" justify="space-around" spacing={2}>
-                                                <Grid item>
-                                                    <Box component="div" ml={2}>
-                                                        <Avatar src={UserAvatar} className="avatar-large"/>
-                                                    </Box>
-                                                </Grid>
-                                                <Grid item className="profile-padding">
-                                                    <Box component="h2" className="profile-heading">Joy Joseph</Box>
-                                                    <Box component="p" mt={-2.5} mr={2} className="profile-subheading">joy_joseph@example.com</Box>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item>
-                                            <LinearProgress variant="determinate" value={50} className="progress-bar"/>
-                                            <Box component="p" className="profile-subheading-small" mt={0.5}>50% profile completed</Box>
-                                        </Grid>
-                                        <Grid item>
-                                            <Divider className="divider-profile"/>
-                                        </Grid>
-
-                                        <Grid container direction="row" alignItems="flex-end" justify="space-evenly" className="padding-top">
-                                            <Grid item>
-                                                <Grid container direction="column" justify="center" alignItems="center">
-                                                    <Grid item><PencilIcon /></Grid>
-                                                    <Grid item><Box component="p" className="profile-subheading-small">Edit Profile</Box></Grid>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item>
-                                                <Grid container direction="column" justify="center" alignItems="center">
-                                                    <Grid item><BriefcaseIcon /></Grid>
-                                                    <Grid item><Box component="p" className="profile-subheading-small">Add Resources</Box></Grid>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item>
-                                                <Grid container direction="column" justify="center" alignItems="center">
-                                                    <Grid item><SignOutIcon /></Grid>
-                                                    <Grid item><Box component="p" className="profile-subheading-small">Log Out</Box></Grid>
-                                                </Grid>    
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Menu>
                             </div>
+                    <Menu
+                        anchorEl ={this.state.userProfileAnchor}
+                        keepMounted
+                        open={Boolean(this.state.userProfileAnchor)}
+                        onClose={this.closeUserProfile}
+                        getContentAnchorEl={null}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                        transformOrigin={{ vertical: "top", horizontal: "center" }}
+                        >
+                        <Grid container direction="column" justify="center" alignItems="center" className="menu-design">
+                            <Grid item>
+                                <Grid container direction="row" alignItems="center" justify="space-around" spacing={2}>
+                                    <Grid item>
+                                        <Box component="div" ml={2}>
+                                            <Avatar src={UserAvatar} className="avatar-large"/>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item className="profile-padding">
+                                        <Box component="h2" className="profile-heading">Joy Joseph</Box>
+                                        <Box component="p" mt={-2.5} mr={2} className="profile-subheading">joy_joseph@example.com</Box>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item>
+                                <LinearProgress variant="determinate" value={50} className="progress-bar"/>
+                                <Box component="p" className="profile-subheading-small" mt={0.5}>50% profile completed</Box>
+                            </Grid>
+                            <Grid item>
+                                <Divider className="divider-profile"/>
+                            </Grid>
+                            <Grid container direction="row" alignItems="flex-end" justify="space-evenly" className="padding-top">
+                                <Grid item>
+                                    <Grid container direction="column" justify="center" alignItems="center">
+                                        <Grid item><PencilIcon /></Grid>
+                                        <Grid item><Box component="p" className="profile-subheading-small">Edit Profile</Box></Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item>
+                                    <Grid container direction="column" justify="center" alignItems="center">
+                                        <Grid item><BriefcaseIcon /></Grid>
+                                        <Grid item><Box component="p" className="profile-subheading-small">Add Resources</Box></Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item>
+                                    <Grid container direction="column" justify="center" alignItems="center">
+                                        <Grid item><SignOutIcon /></Grid>
+                                        <Grid item><Box component="p" className="profile-subheading-small">Log Out</Box></Grid>
+                                    </Grid>    
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Menu>
+                            
                         </Toolbar>
                     </AppBar>
                 </Grid>

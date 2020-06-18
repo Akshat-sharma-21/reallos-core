@@ -1,0 +1,68 @@
+/* WARNING: Not a cross-browser solution for scrollbar */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #ababab; 
+    border-radius: 2.5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #323232;
+    border-radius: 2.5px;
+}
+
+.transaction-card-root {
+    margin-top: 30px;
+}
+
+.transaction-card-item {
+    min-height: 280px;
+}
+
+.transaction-card {
+    min-height: 280px;
+}
+
+.transaction-card-chart {
+    padding-top: 20px;
+    padding-left: 20px;
+}
+
+/*.transaction-card-heading{
+    font-size: 24px;
+    font-weight: 900;
+    margin-top: 20px;
+    padding-left: 30px;
+}*/
+
+.transaction-card-rgrid {
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+}
+
+.transaction-card-subiconred {
+    padding-right: 5px !important;
+    color: red !important
+}
+
+.transaction-card-subicongreen {
+    padding-right: 5px !important;
+    color: green !important
+}
+
+.transaction-card-secondli {
+    font-size: 22px;
+    font-weight: 700;
+    padding-top: 20px !important;
+}
+
+.transaction-card-secondlisub {
+    margin-left: 60px;
+    padding-left: 12px !important;
+    font-size: 16px !important;
+}

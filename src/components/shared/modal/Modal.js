@@ -9,10 +9,6 @@ import './Modal.css';
  * @augments {React.Component<Props>}
  */
 class ReallosModal extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     static propTypes = {
         /**
          * Title to be displayed for the Modal
@@ -64,7 +60,7 @@ class ReallosModal extends React.Component {
 
         return (
             <>
-                <div className="modal-bg" visible={visible.toString()}>
+                <div className="modal-bg" visible={visible.toString()} aria-modal="true">
                     <div className="modal" style={{'width': modalWidth, 'height': modalHeight}}>
                         <div className="modal-container">
                             {
