@@ -108,4 +108,6 @@
     margin: 5px;
     max-width: 150px;
 }
-
+.notification-menu{
+    width: 300px !important;
+}
