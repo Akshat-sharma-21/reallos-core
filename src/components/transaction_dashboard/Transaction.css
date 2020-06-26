@@ -90,3 +90,7 @@ body {
     overflow-y: auto !important;
     max-height: 150px !important
 }
+.social-details-form-field{
+    margin-top: 10px !important;
+    width: 100% !important;
+}

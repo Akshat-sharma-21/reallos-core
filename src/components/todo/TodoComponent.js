@@ -76,7 +76,16 @@ class Todo extends Component{
     RenderToDo(){
         if(this.props.todo === null){ // If no todo exists in the server || have to replace this with an image
             return(
-                <p>No todo found</p>
+                <Box style={{width:'100%'}}>
+                    <Box paddingLeft={5}>
+                        <h1>Tasks</h1>
+                    </Box>
+                    <Grid container justify='center'>
+                        <Box marginTop={5}>
+                            <img src={require('../../assets/no-todo.png')} style={{width: '500px'}}/>
+                        </Box>
+                    </Grid>
+                </Box>
             );
         }
         else{
