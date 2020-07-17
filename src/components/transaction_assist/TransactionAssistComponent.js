@@ -64,59 +64,6 @@ export default function TransactionAssist() {
               <div className={"div-heading"}>Coming Soon</div>
               <div className={"div-text"}>This page is under construction</div>
             </Grid>
-
-            <Grid item xs={3}>
-              <Box
-                className={"cards"}
-                onClick={() =>
-                  History.push("/transaction/" + transId + "/paperwork")
-                }
-              >
-                <div className={"card-content"}>
-                  <FileIcon size={50} />
-                  <div className={"card-text"}>Paperworks</div>
-                </div>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                className={"cards"}
-                onClick={() =>
-                  History.push("/transaction/" + transId + "/people")
-                }
-              >
-                <div className={"card-content"}>
-                  <PersonIcon size={50} />
-                  <div className={"card-text"}>People</div>
-                </div>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                className={"cards"}
-                onClick={() =>
-                  History.push("/transaction/" + transId + "/todo")
-                }
-              >
-                <div className={"card-content"}>
-                  <ChecklistIcon size={50} />
-                  <div className={"card-text"}>Todo</div>
-                </div>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                className={"cards"}
-                onClick={() =>
-                  History.push("/transaction/" + transId + "/discussions")
-                }
-              >
-                <div className={"card-content"}>
-                  <CommentDiscussionIcon size={50} />
-                  <div className={"card-text"}>Discussion</div>
-                </div>
-              </Box>
-            </Grid>
           </Grid>
         </Box>
         {/* {this.RenderExpansionPanel()} */}

@@ -1,23 +1,26 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { clearErrors } from "../../actions/utilsActions";
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
   Snackbar,
   Card,
   Grid,
   Typography,
   Box,
 } from "@material-ui/core";
-import { FileIcon, PackageIcon, ChecklistIcon, PersonIcon, CommentDiscussionIcon } from '@primer/octicons-react';
+import {
+  FileIcon,
+  PackageIcon,
+  ChecklistIcon,
+  PersonIcon,
+  CommentDiscussionIcon,
+} from "@primer/octicons-react";
 import MuiAlert from "@material-ui/lab/Alert";
 import SignIn from "../account/SignInModal";
 import SignUpModal from "../account/SignUpModal";
-import "./DummyPage.css";
+import "./HomePage.css";
 
 const mapStateToProps = (state) => ({
   utils: state.utils,
@@ -36,7 +39,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-function DummyPage(props) {
+function HomePage(props) {
   let [signInModalVisible, setSignInModalVisibility] = useState(false);
   let [signUpModalVisible, setSignUpModalVisibility] = useState(false);
 
@@ -85,33 +88,33 @@ function DummyPage(props) {
                   <Typography
                     align="center"
                     variant="h6"
-                    style={{ color: "#150578", marginBottom: "35px", }}
+                    style={{ color: "#150578", marginBottom: "35px" }}
                   >
                     Let us handle your hassle for managing your
                     <br />
                     Real Estate. Get Started now.
-                    <br/>
+                    <br />
                   </Typography>
                 </Grid>
               </Box>
               <Box>
                 <Grid item>
-                <Button
-              className="input-item"
-              color="primary"
-              variant="contained"
-              style={{ textTransform: "none", fontSize: "16px" }}
-              onClick={() => setSignInModalVisibility(true)}
-            >
+                  <Button
+                    className="input-item"
+                    color="primary"
+                    variant="contained"
+                    style={{ textTransform: "none", fontSize: "16px" }}
+                    onClick={() => setSignInModalVisibility(true)}
+                  >
                     Sign In
                   </Button>
                   <Button
-              className="input-item"
-              color="primary"
-              variant="contained"
-              style={{ textTransform: "none", fontSize: "16px" }}
-              onClick={() => setSignUpModalVisibility(true)}
-            >
+                    className="input-item"
+                    color="primary"
+                    variant="contained"
+                    style={{ textTransform: "none", fontSize: "16px" }}
+                    onClick={() => setSignUpModalVisibility(true)}
+                  >
                     Sign Up
                   </Button>
                 </Grid>
@@ -124,30 +127,59 @@ function DummyPage(props) {
               justify="center"
               className="dummy-page-right-back"
             >
-              <Card elevation={3} style={{width: '65%', boxShadow: '20px -20px rgba(255,255,255,0.4)'}} className="dummy-page-right-card">
-                <Grid container alignItems="center" justify="center" direction="row" style={{height : '100%'}}>
-                  <Grid item xs={4} justify="center" style={{backgroundColor: '#12EAD8'}}>
-                    <Box marginY={8} marginX={4} justify="center" style={{width : '100%'}}>
-                      <img src={require('../../assets/small-r-dark-logo.png')} height='75px'/>
+              <Card
+                elevation={3}
+                style={{
+                  width: "65%",
+                  boxShadow: "20px -20px rgba(255,255,255,0.4)",
+                }}
+                className="dummy-page-right-card"
+              >
+                <Grid
+                  container
+                  alignItems="center"
+                  justify="center"
+                  direction="row"
+                  style={{ height: "100%" }}
+                >
+                  <Grid
+                    item
+                    xs={4}
+                    justify="center"
+                    style={{ backgroundColor: "#12EAD8" }}
+                  >
+                    <Box
+                      marginY={8}
+                      marginX={4}
+                      justify="center"
+                      style={{ width: "100%" }}
+                    >
+                      <img
+                        src={require("../../assets/small-r-dark-logo.png")}
+                        height="75px"
+                      />
                     </Box>
                   </Grid>
                   <Grid item xs={8} justify="center">
                     <Box marginX={8}>
-                    <Grid container direction="column">
-                      <Grid item>
-                        <Box>
-                          <FileIcon size={30} className="icon-row-1"/>
-                          <PackageIcon size={30} className="icon-row-1"/>
-                          <ChecklistIcon size={30}/>
-                        </Box>
+                      <Grid container direction="column">
+                        <Grid item>
+                          <Box>
+                            <FileIcon size={30} className="icon-row-1" />
+                            <PackageIcon size={30} className="icon-row-1" />
+                            <ChecklistIcon size={30} />
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          <Box>
+                            <PersonIcon size={30} className="icon-row-2" />
+                            <CommentDiscussionIcon
+                              size={30}
+                              className="icon-row-2"
+                            />
+                          </Box>
+                        </Grid>
                       </Grid>
-                      <Grid item>
-                        <Box>
-                          <PersonIcon size={30} className="icon-row-2"/>
-                          <CommentDiscussionIcon size={30} className="icon-row-2"/>
-                        </Box>
-                      </Grid>
-                    </Grid>
                     </Box>
                   </Grid>
                 </Grid>
@@ -170,4 +202,4 @@ function DummyPage(props) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DummyPage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

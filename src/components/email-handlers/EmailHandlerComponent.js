@@ -13,6 +13,7 @@ import { useLocation } from "react-router-dom";
 import { myFirebase } from '../../Config/MyFirebase.js';
 import VerifyEmail from './VerifyEmail.js';
 import ResetPassword from './ResetPassword.js';
+import InvitationAccept from './InvitationAccept.js';
 
 class EmailHandler extends Component {
 
@@ -90,6 +91,11 @@ class EmailHandler extends Component {
         <ResetPassword actionCode={actionCode}/>
       );
     }
+    if (mode.indexOf("invitation") !== -1){
+      return(
+        <InvitationAccept actionCode={actionCode} tid={mode.slice(9)} />
+      );
+    }
     else{
       return(
         <Typography
@@ -97,7 +103,7 @@ class EmailHandler extends Component {
             style={{ width: "150%", marginBottom: "8px", color: "red" }}
           >
             Invalid Request 
-          </Typography>
+        </Typography>
       );
     }
   }

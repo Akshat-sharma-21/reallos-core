@@ -1,6 +1,6 @@
 .first-time-image {
-  height: 290px;
-  width: 310px;
+  height: 290px !important;
+  width: 310px !important;
 }
 
 .continue-button {
@@ -17,11 +17,11 @@
 
 .expansion-panel-heading {
   font-size: 20px !important;
-  padding: 9px;
+  padding: 9px !important;
 }
 
 .expansion-panel-text {
-  font-size: 16px;
+  font-size: 16px !important;
 }
 
 .expansion-divider {
@@ -29,54 +29,24 @@
 }
 
 .img-div {
-  text-align: center;
+  text-align: center !important;
 }
 
 .coming-soon-img {
-  height: 310px;
-  padding-bottom: 8px;
+  height: 400px !important;
+  width: auto !important;
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
 }
 
 .div-heading {
   font-size: 25px !important;
-  padding-bottom: 6px;
-  text-align: center;
-  font-weight: bold;
+  padding-bottom: 15px !important;
+  text-align: center !important;
+  font-weight: bold !important;
 }
 
 .div-text {
   font-size: 20px !important;
-  padding-bottom: 35px;
-  text-align: center;
-}
-
-.cards {
-  height: 110px !important;
-  border-radius: 10px;
-  margin-left: 20px;
-  margin-right: 20px;
-  background-color: #6c63ff;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-.cards:hover {
-  box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
-  transform: translate3d(0px, -2px, 0px);
-  background-color: #7f79ff;
-}
-
-.card-content {
-  padding-top: 11px !important;
-  color: #ffffff !important;
-  margin: auto !important;
   text-align: center !important;
-}
-.card-text {
-  padding-top: 15px;
-  color: #d3d0ff !important;
-  font-weight: 400 !important;
-  font-size: 24px !important;
-  font-family: "Gilroy" !important;
-  font-weight: bold !important;
 }
