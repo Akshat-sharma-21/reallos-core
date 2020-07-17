@@ -157,11 +157,20 @@ class PaperWork extends React.Component {
 
     /**
      * Returns URL of thumbnail for a PDF.
-     *
-     * @TODO: Should return thumbnail as data URL
      */
-    getThumbnail() {
-        return 'https://images.sampletemplates.com/wp-content/uploads/2016/04/15115200/Sample-Press-Release-Template-PDF.jpg';
+    async getThumbnail(docName) {
+        try {
+            const thumbnailRef = myStorage.ref().child(
+                `${this.transactionID}/paperworks/thumbnails/${getEffectiveDocumentName(docName)}.png`
+            );
+
+            const thumbnailUrl = await thumbnailRef.getDownloadURL();
+            return thumbnailUrl;
+        }
+        catch(e) {
+            // Fallback thumbnail (Transaparent Grid Background)
+            return 'https://thumbs.dreamstime.com/b/vector-empty-transparent-background-transparency-grid-seamless-pattern-171149540.jpg';
+        }
     }
 
     /**
@@ -178,44 +187,49 @@ class PaperWork extends React.Component {
         let paperworks = [];
         let peopleList = await getPeopleInvolved(this.transactionID);
 
-        paperworkDataSnapshot.docs.map(doc => {
-            let paperworkMeta = doc.data();
+        Promise.all(
+            paperworkDataSnapshot.docs.map(async (doc) => {
+                let paperworkMeta = doc.data();
 
-            if (paperworkMeta.creator === getCurrentUser().email ||
-                paperworkMeta.accessData[getCurrentUser().email] > 0
-            ) {
-                let documentRef = myStorage.ref().child(
-                    `${this.transactionID}/paperworks/${paperworkMeta.path}`
-                );
+                if (paperworkMeta.creator === getCurrentUser().email ||
+                    paperworkMeta.accessData[getCurrentUser().email] > 0
+                ) {
+                    let documentRef = myStorage.ref().child(
+                        `${this.transactionID}/paperworks/${paperworkMeta.path}`
+                    );
 
-                let creator =
-                    (paperworkMeta.creator === getCurrentUser().email)
-                        ? "You"
-                        : peopleList.filter(person => person.email == paperworkMeta.creator)[0]
+                    let creator =
+                        (paperworkMeta.creator === getCurrentUser().email)
+                            ? "You"
+                            : peopleList.filter(person => person.email == paperworkMeta.creator)[0]
+                                ? peopleList.filter(person => person.email == paperworkMeta.creator)[0].name
+                                : "Unknown"
 
-                let currentUserAcessRight =
-                    (paperworkMeta.creator === getCurrentUser().email)
-                        ? 2
-                        : paperworkMeta.accessData[getCurrentUser().email] ?? 0;
+                    let currentUserAcessRight =
+                        (paperworkMeta.creator === getCurrentUser().email)
+                            ? 2
+                            : paperworkMeta.accessData[getCurrentUser().email] ?? 0;
 
-                paperworks.push({
-                    name: documentRef.name,
-                    creator: creator,
-                    path: paperworkMeta.path,
-                    accessRight: currentUserAcessRight
-                });
-            }
+                    paperworks.push({
+                        name: documentRef.name,
+                        creator: creator,
+                        path: paperworkMeta.path,
+                        accessRight: currentUserAcessRight,
+                        thumbnail: await this.getThumbnail(documentRef.name)
+                    });
+                }
+            })
+        ).then(() => {
+            this.setState({
+                documents: paperworks
+            })
         });
-
-        this.setState({
-            documents: paperworks
-        })
     }
 
     /**
      * Deletes the specified document from the cloud.
      *
-     * @param {{ name: string, creator: string, path: string }} docData
+     * @param {{ name: string, creator: string, path: string, thumbnail: string }} docData
      * The document data of the particular document.
      */
     async deletePaperwork(docData) {
@@ -323,8 +337,8 @@ class PaperWork extends React.Component {
                             }}>
                                 <Card className="doc-card" title={docData.name}>
                                     <CardMedia
-                                        image={this.getThumbnail()}
-                                        style={{height: 200}}
+                                        image={docData.thumbnail}
+                                        style={{height: 200, backgroundPositionY: 'top'}}
                                     />
 
                                     <CardContent>
@@ -467,7 +481,7 @@ class PaperWork extends React.Component {
                                         this.state.uploadFileName
                                     )}
                                 </strong>
-                                " as it already exists. If you want to upload this paperwork, delete the existing paperwork first.
+                                " as it already exists in this transaction. If you want to upload this paperwork, delete the existing paperwork first.
                             </div>
                         </div>
 
@@ -527,7 +541,14 @@ class PaperWork extends React.Component {
                     dismissCallback={this.dismissUploadModal}
                     visible={this.state.isUploadModalVisible}
                     showSnackbarCallback={this.showSnackbar}
-                    onSuccessCallback={() => this.setDocumentList()}
+                    onSuccessCallback={() => {
+                        // Reset the list of paperworks
+                        this.setState({
+                            documents: null
+                        });
+
+                        this.setDocumentList();
+                    }}
                     onFileExistsCallback={filename => {
                         this.setState({
                             isPaperworkExistsModalVisible: true,

@@ -36,7 +36,7 @@ function DocUploadModal({
   dismissCallback,
   showSnackbarCallback,
   onSuccessCallback,
-  onFileExistsCallback
+  onFileExistsCallback = () => {}
 }) {
   let [isUploading, setUploadState] = useState(false);
   let [uploadTaskStatus, setUploadTaskStatus] = useState({
