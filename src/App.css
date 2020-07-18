@@ -2,13 +2,10 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
 
 @font-face {
-  font-family: 'Gilroy';
-  src: url("http://db.onlinewebfonts.com/t/00d5a78493aed4b11e2584ad7cceee49.eot"); /* IE9*/
-  src: url("http://db.onlinewebfonts.com/t/00d5a78493aed4b11e2584ad7cceee49.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-  url("http://db.onlinewebfonts.com/t/00d5a78493aed4b11e2584ad7cceee49.woff2") format("woff2"), /* chrome firefox */
-  url("http://db.onlinewebfonts.com/t/00d5a78493aed4b11e2584ad7cceee49.woff") format("woff"), /* chrome firefox */
-  url("http://db.onlinewebfonts.com/t/00d5a78493aed4b11e2584ad7cceee49.ttf") format("truetype"), /* chrome firefox opera Safari, Android, iOS 4.2+*/
-  url("http://db.onlinewebfonts.com/t/00d5a78493aed4b11e2584ad7cceee49.svg#Gilroy ExtraBold") format("svg"); /* iOS 4.1- */
+  font-family: "Gilroy";
+  font-style: normal;
+  font-weight: bold;
+  src: local("Gilroy Extrabold"), url("./fonts/Gilroy-Extrabold.woff2") format("woff2"), 
 }
 
 .App {
