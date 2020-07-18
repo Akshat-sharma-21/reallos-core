@@ -8,23 +8,8 @@ import StampIcon from "../../assets/stamp_icon.svg";
 import DocUploadStatus from "./uploader/DocUploadStatus";
 import { myStorage } from "../../Config/MyFirebase.js";
 import { ReallosLoaderWithOverlay } from "../shared/preloader/ReallosLoader";
-
-import {
-  PdfViewerComponent,
-  Toolbar,
-  Magnification,
-  Navigation,
-  LinkAnnotation,
-  BookmarkView,
-  ThumbnailView,
-  Print,
-  TextSelection,
-  Annotation,
-  TextSearch,
-  FormFields,
-  Inject,
-  PdfViewer,
-} from "@syncfusion/ej2-react-pdfviewer";
+import { accessRights, getCurrentUser, getTransactionID } from "../../global_func_lib";
+import WebViewer from '@pdftron/webviewer';
 
 import {
   Container,
@@ -63,37 +48,45 @@ class PaperworkViewer extends React.Component {
       },
     };
 
-    this.docBlob = null;
-
-    this.pdfViewerServices = [
-      FormFields,
-      Toolbar,
-      Magnification,
-      Navigation,
-      TextSearch,
-      LinkAnnotation,
-      BookmarkView,
-      ThumbnailView,
-      Print,
-      TextSelection,
-    ]
+    this.documentLink = null;
+    this.viewerRoot = React.createRef();
   }
 
-  componentWillMount() {
-    if (this.getState.accessRight === 2) {
-      this.pdfViewerServices.push(Annotation);
-    }
+  componentDidMount() {
+    this.transactionID = getTransactionID(this.props.location);
+
+    WebViewer(
+      { path: '/webviewer/lib', isReadOnly: !this.canEdit, fullAPI: true },
+      this.viewerRoot.current
+    )
+      .then(viewerInstance => {
+        const { docViewer, annotManager, FitMode } = viewerInstance;
+        this.viewer = viewerInstance;
+        this.setDocument(this.getState.path);
+
+        docViewer.on('documentLoaded', () => {
+          this.setDocumentLoaded();
+          viewerInstance.setFitMode(FitMode.FitWidth);
+          annotManager.setCurrentUser(getCurrentUser().email);
+        });
+
+        annotManager.on('annotationChanged', () => {
+          this.setDocumentChanged();
+        });
+      });
   }
 
   /**
-   * Show signature panel provided by **Syncfusion**
+   * Show signature panel provided by **PDFTron**
    *
    * @returns {void}
    * Void
    */
-  showSignaturePanel() {
-    if (this.viewer.toolbar.annotationToolbarModule)
-      this.viewer.toolbar.annotationToolbarModule.showSignaturepanel();
+  async showSignaturePanel() {
+    if (this.viewerRoot.current.querySelector('iframe').contentDocument)
+      this.viewerRoot.current.querySelector('iframe').contentDocument.querySelector(
+        'div[data-element="signatureToolButton"]'
+      ).firstChild.click();
   }
 
   /**
@@ -107,18 +100,8 @@ class PaperworkViewer extends React.Component {
    */
   async setDocument(docPath) {
     let downloadLink = await myStorage.ref(docPath).getDownloadURL();
-    let response = await fetch(downloadLink, { method: "GET" });
-    let docBlob = await response.blob();
-    this.docBlob = docBlob;
-
-    let fileReader = new FileReader();
-    fileReader.readAsDataURL(docBlob);
-
-    fileReader.onloadend = () => {
-      if (this.viewer) {
-        this.viewer.documentPath = fileReader.result;
-      }
-    };
+    this.viewer.loadDocument(downloadLink);
+    this.documentLink = downloadLink;
   }
 
   /**
@@ -128,20 +111,12 @@ class PaperworkViewer extends React.Component {
    * if `setDocument` was not called initially.
    */
   resetDocument() {
-    if (this.docBlob) {
-      let fileReader = new FileReader();
-      this.viewer.documentPath = "";
-      fileReader.readAsDataURL(this.docBlob);
+    if (this.documentLink) {
+      this.viewer.loadDocument(this.documentLink);
 
-      fileReader.onloadend = () => {
-        if (this.viewer) {
-          this.viewer.documentPath = fileReader.result;
-
-          this.setState({
-            hasChanges: false,
-          });
-        }
-      };
+      this.setState({
+        hasChanges: false,
+      });
     }
   }
 
@@ -156,8 +131,14 @@ class PaperworkViewer extends React.Component {
    * Void
    */
   async saveChangesToCloud(docPath) {
-    if (this.getState.accessRight === 2) {
-      let docBlob = await this.viewer.saveAsBlob();
+    if (this.canEdit) {
+      const doc = this.viewer.docViewer.getDocument();
+      const xfdfString = await this.viewer.annotManager.exportAnnotations();
+      const options = { xfdfString, flatten: true };
+      const data = await doc.getFileData(options);
+      const arr = new Uint8Array(data);
+      const docBlob = new Blob([arr], { type: 'application/pdf' });
+
       let fileRef = myStorage.ref().child(docPath);
       let uploadTask = fileRef.put(docBlob);
 
@@ -207,12 +188,10 @@ class PaperworkViewer extends React.Component {
   /**
    * Set `hasChanges` state when document changed.
    */
-  setDocumentChanges() {
-    if (this.viewer && this.state.hasChanges !== this.viewer.isDocumentEdited) {
-      this.setState({
-        hasChanges: this.viewer.isDocumentEdited,
-      });
-    }
+  setDocumentChanged() {
+    this.setState({
+      hasChanges: true,
+    });
   }
 
   /**
@@ -223,15 +202,22 @@ class PaperworkViewer extends React.Component {
    * Document Metadata passed by `Paperwork` component
    */
   get getState() {
-    console.log(this.props.location);
     return this.props.location ? this.props.location.state : null;
+  }
+
+  /**
+   * Returns a boolean value stating if the user can edit
+   * the document.
+   */
+  get canEdit() {
+    const docData = this.getState;
+    return docData.accessRight === accessRights.READ_EDIT_ACCESS
   }
 
   render() {
     if (this.getState) {
       // Proceed if document metadata is available in props
       const docData = this.getState;
-      const canEdit = (docData.accessRight === 2);
 
       return (
         <Container>
@@ -255,13 +241,13 @@ class PaperworkViewer extends React.Component {
               }}
             >
               <div>
-                <NavLink className="link" to="/paperwork">
+                <NavLink to={`/transaction/${this.transactionID}/paperwork`} className="link">
                   Paperwork
                 </NavLink>
                 <span style={{ margin: "0 10px" }}>/</span>
                 {docData.name}
 
-                {(!canEdit)
+                {(!this.canEdit)
                   ? <span style={{
                     marginLeft: 15,
                     background: '#ffca1c',
@@ -282,11 +268,11 @@ class PaperworkViewer extends React.Component {
                 }
               </div>
 
-              <div style={{display: canEdit ? 'block' : 'none'}}>
+              <div style={{display: this.canEdit ? 'block' : 'none'}}>
                 <Button
                   variant="outlined"
                   color="primary"
-                  disabled={!canEdit || !this.state.hasChanges}
+                  disabled={!this.canEdit || !this.state.hasChanges}
                   onClick={() => {
                     this.setState({
                       isResetModalVisible: true,
@@ -299,7 +285,7 @@ class PaperworkViewer extends React.Component {
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={!canEdit || !this.state.hasChanges}
+                  disabled={!this.canEdit || !this.state.hasChanges}
                   onClick={() => this.saveChangesToCloud(docData.path)}
                 >
                   Save Changes
@@ -307,30 +293,10 @@ class PaperworkViewer extends React.Component {
               </div>
             </div>
           </Box>
-          <PdfViewerComponent
-            id="container"
-            className="pdf-viewer-root"
-            ref={(scope) => {
-              this.viewer = scope;
-              if (this.viewer) this.setDocument(docData.path);
-            }}
-            documentPath={null}
-            documentLoad={() => this.setDocumentLoaded()}
-            documentLoadFailed={() => {
-              this.setDocumentLoaded();
-              this.setState({
-                isSnackbarVisible: true,
-                snackbarMessage: "Document failed to load",
-              });
-            }}
-            pageMouseover={() => this.setDocumentChanges()}
-            serviceUrl="https://ej2services.syncfusion.com/production/web-services/api/pdfviewer"
-            style={{ height: "640px" }}
-          >
-            <Inject
-              services={this.pdfViewerServices}
-            />
-          </PdfViewerComponent>
+
+          {/* Holds the PDF Viewer */}
+          <div className="pdf-viewer-root" ref={this.viewerRoot} />
+
           <Modal
             title="Saving Changes"
             visible={this.state.isUploadModalVisible}
@@ -357,8 +323,8 @@ class PaperworkViewer extends React.Component {
             }
             modalWidth={700}
           >
-            This will reset all the changes you have made to this document so
-            far.
+            This will reset all the changes you have made to this document after
+            the last save.
             <br />
             This action cannot be undone. Are you sure to continue?
             <ModalActionFooter>
@@ -391,13 +357,13 @@ class PaperworkViewer extends React.Component {
             visible={this.state.isLoadingDocument}
             strokeWidth={4}
           />
-          <div style={{display: canEdit ? 'block' : 'none'}}>
+          <div style={{display: this.canEdit ? 'block' : 'none'}}>
             <Fab
               variant="extended"
               className="reallos-fab"
               size="large"
               onClick={() => this.showSignaturePanel()}
-              disabled={!canEdit}
+              disabled={!this.canEdit}
             >
               <img
                 src={StampIcon}
@@ -447,7 +413,7 @@ class PaperworkViewer extends React.Component {
 
             <p>
               Go back to&nbsp;
-              <NavLink to="/paperwork" className="link">
+              <NavLink to={`/transaction/${this.transactionID}/paperwork`} className="link">
                 Paperwork
               </NavLink>
             </p>
