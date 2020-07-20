@@ -8,7 +8,7 @@ import "./SignUpModal.css";
 import { Stepper, Step, StepLabel } from "@material-ui/core";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { signupUser } from "../../actions/userActions";
+import { signupUser, acceptInvitationSignUp } from "../../actions/userActions";
 import { validateFormField } from "../../global_func_lib";
 
 const mapStateToProps = (state) => ({
@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       signupUser,
+      acceptInvitationSignUp
     },
     dispatch
   );
@@ -58,6 +59,7 @@ class SignUpModal extends Component {
     this.subStep = this.subStep.bind(this);
     this.closeSignUpModal = this.closeSignUpModal.bind(this);
     this.addStep = this.addStep.bind(this);
+    this.acceptInvitation = this.acceptInvitation.bind(this);
   }
 
   closeSignUpModal() {
@@ -91,6 +93,21 @@ class SignUpModal extends Component {
     };
     this.props.signupUser(newUser);
   }
+
+  acceptInvitation(){
+    this.addStep(); // Moving to the next step
+    let newUser = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email,
+      phone: this.state.phone,
+      role: this.state.role,
+      state: this.state.state,
+      password: this.state.password,
+    };
+    this.props.acceptInvitationSignUp(this.props.transactionId,newUser);
+  }
+
 
   handleChange = (event) => {
     event.preventDefault();
@@ -239,7 +256,7 @@ class SignUpModal extends Component {
             subStep={this.subStep}
             errors={this.state.errors}
             values={values}
-            submit={() => this.submitSignUp()}
+            submit={(this.props.invitation)? (()=> this.acceptInvitation()) : (() => this.submitSignUp())}
           />
         );
       case 2:

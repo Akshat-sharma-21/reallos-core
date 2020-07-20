@@ -13,11 +13,6 @@ class InvitationAccept extends Component{
         email: this.props.actionCode,
     };
 
-    componentDidMount() {
-        console.log(this.state.tid);
-        console.log(this.state.email);
-    }
-
     render(){
     return (
     <>
@@ -42,11 +37,15 @@ class InvitationAccept extends Component{
         <SignIn
             visible={this.state.signIn}
             dismissCallback={()=> this.setState({signIn: false})}
+            invitation = {true} // Setting inviation props to true
+            transactionId = {this.state.tid} // Setting the transaction id
         />
 
         <SignUpModal
             visible={this.state.signUp}
             dismissCallback={()=> this.setState({signUp: false})}
+            invitation = {true} // setting the invitation props to true
+            transactionId = {this.state.tid} // Setting the transaction id
         />
     </>
     );

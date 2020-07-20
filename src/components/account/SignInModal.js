@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { ReallosLoaderWithOverlay } from "../shared/preloader/ReallosLoader";
 import { connect } from "react-redux";
-import { login, googleAuth, facebookAuth } from "../../actions/userActions";
+import { login, googleAuth, facebookAuth, acceptInvitation } from "../../actions/userActions";
 import { bindActionCreators } from "redux";
 import GoogleLogo from "../../assets/google-logo.svg";
 import FacebookLogo from "../../assets/fb-logo.svg";
@@ -27,7 +27,8 @@ const mapDispatchToProps = (dispatch) => {
     {
       login,
       googleAuth,
-      facebookAuth
+      facebookAuth,
+      acceptInvitation
     },
     dispatch
   );
@@ -45,6 +46,7 @@ class SignIn extends Component {
     this.loginUser = this.loginUser.bind(this);
     this.handleResetPasswordModal = this.handleResetPasswordModal.bind(this);
     this.closeResetPasswordModal = this.closeResetPasswordModal.bind(this);
+    this.acceptInvitation = this.acceptInvitation.bind(this);
   }
 
   handleResetPasswordModal(e) {
@@ -74,6 +76,15 @@ class SignIn extends Component {
     };
 
     this.props.login(user);
+  }
+
+  acceptInvitation(){
+    let user = {
+      email: this.state.email,
+      password: this.state.password
+    }
+
+    this.props.acceptInvitation(this.props.transactionId,user);
   }
 
   render() {
@@ -126,7 +137,7 @@ class SignIn extends Component {
                 color="primary"
                 variant="contained"
                 style={{ textTransform: "none", fontSize: "18px" }}
-                onClick={this.loginUser}
+                onClick={(this.props.invitation) ? this.acceptInvitation : this.loginUser} // Set another action for the login
                 disabled={this.props.utils.Loading}
               >
                 {this.props.utils.Loading ? (

@@ -93,7 +93,7 @@ class EmailHandler extends Component {
     }
     if (mode.indexOf("invitation") !== -1){
       return(
-        <InvitationAccept actionCode={actionCode} tid={mode.slice(9)} />
+        <InvitationAccept actionCode={actionCode} tid={mode.slice(10)} />
       );
     }
     else{
