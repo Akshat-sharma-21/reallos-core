@@ -23,6 +23,7 @@
 
 .doc-card-root {
     min-width: 250px;
+    max-width: 350px;
     position: relative;
     margin: 5px;
     flex: 1;

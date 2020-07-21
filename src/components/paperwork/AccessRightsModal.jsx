@@ -74,7 +74,7 @@ class AccessRightsModal extends React.Component {
     componentDidUpdate() {
         // This is to prevent continuous fetching of paperwork data
         // when the components update but the filename doesn't.
-        if (this.currentFileName != this.props.filename) {
+        if (this.currentFileName !== this.props.filename) {
             this.fetchPaperworkAccessData();
         }
     }
