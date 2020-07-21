@@ -7,6 +7,7 @@ import Modal, { ModalActionFooter } from '../shared/modal/Modal';
 import AccessRightsModal from './AccessRightsModal';
 import UserAvatar from '../../assets/user.png';
 import PdfLogo from '../../assets/pdf_icon_duotone.svg';
+import CardThumbnail from './CardThumbnail';
 import { NavLink } from 'react-router-dom';
 import { myStorage, myFirestore } from '../../Config/MyFirebase';
 import { withStyles } from '@material-ui/core/styles';
@@ -168,8 +169,8 @@ class PaperWork extends React.Component {
             return thumbnailUrl;
         }
         catch(e) {
-            // Fallback thumbnail (Transaparent Grid Background)
-            return 'https://thumbs.dreamstime.com/b/vector-empty-transparent-background-transparency-grid-seamless-pattern-171149540.jpg';
+            // Fallback: return null
+            return;
         }
     }
 
@@ -187,43 +188,40 @@ class PaperWork extends React.Component {
         let paperworks = [];
         let peopleList = await getPeopleInvolved(this.transactionID);
 
-        Promise.all(
-            paperworkDataSnapshot.docs.map(async (doc) => {
-                let paperworkMeta = doc.data();
+        paperworkDataSnapshot.docs.map((doc) => {
+            let paperworkMeta = doc.data();
 
-                if (paperworkMeta.creator === getCurrentUser().email ||
-                    paperworkMeta.accessData[getCurrentUser().email] > 0
-                ) {
-                    let documentRef = myStorage.ref().child(
-                        `${this.transactionID}/paperworks/${paperworkMeta.path}`
-                    );
+            if (paperworkMeta.creator === getCurrentUser().email ||
+                paperworkMeta.accessData[getCurrentUser().email] > 0
+            ) {
+                let documentRef = myStorage.ref().child(
+                    `${this.transactionID}/paperworks/${paperworkMeta.path}`
+                );
 
-                    let creator =
-                        (paperworkMeta.creator === getCurrentUser().email)
-                            ? "You"
-                            : peopleList.filter(person => person.email == paperworkMeta.creator)[0]
-                                ? peopleList.filter(person => person.email == paperworkMeta.creator)[0].name
-                                : "Unknown"
+                let creator =
+                    (paperworkMeta.creator === getCurrentUser().email)
+                        ? "You"
+                        : peopleList.filter(person => person.email == paperworkMeta.creator)[0]
+                            ? peopleList.filter(person => person.email == paperworkMeta.creator)[0].name
+                            : "Unknown"
 
-                    let currentUserAcessRight =
-                        (paperworkMeta.creator === getCurrentUser().email)
-                            ? 2
-                            : paperworkMeta.accessData[getCurrentUser().email] ?? 0;
+                let currentUserAcessRight =
+                    (paperworkMeta.creator === getCurrentUser().email)
+                        ? 2
+                        : paperworkMeta.accessData[getCurrentUser().email] ?? 0;
 
-                    paperworks.push({
-                        name: documentRef.name,
-                        creator: creator,
-                        path: paperworkMeta.path,
-                        accessRight: currentUserAcessRight,
-                        thumbnail: await this.getThumbnail(documentRef.name)
-                    });
-                }
-            })
-        ).then(() => {
-            this.setState({
-                documents: paperworks
-            })
+                paperworks.push({
+                    name: documentRef.name,
+                    creator: creator,
+                    path: paperworkMeta.path,
+                    accessRight: currentUserAcessRight,
+                });
+            }
         });
+
+        this.setState({
+            documents: paperworks
+        })
     }
 
     /**
@@ -235,9 +233,15 @@ class PaperWork extends React.Component {
     async deletePaperwork(docData) {
         let docPath = docData.path
         let docRef = myStorage.ref().child(docPath);
+        let metaRef = myFirestore
+            .collection('transactions')
+            .doc(this.transactionID)
+            .collection('paperwork')
+            .doc(docData.name)
 
         try {
             await docRef.delete();
+            await metaRef.delete();
 
             this.setState({
                 isSnackbarVisible: true,
@@ -316,57 +320,60 @@ class PaperWork extends React.Component {
             return (
                 <div className="doc-card-group">
                     {this.state.documents.map((docData, itemIndex) => (
-                        <div
-                            className="doc-card-root"
-                            key={docData.name}
-                            style={{
-                                opacity: 0,
-                                animation: `slide-up-anim 150ms ease-out ${itemIndex * 25}ms forwards`
-                            }}
-                        >
-                            <IconButton
-                                className="doc-card-top-action-btn"
-                                onClick={(event) => this.openMenu(event.currentTarget, docData)}
+                        <div style={{
+                            opacity: 0,
+                            animation: `slide-up-anim 150ms ease-out ${itemIndex * 25}ms forwards`
+                        }}>
+                            <div
+                                className="doc-card-root"
+                                key={docData.name}
                             >
-                                <KebabHorizontalIcon />
-                            </IconButton>
+                                <IconButton
+                                    className="doc-card-top-action-btn"
+                                    onClick={(event) => this.openMenu(event.currentTarget, docData)}
+                                >
+                                    <KebabHorizontalIcon />
+                                </IconButton>
 
-                            <NavLink to={{
-                                pathname: `/transaction/${this.transactionID}/paperwork/${docData.name}`,
-                                state: docData
-                            }}>
-                                <Card className="doc-card" title={docData.name}>
-                                    <CardMedia
-                                        image={docData.thumbnail}
-                                        style={{height: 200, backgroundPositionY: 'top'}}
-                                    />
+                                <NavLink to={{
+                                    pathname: `/transaction/${this.transactionID}/paperwork/${docData.name}`,
+                                    state: docData
+                                }}>
+                                    <Card className="doc-card" title={docData.name}>
+                                        <CardThumbnail
+                                            getThumbnailFunction={() => this.getThumbnail(docData.name)}
+                                        />
 
-                                    <CardContent>
-                                        <h2 style={{
-                                            whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis'
+                                        <CardContent style={{
+                                            minWidth: 300,
+                                            minWidth: 250
                                         }}>
-                                            {getEffectiveDocumentName(docData.name)}
-                                        </h2>
+                                            <h2 style={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis'
+                                            }}>
+                                                {getEffectiveDocumentName(docData.name)}
+                                            </h2>
 
-                                        <div style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            alignItems: 'center'
-                                        }}>
-                                            <Avatar
-                                                className={classes.docCardUserAvatar}
-                                                src={UserAvatar}
-                                            />
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                alignItems: 'center'
+                                            }}>
+                                                <Avatar
+                                                    className={classes.docCardUserAvatar}
+                                                    src={UserAvatar}
+                                                />
 
-                                            <span style={{marginLeft: 10}}>
-                                                Uploaded by <strong>{docData.creator}</strong>
-                                            </span>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </NavLink>
+                                                <span style={{marginLeft: 10}}>
+                                                    Uploaded by <strong>{docData.creator}</strong>
+                                                </span>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </NavLink>
+                            </div>
                         </div>
                     ))}
 
@@ -541,14 +548,7 @@ class PaperWork extends React.Component {
                     dismissCallback={this.dismissUploadModal}
                     visible={this.state.isUploadModalVisible}
                     showSnackbarCallback={this.showSnackbar}
-                    onSuccessCallback={() => {
-                        // Reset the list of paperworks
-                        this.setState({
-                            documents: null
-                        });
-
-                        this.setDocumentList();
-                    }}
+                    onSuccessCallback={() => this.setDocumentList()}
                     onFileExistsCallback={filename => {
                         this.setState({
                             isPaperworkExistsModalVisible: true,
