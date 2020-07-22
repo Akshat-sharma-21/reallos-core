@@ -4,10 +4,12 @@ import {addUser} from './userActions';
 
 export const ADD_PEOPLE = 'ADD_PEOPLE';
 export const DELETE_PEOPLE = 'DELETE_PEOPLE';
+export const CLEAR_PEOPLE = 'CLEAR_PEOPLE';
 
 
 export function getAllPeople(id,peopleLength,user){
     return (dispatch) => {
+        dispatch(clearPeople()); // dispatching an action to clear the people
         dispatch(setLoadingTrue()); // dispatching an action to set loading to true
 
         if(user === null){ // if the user isn't available
@@ -114,4 +116,10 @@ export function deleteFromStore(email){
         type: DELETE_PEOPLE,
         email: email
     })
+}
+
+export function clearPeople(){
+    return({
+        type: CLEAR_PEOPLE
+    });
 }

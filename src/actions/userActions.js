@@ -351,6 +351,89 @@ export function acceptInvitationSignUp(transId,newUser){
     } 
 }
 
+export function googleAuthInvitation(transId){
+    return (dispatch) =>{
+        dispatch(setLoadingTrue()); // dispatching an action to set lodaing to true
+       myFirebase.auth().signInWithPopup(new myFirebase.auth.GoogleAuthProvider())
+        .then(res =>{
+            localStorage.setItem('userID', res.user.uid); // storing the userID in the localstorage
+            res.user.getIdToken()
+            .then( token =>{
+                localStorage.setItem('FBIdToken',token); // storing the jwt in the localstorage
+
+                axios.post(`/invite/${transId}`,null,{ // Adding the signed in user to the transaction
+                    headers: {Authorization: 'Bearer '+ token}
+                })
+                .then(()=>{
+                    axios.put(`/add-transaction-to-user/${transId}`,null,{
+                        headers: {Authorization: 'Bearer ' + token}
+                    })
+                    .then(() =>{
+                        window.location.href = '/transaction'; // redirecting to the transaction
+                        dispatch(setLoadingFalse()); // dispatching an action to set loading to false
+                    })
+                    .catch(err =>{
+                        console.error(err);
+                        dispatch(setErrors(err)); // dispatching an action to add the errors
+                    })
+                })
+                .catch(err =>{
+                    console.error(err);
+                    dispatch(setErrors(err)); // dispatching an action to set the errors
+                })
+            })
+            .catch(err =>{
+                dispatch(setErrors(err));
+            })
+        })
+        .catch(err =>{
+            dispatch(setErrors(err)); // dispatching an action to set the error
+        })
+    }
+}
+
+
+export function facebookAuthInvitation(transId){
+    return (dispatch) =>{
+        dispatch(setLoadingTrue()); // dispatching an action to set lodaing to true
+       myFirebase.auth().signInWithPopup(new myFirebase.auth.FacebookAuthProvider())
+        .then(res =>{
+            localStorage.setItem('userID', res.user.uid); // storing the userID in the localstorage
+            res.user.getIdToken()
+            .then( token =>{
+                localStorage.setItem('FBIdToken',token); // storing the jwt in the localstorage
+
+                axios.post(`/invite/${transId}`,null,{ // Adding the signed in user to the transaction
+                    headers: {Authorization: 'Bearer '+ token}
+                })
+                .then(()=>{
+                    axios.put(`/add-transaction-to-user/${transId}`,null,{
+                        headers: {Authorization: 'Bearer ' + token}
+                    })
+                    .then(() =>{
+                        window.location.href = '/transaction'; // redirecting to the transaction
+                        dispatch(setLoadingFalse()); // dispatching an action to set loading to false
+                    })
+                    .catch(err =>{
+                        console.error(err);
+                        dispatch(setErrors(err)); // dispatching an action to add the errors
+                    })
+                })
+                .catch(err =>{
+                    console.error(err);
+                    dispatch(setErrors(err)); // dispatching an action to set the errors
+                })
+            })
+            .catch(err =>{
+                dispatch(setErrors(err));
+            })
+        })
+        .catch(err =>{
+            dispatch(setErrors(err)); // dispatching an action to set the error
+        })
+    }
+}
+
 
 // pure reducer functions here
 export function addUser(id,firstName,lastName,email,phone,role,state,transactions) { // User is added to the redux store

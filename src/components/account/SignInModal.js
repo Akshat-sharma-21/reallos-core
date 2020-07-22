@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { ReallosLoaderWithOverlay } from "../shared/preloader/ReallosLoader";
 import { connect } from "react-redux";
-import { login, googleAuth, facebookAuth, acceptInvitation } from "../../actions/userActions";
+import { login, googleAuth, facebookAuth, acceptInvitation, googleAuthInvitation, facebookAuthInvitation } from "../../actions/userActions";
 import { bindActionCreators } from "redux";
 import GoogleLogo from "../../assets/google-logo.svg";
 import FacebookLogo from "../../assets/fb-logo.svg";
@@ -28,7 +28,9 @@ const mapDispatchToProps = (dispatch) => {
       login,
       googleAuth,
       facebookAuth,
-      acceptInvitation
+      acceptInvitation,
+      googleAuthInvitation,
+      facebookAuthInvitation
     },
     dispatch
   );
@@ -153,12 +155,12 @@ class SignIn extends Component {
 
           <div id="social-login-container">
             <div className="social-login-btn">
-              <Fab onClick = {this.props.googleAuth}>
+              <Fab onClick = {(this.props.invitation) ? (()=>this.props.googleAuthInvitation(this.props.transactionId)) : (()=>this.props.googleAuth())}>
                 <img src={GoogleLogo} alt="Sign In with Google" />
               </Fab>
             </div>
             <div className="social-login-btn">
-              <Fab onClick = {this.props.facebookAuth}>
+              <Fab onClick = {(this.props.invitation) ? (()=>this.props.facebookAuthInvitation(this.props.transactionId)) : (()=>this.props.facebookAuth())}>
                 <img src={FacebookLogo} alt="Sign In with Facebook" />
               </Fab>
             </div>

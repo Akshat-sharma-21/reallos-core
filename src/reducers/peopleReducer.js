@@ -16,6 +16,8 @@ function peopleReducer(state = intialState,action){
             ]
             case actions.DELETE_PEOPLE:
                 return state.filter(todo => todo.email !== action.email);
+            case actions.CLEAR_PEOPLE:
+                return intialState;
         default:
             return state;
     }
