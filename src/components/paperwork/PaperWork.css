@@ -15,15 +15,18 @@
 
 .doc-card-group {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    margin-bottom: 20px;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 .doc-card-root {
-    max-width: 300px;
+    min-width: 250px;
+    max-width: 350px;
     position: relative;
     margin: 5px;
-    flex: auto;
+    flex: 1;
 
     transition: transform 250ms ease;
 }

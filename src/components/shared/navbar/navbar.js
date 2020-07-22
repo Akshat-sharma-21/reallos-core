@@ -462,7 +462,7 @@ class RenderNav extends Component {
                         </Button>
                       </Grid>
                       <Grid item>
-                        <Button>
+                        <Button onClick={this.signOut}>
                           <Grid
                             container
                             direction="column"
@@ -476,7 +476,6 @@ class RenderNav extends Component {
                               <Box
                                 component="p"
                                 className="profile-subheading-small"
-                                onClick={this.signOut}
                               >
                                 Log Out
                               </Box>
