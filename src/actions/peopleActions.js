@@ -7,7 +7,7 @@ export const DELETE_PEOPLE = 'DELETE_PEOPLE';
 export const CLEAR_PEOPLE = 'CLEAR_PEOPLE';
 
 
-export function getAllPeople(id,peopleLength,user){
+export function getAllPeople(id,user){
     return (dispatch) => {
         dispatch(clearPeople()); // dispatching an action to clear the people
         dispatch(setLoadingTrue()); // dispatching an action to set loading to true
@@ -38,7 +38,6 @@ export function getAllPeople(id,peopleLength,user){
             headers: {Authorization: 'Bearer '+localStorage.getItem('FBIdToken')}
         }) 
         .then( res => {
-            if(res.data.peopleList.length !== peopleLength){ // If there has been any changes to people added
             res.data.peopleList.map( person =>{
                 dispatch(addPeople(
                     person.accepted,
@@ -48,7 +47,6 @@ export function getAllPeople(id,peopleLength,user){
                     person.uid
                 ))
             })
-            }
             dispatch(setLoadingFalse());
         })
         .catch(err => {

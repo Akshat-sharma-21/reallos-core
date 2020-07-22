@@ -83,7 +83,6 @@ class People extends Component {
     // when the component is mounted
     this.props.getAllPeople(
       this.props.match.params.tid,
-      this.props.people.length,
       this.props.user.id
     );
   }
