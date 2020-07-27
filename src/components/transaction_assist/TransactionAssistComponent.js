@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { openAssistModal, modalClose } from '../../actions/transactionAssistActions';
+import { openAssistModal, modalClose, escrowStep } from '../../actions/transactionAssistActions';
 import NavBar from "../shared/navbar/navbar";
 import Modal from "../shared/modal/Modal";
 import NavRail from "../shared/navigation_rail/TransactionNavRail";
@@ -46,7 +46,8 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       openAssistModal,
-      modalClose
+      modalClose,
+      escrowStep
     },dispatch);
 }
 
@@ -121,7 +122,7 @@ class TransactionAssist extends Component {
             <ExpansionPanelSummary expandIcon={<TriangleDownIcon />}>
               <Grid container direction="row" alignItems="center" spacing={4}>
                 <Grid item>
-                  <CheckIcon size={25} />
+                  {(this.props.assist.escrow.completed)? (<CheckIcon size={25} />) : (<DotFillIcon size={25} />) }
                 </Grid>
                 <Divider orientation="vertical" className="expansion-divider" />
                 <Grid item>
@@ -132,7 +133,7 @@ class TransactionAssist extends Component {
                     spacing={3}
                   >
                     <Grid item>
-                      <SearchIcon size={25} />
+                      <HomeIcon size={25} />
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
@@ -149,12 +150,26 @@ class TransactionAssist extends Component {
                   <h2>Escrow Account</h2>
                 </Grid>
                 <Grid item>
-                  <Grid container direction="column">
+                  <Grid container direction="column" spacing={3}>
                     <Grid item>
-                      <Button variant="contained" className="action-button"> Action </Button>
+                      <Grid container direction="row" alignItems="center" spacing={2}>
+                        <Grid item>
+                          <Typography className={(this.props.assist.escrow.setup) ? "action-text-completed" : "action-text"}>Let everyone know if the Escrow account has been setup! Should be marked by the Buyer agent </Typography>
+                        </Grid>
+                        <Grid item >
+                        <Button variant="contained" className="action-button" onClick={ ()=>this.props.escrowStep('setup') }> Done </Button>
+                        </Grid>
+                      </Grid>
                     </Grid>
                     <Grid item>
-                      <Button variant="contained" className="action-button"> Action </Button>
+                      <Grid container direction="row" spacing={2}>
+                        <Grid item>
+                          <Typography className={(this.props.assist.escrow.goodFaith) ? "action-text-completed" : "action-text"}>Has the Good Faith money been transafered by the Buyer? Buyer can let everyone if it has </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Button variant="contained" className="action-button" onClick={ ()=>this.props.escrowStep('goodFaith') }> Done </Button>
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -179,7 +194,7 @@ class TransactionAssist extends Component {
                     spacing={3}
                   >
                     <Grid item>
-                      <HomeIcon size={25} />
+                      <SearchIcon size={25} />
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
@@ -447,6 +462,7 @@ class TransactionAssist extends Component {
   }
 
   render() {
+    console.log(this.props.assist)
     return (
       <Box component="div">
         <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />

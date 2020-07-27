@@ -12,7 +12,7 @@
 .action-button {
   background-color: #150578 !important;
   color: white !important;
-  margin-top: 25px !important;
+
 }
 
 .expansion-panel-heading {
@@ -49,4 +49,13 @@
 .div-text {
   font-size: 20px !important;
   text-align: center !important;
+}
+
+.action-text {
+  font-size: 20px !important;
+}
+
+.action-text-completed { 
+  font-size: 20px !important;
+  text-decoration: line-through!important; 
 }
