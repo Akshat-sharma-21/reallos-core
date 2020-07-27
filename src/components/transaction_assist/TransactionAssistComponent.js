@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { openAssistModal, modalClose } from '../../actions/transactionAssistActions';
+import { openAssistModal, modalClose, escrowStep } from '../../actions/transactionAssistActions';
 import NavBar from "../shared/navbar/navbar";
 import Modal from "../shared/modal/Modal";
 import NavRail from "../shared/navigation_rail/TransactionNavRail";
@@ -15,12 +15,11 @@ import {
   ExpansionPanelDetails,
   Divider,
   Typography,
+  Checkbox,
+  FormControlLabel
 } from "@material-ui/core";
 import {
   PackageIcon,
-  FileIcon,
-  PersonIcon,
-  CommentDiscussionIcon,
   ChecklistIcon,
   TriangleDownIcon,
   CheckIcon,
@@ -34,6 +33,7 @@ import {
 } from "@primer/octicons-react";
 import {ReallosLoaderWithOverlay} from '../shared/preloader/ReallosLoader';
 import "./transactionassist.css";
+import { green } from "@material-ui/core/colors";
 
 
 const mapStateToProps = (state) => ({
@@ -46,7 +46,8 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       openAssistModal,
-      modalClose
+      modalClose,
+      escrowStep
     },dispatch);
 }
 
@@ -114,6 +115,7 @@ class TransactionAssist extends Component {
   }
 
   RenderExpansionPanel() {
+    console.log(this.props.assist.escrow)
     return (
       <Grid container direction="column" spacing={2}>
         <Grid item>
@@ -121,7 +123,7 @@ class TransactionAssist extends Component {
             <ExpansionPanelSummary expandIcon={<TriangleDownIcon />}>
               <Grid container direction="row" alignItems="center" spacing={4}>
                 <Grid item>
-                  <CheckIcon size={25} />
+                  {(this.props.assist.escrow.completed) ? (<CheckIcon size={25} className="checkmark-green" />) : (<DotFillIcon size={25} />) }
                 </Grid>
                 <Divider orientation="vertical" className="expansion-divider" />
                 <Grid item>
@@ -132,7 +134,7 @@ class TransactionAssist extends Component {
                     spacing={3}
                   >
                     <Grid item>
-                      <SearchIcon size={25} />
+                      <HomeIcon size={25} />
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
@@ -149,14 +151,39 @@ class TransactionAssist extends Component {
                   <h2>Escrow Account</h2>
                 </Grid>
                 <Grid item>
-                  <Grid container direction="column">
-                    <Grid item>
-                      <Button variant="contained" className="action-button"> Action </Button>
-                    </Grid>
-                    <Grid item>
-                      <Button variant="contained" className="action-button"> Action </Button>
-                    </Grid>
-                  </Grid>
+                  <Typography>This is where the buyer deposits the good faith money to show intrest in the property</Typography>
+                </Grid>
+                <Grid item>
+                  <Box mt={3}>
+                    <Divider />
+                  </Box>
+                </Grid>
+                <Grid item>
+                  <Box component="p" mt={3} className ={(this.props.assist.escrow.completed) ? "checklist-assist-class-completed" : "checklist-assist-class"}>
+                    <ChecklistIcon size ={25} /> &nbsp; {this.props.assist.escrow.numberOfCompleted} of 2 Completed
+                  </Box>
+                </Grid>
+                <Grid item>
+                  <FormControlLabel className={(this.props.assist.escrow.setup) ? "action-text-completed" : "action-text"}
+                    control={
+                      <Checkbox
+                        color="primary"
+                        value={this.props.assist.escrow.setup}
+                        onClick = {()=>this.props.escrowStep('setup')}
+                      />
+                    }
+                    label="Let everyone know if the Escrow account has been setup! Should be marked by the Buyer agent"
+                  />
+                  <FormControlLabel className={(this.props.assist.escrow.goodFaith) ? "action-text-completed" : "action-text"}
+                    control={
+                      <Checkbox
+                        color="primary"
+                        value={this.props.assist.escrow.goodFaith}
+                        onClick = {()=>this.props.escrowStep('goodFaith')}
+                      />
+                    }
+                    label="Has the Good Faith money been transafered by the Buyer? Buyer can let everyone if it has"
+                  />
                 </Grid>
               </Grid>
             </ExpansionPanelDetails>
@@ -179,7 +206,7 @@ class TransactionAssist extends Component {
                     spacing={3}
                   >
                     <Grid item>
-                      <HomeIcon size={25} />
+                      <SearchIcon size={25} />
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
@@ -447,6 +474,7 @@ class TransactionAssist extends Component {
   }
 
   render() {
+    console.log(this.props.assist)
     return (
       <Box component="div">
         <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />

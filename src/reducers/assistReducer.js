@@ -1,7 +1,13 @@
 import * as actions from '../actions/transactionAssistActions';
 
 const initialState = {
-    modal: null
+    modal: null,
+    escrow: {
+        setup: false,
+        goodFaith: false,
+        completed: false,
+        numberOfCompleted: 0
+    }
 };
 
 function assistReducer(state = initialState, action){
@@ -13,6 +19,24 @@ function assistReducer(state = initialState, action){
         case actions.MODAL_CLOSE:
             return {
                 ...state, modal: false
+            }
+        case actions.ESCROW_SETUP:
+            return {
+                ...state, escrow: {
+                    setup: true,
+                    goodFaith: state.escrow.goodFaith,
+                    completed: (state.escrow.goodFaith) ? true : false,
+                    numberOfCompleted: state.escrow.numberOfCompleted + 1
+                }
+            }
+        case actions.ESCROW_GOOD_FAITH:
+            return {
+                ...state, escrow: {
+                    setup: state.escrow.setup,
+                    goodFaith: true,
+                    completed: (state.escrow.setup) ? true : false,
+                    numberOfCompleted: state.escrow.numberOfCompleted + 1
+                }
             }
         default:
             return state;

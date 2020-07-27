@@ -5,6 +5,8 @@ import {myFirestore} from '../Config/MyFirebase'; // Importing the firestore
 
 export const MODAL_OPEN = 'MODAL_OPEN';
 export const MODAL_CLOSE = 'MODAL_CLOSE';
+export const ESCROW_SETUP = 'ESCROW_SETUP';
+export const ESCROW_GOOD_FAITH = 'ESCROW_GOOD_FAITH';
 
 export function openAssistModal(user,transId){
     return (dispatch) =>{
@@ -62,6 +64,22 @@ export function openAssistModal(user,transId){
     }
 }
 
+export function escrowStep(escrowAction){
+    return (dispatch) =>{
+        switch(escrowAction){
+            case 'setup':
+                dispatch(escrowSetup());
+                break;
+            case 'goodFaith':
+                dispatch(escrowGoodFaith());
+                break;
+            default: 
+                dispatch(setErrors('Error occured in assist Escrow'))
+                break;
+        }
+    }
+}
+
 // pure Reducer functions
 
 export function modalOpen(){
@@ -74,4 +92,16 @@ export function modalClose(){
     return ({
         type: MODAL_CLOSE
     });
+}
+
+export function escrowSetup(){
+    return({
+        type: ESCROW_SETUP
+    })
+}
+
+export function escrowGoodFaith(){
+    return({
+        type: ESCROW_GOOD_FAITH
+    })
 }
