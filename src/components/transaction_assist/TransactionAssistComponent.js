@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import { openAssistModal, modalClose } from '../../actions/transactionAssistActions';
 import NavBar from "../shared/navbar/navbar";
 import Modal from "../shared/modal/Modal";
 import NavRail from "../shared/navigation_rail/TransactionNavRail";
@@ -29,65 +32,85 @@ import {
   IssueClosedIcon,
   SmileyIcon,
 } from "@primer/octicons-react";
+import {ReallosLoaderWithOverlay} from '../shared/preloader/ReallosLoader';
 import "./transactionassist.css";
+
+
+const mapStateToProps = (state) => ({
+  user: state.user,
+  assist: state.assist,
+  utils: state.utils
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators(
+    {
+      openAssistModal,
+      modalClose
+    },dispatch);
+}
 
 class TransactionAssist extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      firstTime: true, //To check if the user is visting for the first time
-    };
 
     this.firstTimeModal = this.firstTimeModal.bind(this);
     this.closeFirstTime = this.closeFirstTime.bind(this);
     this.RenderExpansionPanel = this.RenderExpansionPanel.bind(this);
   }
 
+  componentDidMount(){
+    this.props.openAssistModal(this.props.user,this.props.match.params.tid); // passing the user object to the function
+  }
+
   closeFirstTime() {
     // Make sure that the database is updated with this information
-    this.setState({
-      firstTime: false,
-    });
+    this.props.modalClose();
   }
 
   firstTimeModal() {
     // To display the first time modal to people
-    return (
-      <Modal
-        visible={this.state.firstTime}
-        modalWidth={750}
-        modalHeight={500}
-        dismissCallback={this.closeFirstTime}
-      >
-        <Grid container direction="column" alignItems="center" justify="center">
-          <Grid item>
-            <img
-              src={require("../../assets/transaction-assist-first-time.png")}
-              alt={"First Time"}
-              className="first-time-image"
-            />
+    if(this.props.utils.Loading){
+      return(<></>);
+    }
+    else{
+      return (
+        <Modal
+          visible={this.props.assist.modal ? true : false}
+          modalWidth={750}
+          modalHeight={500}
+          dismissCallback={this.closeFirstTime}
+        >
+          <Grid container direction="column" alignItems="center" justify="center">
+            <Grid item>
+              <img
+                src={require("../../assets/transaction-assist-first-time.png")}
+                alt={"First Time"}
+                className="first-time-image"
+              />
+            </Grid>
+            <Grid item>
+              <Box component="h1">Transaction assist</Box>
+            </Grid>
+            <Grid item>
+              <Box component="p" m={-2}>
+                Exactly know the progress of your transaction
+              </Box>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                className="continue-button"
+                onClick={this.closeFirstTime}
+              >
+                continue
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Box component="h1">Transaction assist</Box>
-          </Grid>
-          <Grid item>
-            <Box component="p" m={-2}>
-              Exactly know the progress of your transaction
-            </Box>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              className="continue-button"
-              onClick={this.closeFirstTime}
-            >
-              continue
-            </Button>
-          </Grid>
-        </Grid>
-      </Modal>
-    );
+        </Modal>
+      );
+    }
   }
 
   RenderExpansionPanel() {
@@ -110,6 +133,53 @@ class TransactionAssist extends Component {
                   >
                     <Grid item>
                       <SearchIcon size={25} />
+                    </Grid>
+                    <Grid item>
+                      <Typography className="expansion-panel-heading">
+                        Escrow Account
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Grid container direction="column" justify="center">
+                <Grid item>
+                  <h2>Escrow Account</h2>
+                </Grid>
+                <Grid item>
+                  <Grid container direction="column">
+                    <Grid item>
+                      <Button variant="contained" className="action-button"> Action </Button>
+                    </Grid>
+                    <Grid item>
+                      <Button variant="contained" className="action-button"> Action </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </Grid>
+
+        <Grid item>
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<TriangleDownIcon />}>
+              <Grid container direction="row" alignItems="center" spacing={4}>
+                <Grid item>
+                  <DotFillIcon size={25} />
+                </Grid>
+                <Divider orientation="vertical" className="expansion-divider" />
+                <Grid item>
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    spacing={3}
+                  >
+                    <Grid item>
+                      <HomeIcon size={25} />
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
@@ -165,67 +235,11 @@ class TransactionAssist extends Component {
                     spacing={3}
                   >
                     <Grid item>
-                      <HomeIcon size={25} />
-                    </Grid>
-                    <Grid item>
-                      <Typography className="expansion-panel-heading">
-                        Home Appraisal
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Grid container direction="column" justify="center">
-                <Grid item>
-                  <h2>Title goes here</h2>
-                </Grid>
-                <Grid item>
-                  <Typography className="expansion-panel-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-                    varius auctor tincidunt. Vivamus vulputate ex libero, non
-                    pretium tortor eleifend non. Donec sagittis, neque eu
-                    malesuada euismod, elit nulla aliquet nibh, in laoreet eros
-                    diam quis lacus.
-                  </Typography>
-                  <Typography className="expansion-panel-text">
-                    Vivamus vulputate ex libero, non pretium tortor eleifend
-                    non. Donec sagittis, neque eu malesuada euismod, elit nulla
-                    aliquet nibh, in laoreet eros diam quis lacus.
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Button variant="contained" className="action-button">
-                    Action
-                  </Button>
-                </Grid>
-              </Grid>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        </Grid>
-
-        <Grid item>
-          <ExpansionPanel>
-            <ExpansionPanelSummary expandIcon={<TriangleDownIcon />}>
-              <Grid container direction="row" alignItems="center" spacing={4}>
-                <Grid item>
-                  <DotFillIcon size={25} />
-                </Grid>
-                <Divider orientation="vertical" className="expansion-divider" />
-                <Grid item>
-                  <Grid
-                    container
-                    direction="row"
-                    alignItems="center"
-                    spacing={3}
-                  >
-                    <Grid item>
                       <EyeIcon size={25} />
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
-                        Home Inspection
+                       Home Appraisal
                       </Typography>
                     </Grid>
                   </Grid>
@@ -281,7 +295,7 @@ class TransactionAssist extends Component {
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
-                        Home Appraisal
+                        Home Inspection
                       </Typography>
                     </Grid>
                   </Grid>
@@ -337,7 +351,7 @@ class TransactionAssist extends Component {
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
-                        Pre-Closing
+                        Loan Approval
                       </Typography>
                     </Grid>
                   </Grid>
@@ -433,13 +447,13 @@ class TransactionAssist extends Component {
   }
 
   render() {
-
     return (
       <Box component="div">
+        <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
         <Container>
           <NavBar />
           <NavRail />
-          { this.firstTimeModal()}
+          { this.firstTimeModal() }
           <Box component="div" paddingTop={5} paddingBottom={1}>
             <Grid container direction="row" alignItems="center" spacing={2} justify="flex-start">
                 <Grid item>
@@ -457,4 +471,4 @@ class TransactionAssist extends Component {
   }
 }
 
-export default TransactionAssist;
+export default connect (mapStateToProps, mapDispatchToProps)(TransactionAssist);
