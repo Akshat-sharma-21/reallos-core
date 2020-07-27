@@ -184,9 +184,6 @@ class Chat extends Component {
                           <IconButton size="medium">
                             <Avatar src={require("../../../assets/user.png")} />
                           </IconButton>
-                          <IconButton>
-                            <KebabHorizontalIcon size={24} />
-                          </IconButton>
                         </Grid>
                       </Grid>
                     </ListItem>
