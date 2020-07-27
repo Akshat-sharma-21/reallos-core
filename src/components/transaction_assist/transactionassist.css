@@ -52,10 +52,25 @@
 }
 
 .action-text {
-  font-size: 20px !important;
+  font-size: 16px !important;
 }
 
 .action-text-completed { 
-  font-size: 20px !important;
+  font-size: 16px !important;
   text-decoration: line-through!important; 
+  color: #C4C4C4 !important
+}
+
+.checklist-assist-class {
+  color: #F6AC00 !important;
+  font-weight: bold !important;
+}
+
+.checklist-assist-class-completed {
+  color : #01AE4B !important;
+  font-weight: bold !important;
+}
+
+.checkmark-green {
+  color : #01AE4B !important;
 }

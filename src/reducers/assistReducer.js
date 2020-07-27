@@ -5,7 +5,8 @@ const initialState = {
     escrow: {
         setup: false,
         goodFaith: false,
-        completed: false
+        completed: false,
+        numberOfCompleted: 0
     }
 };
 
@@ -24,7 +25,8 @@ function assistReducer(state = initialState, action){
                 ...state, escrow: {
                     setup: true,
                     goodFaith: state.escrow.goodFaith,
-                    completed: (state.escrow.goodFaith) ? true : false
+                    completed: (state.escrow.goodFaith) ? true : false,
+                    numberOfCompleted: state.escrow.numberOfCompleted + 1
                 }
             }
         case actions.ESCROW_GOOD_FAITH:
@@ -32,7 +34,8 @@ function assistReducer(state = initialState, action){
                 ...state, escrow: {
                     setup: state.escrow.setup,
                     goodFaith: true,
-                    completed: (state.escrow.setup) ? true : false
+                    completed: (state.escrow.setup) ? true : false,
+                    numberOfCompleted: state.escrow.numberOfCompleted + 1
                 }
             }
         default:
