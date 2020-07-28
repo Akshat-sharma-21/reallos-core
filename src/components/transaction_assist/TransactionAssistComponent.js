@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import { openAssistModal, modalClose, escrowStep } from '../../actions/transactionAssistActions';
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import {
+  openAssistModal,
+  modalClose,
+  escrowStep,
+} from "../../actions/transactionAssistActions";
 import NavBar from "../shared/navbar/navbar";
 import Modal from "../shared/modal/Modal";
 import NavRail from "../shared/navigation_rail/TransactionNavRail";
@@ -16,7 +20,7 @@ import {
   Divider,
   Typography,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
 } from "@material-ui/core";
 import {
   PackageIcon,
@@ -31,15 +35,14 @@ import {
   IssueClosedIcon,
   SmileyIcon,
 } from "@primer/octicons-react";
-import {ReallosLoaderWithOverlay} from '../shared/preloader/ReallosLoader';
+import { ReallosLoaderWithOverlay } from "../shared/preloader/ReallosLoader";
 import "./transactionassist.css";
-import { green } from "@material-ui/core/colors";
-
+import MediaQuery from "react-responsive";
 
 const mapStateToProps = (state) => ({
   user: state.user,
   assist: state.assist,
-  utils: state.utils
+  utils: state.utils,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -47,22 +50,23 @@ const mapDispatchToProps = (dispatch) => {
     {
       openAssistModal,
       modalClose,
-      escrowStep
-    },dispatch);
-}
+      escrowStep,
+    },
+    dispatch
+  );
+};
 
 class TransactionAssist extends Component {
   constructor(props) {
     super(props);
-
 
     this.firstTimeModal = this.firstTimeModal.bind(this);
     this.closeFirstTime = this.closeFirstTime.bind(this);
     this.RenderExpansionPanel = this.RenderExpansionPanel.bind(this);
   }
 
-  componentDidMount(){
-    this.props.openAssistModal(this.props.user,this.props.match.params.tid); // passing the user object to the function
+  componentDidMount() {
+    this.props.openAssistModal(this.props.user, this.props.match.params.tid); // passing the user object to the function
   }
 
   closeFirstTime() {
@@ -72,10 +76,9 @@ class TransactionAssist extends Component {
 
   firstTimeModal() {
     // To display the first time modal to people
-    if(this.props.utils.Loading){
-      return(<></>);
-    }
-    else{
+    if (this.props.utils.Loading) {
+      return <></>;
+    } else {
       return (
         <Modal
           visible={this.props.assist.modal ? true : false}
@@ -83,7 +86,12 @@ class TransactionAssist extends Component {
           modalHeight={500}
           dismissCallback={this.closeFirstTime}
         >
-          <Grid container direction="column" alignItems="center" justify="center">
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justify="center"
+          >
             <Grid item>
               <img
                 src={require("../../assets/transaction-assist-first-time.png")}
@@ -115,7 +123,7 @@ class TransactionAssist extends Component {
   }
 
   RenderExpansionPanel() {
-    console.log(this.props.assist.escrow)
+    console.log(this.props.assist.escrow);
     return (
       <Grid container direction="column" spacing={2}>
         <Grid item>
@@ -123,7 +131,11 @@ class TransactionAssist extends Component {
             <ExpansionPanelSummary expandIcon={<TriangleDownIcon />}>
               <Grid container direction="row" alignItems="center" spacing={4}>
                 <Grid item>
-                  {(this.props.assist.escrow.completed) ? (<CheckIcon size={25} className="checkmark-green" />) : (<DotFillIcon size={25} />) }
+                  {this.props.assist.escrow.completed ? (
+                    <CheckIcon size={25} className="checkmark-green" />
+                  ) : (
+                    <DotFillIcon size={25} />
+                  )}
                 </Grid>
                 <Divider orientation="vertical" className="expansion-divider" />
                 <Grid item>
@@ -151,7 +163,10 @@ class TransactionAssist extends Component {
                   <h2>Escrow Account</h2>
                 </Grid>
                 <Grid item>
-                  <Typography>This is where the buyer deposits the good faith money to show intrest in the property</Typography>
+                  <Typography>
+                    This is where the buyer deposits the good faith money to
+                    show intrest in the property
+                  </Typography>
                 </Grid>
                 <Grid item>
                   <Box mt={3}>
@@ -159,27 +174,46 @@ class TransactionAssist extends Component {
                   </Box>
                 </Grid>
                 <Grid item>
-                  <Box component="p" mt={3} className ={(this.props.assist.escrow.completed) ? "checklist-assist-class-completed" : "checklist-assist-class"}>
-                    <ChecklistIcon size ={25} /> &nbsp; {this.props.assist.escrow.numberOfCompleted} of 2 Completed
+                  <Box
+                    component="p"
+                    mt={3}
+                    className={
+                      this.props.assist.escrow.completed
+                        ? "checklist-assist-class-completed"
+                        : "checklist-assist-class"
+                    }
+                  >
+                    <ChecklistIcon size={25} /> &nbsp;{" "}
+                    {this.props.assist.escrow.numberOfCompleted} of 2 Completed
                   </Box>
                 </Grid>
                 <Grid item>
-                  <FormControlLabel className={(this.props.assist.escrow.setup) ? "action-text-completed" : "action-text"}
+                  <FormControlLabel
+                    className={
+                      this.props.assist.escrow.setup
+                        ? "action-text-completed"
+                        : "action-text"
+                    }
                     control={
                       <Checkbox
                         color="primary"
                         value={this.props.assist.escrow.setup}
-                        onClick = {()=>this.props.escrowStep('setup')}
+                        onClick={() => this.props.escrowStep("setup")}
                       />
                     }
                     label="Let everyone know if the Escrow account has been setup! Should be marked by the Buyer agent"
                   />
-                  <FormControlLabel className={(this.props.assist.escrow.goodFaith) ? "action-text-completed" : "action-text"}
+                  <FormControlLabel
+                    className={
+                      this.props.assist.escrow.goodFaith
+                        ? "action-text-completed"
+                        : "action-text"
+                    }
                     control={
                       <Checkbox
                         color="primary"
                         value={this.props.assist.escrow.goodFaith}
-                        onClick = {()=>this.props.escrowStep('goodFaith')}
+                        onClick={() => this.props.escrowStep("goodFaith")}
                       />
                     }
                     label="Has the Good Faith money been transafered by the Buyer? Buyer can let everyone if it has"
@@ -266,7 +300,7 @@ class TransactionAssist extends Component {
                     </Grid>
                     <Grid item>
                       <Typography className="expansion-panel-heading">
-                       Home Appraisal
+                        Home Appraisal
                       </Typography>
                     </Grid>
                   </Grid>
@@ -474,29 +508,72 @@ class TransactionAssist extends Component {
   }
 
   render() {
-    console.log(this.props.assist)
+    console.log(this.props.assist);
     return (
-      <Box component="div">
-        <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
-        <Container>
-          <NavBar />
-          <NavRail />
-          { this.firstTimeModal() }
-          <Box component="div" paddingTop={5} paddingBottom={1}>
-            <Grid container direction="row" alignItems="center" spacing={2} justify="flex-start">
-                <Grid item>
-                  <PackageIcon size={35} />
-                </Grid>
-                <Grid item>
-                  <h2>Transaction 1</h2>
-                </Grid>
-            </Grid>
-          </Box>
-          { this.RenderExpansionPanel()}
-        </Container>
-      </Box>
+      <MediaQuery minDeviceWidth={1450}>
+        {(matches) => {
+          if (matches) {
+            return (
+              <Box component="div">
+                <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
+                <Container>
+                  <NavBar />
+                  <NavRail />
+                  {this.firstTimeModal()}
+                  <Box component="div" paddingTop={5} paddingBottom={1}>
+                    <Grid
+                      container
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      justify="flex-start"
+                    >
+                      <Grid item>
+                        <PackageIcon size={35} />
+                      </Grid>
+                      <Grid item>
+                        <h2>Transaction 1</h2>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  {this.RenderExpansionPanel()}
+                </Container>
+              </Box>
+            );
+          } else {
+            return (
+              <Box component="div" paddingLeft={8}>
+                <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
+                <Container>
+                  <NavBar />
+                  <NavRail />
+                  {this.firstTimeModal()}
+                  <Box component="div" paddingTop={5} paddingBottom={1}>
+                    <Grid
+                      container
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      justify="flex-start"
+                    >
+                      <Grid item>
+                        <PackageIcon size={35} />
+                      </Grid>
+                      <Grid item>
+                        <h2>Transaction 1</h2>
+                      </Grid>
+                    </Grid>
+                  </Box>
+
+                  {this.RenderExpansionPanel()}
+                </Container>
+              </Box>
+            );
+          }
+        }}
+      </MediaQuery>
     );
   }
 }
 
-export default connect (mapStateToProps, mapDispatchToProps)(TransactionAssist);
+export default connect(mapStateToProps, mapDispatchToProps)(TransactionAssist);

@@ -66,14 +66,7 @@ class ResetPassword extends Component {
   };
 
   render() {
-    const {
-      email,
-      error,
-      password,
-      success,
-      validCode,
-      verifiedCode,
-    } = this.state;
+    const { error, password, success, validCode, verifiedCode } = this.state;
 
     let component;
     if (!verifiedCode) {
@@ -121,31 +114,28 @@ class ResetPassword extends Component {
             <TextField
               onChange={this.setText}
               value={password}
-              className="input-item"
+              className="input-item form"
               label="New Password"
               name="password"
               variant="outlined"
               type="password"
               style={{ marginBottom: "8px" }}
-              className="form"
             />
             <TextField
-              className="input-item"
+              className="input-item form"
               label="Confirm New Password"
               name="password"
               variant="outlined"
               type="password"
               style={{ marginBottom: "8px" }}
-              className="form"
             />
             <Button
               type="submit"
               value="SAVE"
-              className="input-item"
+              className="input-item form"
               color="primary"
               variant="contained"
               style={{ textTransform: "none", fontSize: "16px" }}
-              className="form"
               onClick={this.handleResetPassword}
             >
               Confirm

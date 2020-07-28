@@ -11,6 +11,7 @@ export default class WelcomeBoard extends Component {
             <img
               src={require("../../../assets/chat-empty.png")}
               className="discussions-empty-image"
+              alt="Empty Chat"
             />
           </Box>
         </Grid>

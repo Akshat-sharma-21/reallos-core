@@ -61,6 +61,7 @@ function HomePage(props) {
         <img
           src={require("../../assets/reallos-logo-dark.svg")}
           className="home-page-logo"
+          alt="Reallos Logo"
         />
         <Grid style={{ height: "100vh" }}>
           <Grid container direction="row" style={{ height: "100%" }}>
@@ -158,6 +159,7 @@ function HomePage(props) {
                       <img
                         src={require("../../assets/small-r-dark-logo.png")}
                         height="75px"
+                        alt="Reallos Logo"
                       />
                     </Box>
                   </Grid>

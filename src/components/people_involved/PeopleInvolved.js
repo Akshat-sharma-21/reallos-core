@@ -38,6 +38,7 @@ import {
 import Modal from "../shared/modal/Modal";
 import { validateFormField } from "../../global_func_lib";
 import "./PeopleInvolved.css";
+import MediaQuery from "react-responsive";
 
 const mapStateToProps = (state) => ({
   people: state.people,
@@ -81,10 +82,7 @@ class People extends Component {
 
   componentDidMount() {
     // when the component is mounted
-    this.props.getAllPeople(
-      this.props.match.params.tid,
-      this.props.user.id
-    );
+    this.props.getAllPeople(this.props.match.params.tid, this.props.user.id);
   }
 
   toggleModal() {
@@ -312,161 +310,379 @@ class People extends Component {
 
   render() {
     return (
-      <div>
-        <Container>
-          <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
-          <NavBar />
-          <NavRail />
-          <Modal
-            title="Invite people"
-            modalWidth={600}
-            visible={this.state.isModalOpen}
-            dismissCallback={this.toggleModal}
-          >
-            <Box marginTop={-3}>
-              <Typography style={{ fontSize: 15 }}>
-                Invite Someone to your transaction using thier E-mail ID
-              </Typography>
-            </Box>
-            <Grid container direction="row">
-              <Grid item>
-                <Box marginLeft={7} marginTop={3}>
-                  <PersonIcon size={90} />
-                </Box>
-                <Box marginLeft={0} marginTop={2}>
-                  <TextField
-                    variant="outlined"
-                    className="modal-name-field"
-                    size="small"
-                    label="Name"
-                    name="name"
-                    onChange={this.handleChange}
-                    onBlur={this.handleChange}
-                    value={this.state.Name}
-                    helperText={this.state.errors.Name}
-                    error={this.state.errors.Name !== null}
+      <MediaQuery minDeviceWidth={1450}>
+        {(matches) => {
+          if (matches) {
+            return (
+              <Box>
+                <Container>
+                  <ReallosLoaderWithOverlay
+                    visible={this.props.utils.Loading}
                   />
-                </Box>
-              </Grid>
-              <Grid item>
-                <Box marginLeft={3} marginTop={3} style={{ width: "100%" }}>
-                  <Grid container spacing={0} alignItems="center">
-                    <Grid item xs={1}>
-                      <MailIcon size={17} />
-                    </Grid>
-                    <Grid xs={11}>
-                      <TextField
-                        fullWidth
-                        variant="outlined"
-                        size="small"
-                        className="modal-right-field"
-                        label="Email"
-                        name="email"
-                        onChange={this.handleChange}
-                        onBlur={this.handleChange}
-                        value={this.state.Email}
-                        helperText={this.state.errors.Email}
-                        error={this.state.errors.Email !== null}
-                      ></TextField>
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={0} alignItems="center">
-                    <Grid item xs={1}>
-                      <VerifiedIcon size={17} />
-                    </Grid>
-                    <Grid xs={11}>
-                      {/*<Select value={this.state.Role} fullWidth variant="outlined" label="Role" name="Role" onChange={this.handleChange} className="modal-right-field" style={{height: '40px', marginTop: '10px'}}>
-                                                <MenuItem value='Buyer'>Buyer</MenuItem>
-                                                <MenuItem value='Seller'>Seller</MenuItem>
-                                                <MenuItem value='Buyer Agent'>Buyer Agent</MenuItem>
-                                                <MenuItem value='Seller Agent'>Seller Agent</MenuItem>
-                                                <MenuItem value='Buyer'>Home Inspector</MenuItem>
-                                                <MenuItem value='Home Inspector'>Title Agent</MenuItem>
-                                            </Select>*/}
-                      <FormControl
-                        variant="outlined"
-                        className="modal-right-field"
-                        style={{ marginTop: "10px" }}
-                      >
-                        <InputLabel id="role" style={{ height: "40px" }}>
-                          Role
-                        </InputLabel>
-                        <Select
-                          labelId="role"
-                          label="Role"
-                          variant="outlined"
-                          id="select"
-                          name="role"
-                          value={this.state.Role}
-                          onChange={this.handleChange}
-                          onBlur={this.handleChange}
-                          helperText={this.state.errors.Role}
-                          error={this.state.errors.Role !== null}
-                          style={{ height: "40px" }}
-                        >
-                          <MenuItem value="Buyer">Buyer</MenuItem>
-                          <MenuItem value="Seller">Seller</MenuItem>
-                          <MenuItem value="Buyer Agent">Buyer Agent</MenuItem>
-                          <MenuItem value="Seller Agent">Seller Agent</MenuItem>
-                          <MenuItem value="Title Agent">Title Agent</MenuItem>
-                          <MenuItem value="Escrow Agent">Escrow Agent</MenuItem>
-                          <MenuItem value="Home Inspector">
-                            Home Inspector
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                  <Grid container justify="flex-end">
-                    <Box marginTop={2}>
-                      <Button
-                        onClick={this.addPeople}
-                        variant="contained"
-                        style={{ backgroundColor: "#150578", color: "white" }}
-                        startIcon={<CheckIcon size={20} />}
-                        disabled={!this.state.validated}
-                      >
-                        Invite
-                      </Button>
+                  <NavBar />
+                  <NavRail />
+                  <Modal
+                    title="Invite people"
+                    modalWidth={600}
+                    visible={this.state.isModalOpen}
+                    dismissCallback={this.toggleModal}
+                  >
+                    <Box marginTop={-3}>
+                      <Typography style={{ fontSize: 15 }}>
+                        Invite Someone to your transaction using thier E-mail ID
+                      </Typography>
                     </Box>
+                    <Grid container direction="row">
+                      <Grid item>
+                        <Box marginLeft={7} marginTop={3}>
+                          <PersonIcon size={90} />
+                        </Box>
+                        <Box marginLeft={0} marginTop={2}>
+                          <TextField
+                            variant="outlined"
+                            className="modal-name-field"
+                            size="small"
+                            label="Name"
+                            name="name"
+                            onChange={this.handleChange}
+                            onBlur={this.handleChange}
+                            value={this.state.Name}
+                            helperText={this.state.errors.Name}
+                            error={this.state.errors.Name !== null}
+                          />
+                        </Box>
+                      </Grid>
+                      <Grid item>
+                        <Box
+                          marginLeft={3}
+                          marginTop={3}
+                          style={{ width: "100%" }}
+                        >
+                          <Grid container spacing={0} alignItems="center">
+                            <Grid item xs={1}>
+                              <MailIcon size={17} />
+                            </Grid>
+                            <Grid xs={11}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                size="small"
+                                className="modal-right-field"
+                                label="Email"
+                                name="email"
+                                onChange={this.handleChange}
+                                onBlur={this.handleChange}
+                                value={this.state.Email}
+                                helperText={this.state.errors.Email}
+                                error={this.state.errors.Email !== null}
+                              ></TextField>
+                            </Grid>
+                          </Grid>
+                          <Grid container spacing={0} alignItems="center">
+                            <Grid item xs={1}>
+                              <VerifiedIcon size={17} />
+                            </Grid>
+                            <Grid xs={11}>
+                              {/*<Select value={this.state.Role} fullWidth variant="outlined" label="Role" name="Role" onChange={this.handleChange} className="modal-right-field" style={{height: '40px', marginTop: '10px'}}>
+                                                      <MenuItem value='Buyer'>Buyer</MenuItem>
+                                                      <MenuItem value='Seller'>Seller</MenuItem>
+                                                      <MenuItem value='Buyer Agent'>Buyer Agent</MenuItem>
+                                                      <MenuItem value='Seller Agent'>Seller Agent</MenuItem>
+                                                      <MenuItem value='Buyer'>Home Inspector</MenuItem>
+                                                      <MenuItem value='Home Inspector'>Title Agent</MenuItem>
+                                                  </Select>*/}
+                              <FormControl
+                                variant="outlined"
+                                className="modal-right-field"
+                                style={{ marginTop: "10px" }}
+                              >
+                                <InputLabel
+                                  id="role"
+                                  style={{ height: "40px" }}
+                                >
+                                  Role
+                                </InputLabel>
+                                <Select
+                                  labelId="role"
+                                  label="Role"
+                                  variant="outlined"
+                                  id="select"
+                                  name="role"
+                                  value={this.state.Role}
+                                  onChange={this.handleChange}
+                                  onBlur={this.handleChange}
+                                  helperText={this.state.errors.Role}
+                                  error={this.state.errors.Role !== null}
+                                  style={{ height: "40px" }}
+                                >
+                                  <MenuItem value="Buyer">Buyer</MenuItem>
+                                  <MenuItem value="Seller">Seller</MenuItem>
+                                  <MenuItem value="Buyer Agent">
+                                    Buyer Agent
+                                  </MenuItem>
+                                  <MenuItem value="Seller Agent">
+                                    Seller Agent
+                                  </MenuItem>
+                                  <MenuItem value="Title Agent">
+                                    Title Agent
+                                  </MenuItem>
+                                  <MenuItem value="Escrow Agent">
+                                    Escrow Agent
+                                  </MenuItem>
+                                  <MenuItem value="Home Inspector">
+                                    Home Inspector
+                                  </MenuItem>
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                          </Grid>
+                          <Grid container justify="flex-end">
+                            <Box marginTop={2}>
+                              <Button
+                                onClick={this.addPeople}
+                                variant="contained"
+                                style={{
+                                  backgroundColor: "#150578",
+                                  color: "white",
+                                }}
+                                startIcon={<CheckIcon size={20} />}
+                                disabled={!this.state.validated}
+                              >
+                                Invite
+                              </Button>
+                            </Box>
+                          </Grid>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Modal>
+                  <Box
+                    component="div"
+                    paddingTop={3}
+                    paddingBottom={-1}
+                    paddingLeft={5}
+                  >
+                    <Grid
+                      container
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      <Grid item>
+                        <PackageIcon size={35} />
+                      </Grid>
+                      <Grid item>
+                        <h2>Transaction 1</h2>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <this.RenderPeopleInvolved />
+                  <Grid
+                    container
+                    direction="row"
+                    justify="flex-end"
+                    alignItems="flex-end"
+                  >
+                    <Fab
+                      variant="extended"
+                      className="reallos-fab"
+                      size="large"
+                      onClick={this.toggleModal}
+                    >
+                      <PlusIcon className="fab-icon" size={20} /> &nbsp; Add
+                      People
+                    </Fab>
                   </Grid>
-                </Box>
-              </Grid>
-            </Grid>
-          </Modal>
-          <Box
-            component="div"
-            paddingTop={3}
-            paddingBottom={-1}
-            paddingLeft={5}
-          >
-            <Grid container direction="row" alignItems="center" spacing={2}>
-              <Grid item>
-                <PackageIcon size={35} />
-              </Grid>
-              <Grid item>
-                <h2>Transaction 1</h2>
-              </Grid>
-            </Grid>
-          </Box>
-          <this.RenderPeopleInvolved />
-          <Grid
-            container
-            direction="row"
-            justify="flex-end"
-            alignItems="flex-end"
-          >
-            <Fab
-              variant="extended"
-              className="reallos-fab"
-              size="large"
-              onClick={this.toggleModal}
-            >
-              <PlusIcon className="fab-icon" size={20} /> &nbsp; Add People
-            </Fab>
-          </Grid>
-        </Container>
-      </div>
+                </Container>
+              </Box>
+            );
+          } else {
+            return (
+              <Box component="div" paddingLeft={8}>
+                <Container>
+                  <ReallosLoaderWithOverlay
+                    visible={this.props.utils.Loading}
+                  />
+                  <NavBar />
+                  <NavRail />
+                  <Modal
+                    title="Invite people"
+                    modalWidth={600}
+                    visible={this.state.isModalOpen}
+                    dismissCallback={this.toggleModal}
+                  >
+                    <Box marginTop={-3}>
+                      <Typography style={{ fontSize: 15 }}>
+                        Invite Someone to your transaction using thier E-mail ID
+                      </Typography>
+                    </Box>
+                    <Grid container direction="row">
+                      <Grid item>
+                        <Box marginLeft={7} marginTop={3}>
+                          <PersonIcon size={90} />
+                        </Box>
+                        <Box marginLeft={0} marginTop={2}>
+                          <TextField
+                            variant="outlined"
+                            className="modal-name-field"
+                            size="small"
+                            label="Name"
+                            name="name"
+                            onChange={this.handleChange}
+                            onBlur={this.handleChange}
+                            value={this.state.Name}
+                            helperText={this.state.errors.Name}
+                            error={this.state.errors.Name !== null}
+                          />
+                        </Box>
+                      </Grid>
+                      <Grid item>
+                        <Box
+                          marginLeft={3}
+                          marginTop={3}
+                          style={{ width: "100%" }}
+                        >
+                          <Grid container spacing={0} alignItems="center">
+                            <Grid item xs={1}>
+                              <MailIcon size={17} />
+                            </Grid>
+                            <Grid xs={11}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                size="small"
+                                className="modal-right-field"
+                                label="Email"
+                                name="email"
+                                onChange={this.handleChange}
+                                onBlur={this.handleChange}
+                                value={this.state.Email}
+                                helperText={this.state.errors.Email}
+                                error={this.state.errors.Email !== null}
+                              ></TextField>
+                            </Grid>
+                          </Grid>
+                          <Grid container spacing={0} alignItems="center">
+                            <Grid item xs={1}>
+                              <VerifiedIcon size={17} />
+                            </Grid>
+                            <Grid xs={11}>
+                              {/*<Select value={this.state.Role} fullWidth variant="outlined" label="Role" name="Role" onChange={this.handleChange} className="modal-right-field" style={{height: '40px', marginTop: '10px'}}>
+                                                      <MenuItem value='Buyer'>Buyer</MenuItem>
+                                                      <MenuItem value='Seller'>Seller</MenuItem>
+                                                      <MenuItem value='Buyer Agent'>Buyer Agent</MenuItem>
+                                                      <MenuItem value='Seller Agent'>Seller Agent</MenuItem>
+                                                      <MenuItem value='Buyer'>Home Inspector</MenuItem>
+                                                      <MenuItem value='Home Inspector'>Title Agent</MenuItem>
+                                                  </Select>*/}
+                              <FormControl
+                                variant="outlined"
+                                className="modal-right-field"
+                                style={{ marginTop: "10px" }}
+                              >
+                                <InputLabel
+                                  id="role"
+                                  style={{ height: "40px" }}
+                                >
+                                  Role
+                                </InputLabel>
+                                <Select
+                                  labelId="role"
+                                  label="Role"
+                                  variant="outlined"
+                                  id="select"
+                                  name="role"
+                                  value={this.state.Role}
+                                  onChange={this.handleChange}
+                                  onBlur={this.handleChange}
+                                  helperText={this.state.errors.Role}
+                                  error={this.state.errors.Role !== null}
+                                  style={{ height: "40px" }}
+                                >
+                                  <MenuItem value="Buyer">Buyer</MenuItem>
+                                  <MenuItem value="Seller">Seller</MenuItem>
+                                  <MenuItem value="Buyer Agent">
+                                    Buyer Agent
+                                  </MenuItem>
+                                  <MenuItem value="Seller Agent">
+                                    Seller Agent
+                                  </MenuItem>
+                                  <MenuItem value="Title Agent">
+                                    Title Agent
+                                  </MenuItem>
+                                  <MenuItem value="Escrow Agent">
+                                    Escrow Agent
+                                  </MenuItem>
+                                  <MenuItem value="Home Inspector">
+                                    Home Inspector
+                                  </MenuItem>
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                          </Grid>
+                          <Grid container justify="flex-end">
+                            <Box marginTop={2}>
+                              <Button
+                                onClick={this.addPeople}
+                                variant="contained"
+                                style={{
+                                  backgroundColor: "#150578",
+                                  color: "white",
+                                }}
+                                startIcon={<CheckIcon size={20} />}
+                                disabled={!this.state.validated}
+                              >
+                                Invite
+                              </Button>
+                            </Box>
+                          </Grid>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Modal>
+                  <Box
+                    component="div"
+                    paddingTop={3}
+                    paddingBottom={-1}
+                    paddingLeft={5}
+                  >
+                    <Grid
+                      container
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      <Grid item>
+                        <PackageIcon size={35} />
+                      </Grid>
+                      <Grid item>
+                        <h2>Transaction 1</h2>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <this.RenderPeopleInvolved />
+                  <Grid
+                    container
+                    direction="row"
+                    justify="flex-end"
+                    alignItems="flex-end"
+                  >
+                    <Fab
+                      variant="extended"
+                      className="reallos-fab"
+                      size="large"
+                      onClick={this.toggleModal}
+                    >
+                      <PlusIcon className="fab-icon" size={20} /> &nbsp; Add
+                      People
+                    </Fab>
+                  </Grid>
+                </Container>
+              </Box>
+            );
+          }
+        }}
+      </MediaQuery>
     );
   }
 }
