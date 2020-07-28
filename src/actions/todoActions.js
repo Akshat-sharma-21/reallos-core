@@ -1,4 +1,3 @@
-import axios from "axios";
 import { setLoadingTrue, setLoadingFalse, setErrors } from "./utilsActions";
 import { addPeople, clearPeople } from "./peopleActions";
 import { addUser } from "./userActions";
