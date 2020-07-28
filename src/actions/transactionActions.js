@@ -1,132 +1,240 @@
-import axios from 'axios';
-import {setLoadingTrue, setLoadingFalse, setErrors} from './utilsActions';
-import { addUser } from './userActions';
+import { setLoadingTrue, setLoadingFalse, setErrors } from "./utilsActions";
+import { addUser } from "./userActions";
+import { myFirestore, myFirebase } from "../Config/MyFirebase";
 
-export const ADD_TRANSACTION = 'ADD_TRANSACTION'; // Adding the transaction to the reducer
-export const CLEAR_TRANSACTION_STORE = 'CLEAR_TRANSACTION_STORE'; // clearing the transaction store
+export const ADD_TRANSACTION = "ADD_TRANSACTION"; // Adding the transaction to the reducer
+export const CLEAR_TRANSACTION_STORE = "CLEAR_TRANSACTION_STORE"; // clearing the transaction store
 
+export function getTransaction(userId) {
+  // getting all the transactions
+  return (dispatch) => {
+    dispatch(clearTransaction()); // Clearing the transactions from redux store
+    dispatch(setLoadingTrue());
+    if (userId === null) {
+      myFirestore
+        .doc(`users/${localStorage.getItem("userID")}`)
+        .get()
+        .then((doc) => {
+          dispatch(
+            addUser(
+              localStorage.getItem("userID"),
+              doc.data().firstName,
+              doc.data().lastName,
+              doc.data().email,
+              doc.data().phone,
+              doc.data().role,
+              doc.data().state,
+              doc.data().transactions
+            )
+          );
+          if (doc.data().transactions.length !== 0) {
+            // if there are transactions
+            doc.data().transactions.map((transId) => {
+              myFirestore
+                .doc(`transactions/${transId}`)
+                .get()
+                .then((doc) => {
+                  myFirestore
+                    .collection(`transactions/${transId}/tasks`)
+                    .get()
+                    .then((snapshot) => {
+                      let task = {
+                        all: 0,
+                        completed: 0,
+                      };
+                      snapshot.forEach((doc) => {
+                        if (doc.data().completed) {
+                          task.all++;
+                          task.completed++;
+                        } else {
+                          task.all++;
+                        }
+                      });
 
-export function getTransaction(userId){
-    return (dispatch) =>{
-        if(userId === null) { // if the data has not previously been fetched and stored in the redux store already
-            let userID = localStorage.getItem('userID'); // Getting the stored user id from local storage
-            dispatch(setLoadingTrue()); // dispatching an action to set loading to true
-
-            axios.get(`/user-details`,{
-                headers: {Authorization: 'Bearer '+localStorage.getItem('FBIdToken')}
-            })
-            .then(res =>{
-
-                dispatch(addUser( // dispatching an action to add the user to the redux store
-                    userID,
-                    res.data.firstName,
-                    res.data.lastName,
-                    res.data.email,
-                    res.data.phone,
-                    res.data.role,
-                    res.data.state,
-                    res.data.transaction
-                ))
-
-                if(userID !== null) { // To ensure that the userID is not null
-                    axios.get(`/get-all-transactions/${userID}`,{
-                        headers: {Authorization: 'Bearer '+localStorage.getItem('FBIdToken')}
+                      dispatch(
+                        addTransaction(
+                          transId,
+                          doc.data().name,
+                          doc.data().address,
+                          doc.data().desc,
+                          task.all,
+                          task.completed
+                        )
+                      );
                     })
-                    .then( res =>{ // Getting all the transactions the user is involved in
-                        res.data.txnList.map((transId)=>{
-                            axios.get(`/get-transaction/${transId}`) // Getting all the transactions from the database
-                            .then( res => {
-                                dispatch(addTransaction(
-                                    transId,
-                                    res.data.name,
-                                    res.data.address,
-                                    res.data.desc,
-                                    res.data.people,
-                                    res.data.all,
-                                    res.data.completed
-                                ))
-                            })
-                            .catch(err => {
-                                console.error(err);
-                                dispatch(setErrors(err)); // dispatching an action to set error
-                            })
-                        })
-                        dispatch(setLoadingFalse()); // dispatching an action to set loading to false
+                    .then(() => {
+                      dispatch(setLoadingFalse()); // dispatching an action to set loading to false once the data has been loaded
                     })
-                    .catch(err =>{
-                        console.error(err);
-                        dispatch(setErrors(err)); // dispatching an action to set error
-                    })
-                } 
-            })
-            .catch(err =>{
-                console.error(err);
-                dispatch(setErrors(err)); // dispatching an action to set the error
-            })
-        }
-    }
-}
-
-export function createTransaction(newTransaction,people){
-    return (dispatch) =>{
-
-        dispatch(setLoadingTrue()); // dispatching an action to set loading to true
-        let token = localStorage.getItem('FBIdToken'); // getting the jwt
-
-        axios.post('/create-transaction',newTransaction,{
-            headers: { Authorization: 'Bearer ' + token }
+                    .catch((err) => {
+                      dispatch(setErrors(err));
+                    });
+                })
+                .catch((err) => {
+                  dispatch(setErrors(err));
+                });
+            });
+          } else {
+            dispatch(setLoadingFalse());
+          }
         })
-        .then(res =>{
-            let id = res.data.id; // storing the id of the recently created transaction
-            axios.post(`/add-multiple-people/${id}`,{
-                people: people
-            },{
-                headers: { Authorization: 'Bearer ' + token }
-            })
-            .then( () => {
-                axios.put(`/add-transaction-to-user/${id}`,null,{
-                    headers: {Authorization: 'Bearer ' + token}
-                })
-                .then( () =>{
-                    dispatch(addTransaction(id,newTransaction.name,newTransaction.address,newTransaction.desc,newTransaction.people)) // dispatching an action to add the transaction to the store
-                    dispatch(setLoadingFalse()); // dispatching an action to set loading to false
-                })
-                .catch(err =>{
-                    console.error(err);
-                    dispatch(setErrors(err)); // dispatching an action to set the errors
-                })
-            })
-            .catch( err =>{
-                console.error(err);
-                dispatch(setErrors(err)); // dispatching an action to set the errors
-            })
-        })
-        .catch(err =>{
-            console.error(err);
-            dispatch(setErrors(err)); // dispatching an action to set the errors
+        .catch((err) => {
+          dispatch(setErrors(err));
         });
-        
+    } else {
+      // if the user Id is present
+      myFirestore
+        .doc(`users/${localStorage.getItem("userID")}`)
+        .get()
+        .then((doc) => {
+          if (doc.data().transactions.length !== 0) {
+            // if there are any transactions
+            doc.data().transactions.map((transId) => {
+              myFirestore
+                .doc(`transactions/${transId}`)
+                .get()
+                .then((doc) => {
+                  myFirestore
+                    .collection(`transactions/${transId}/tasks`)
+                    .get()
+                    .then((snapshot) => {
+                      let task = {
+                        all: 0,
+                        completed: 0,
+                      };
+                      snapshot.forEach((doc) => {
+                        if (doc.data().completed) {
+                          task.all++;
+                          task.completed++;
+                        } else {
+                          task.all++;
+                        }
+                      });
+
+                      dispatch(
+                        addTransaction(
+                          transId,
+                          doc.data().name,
+                          doc.data().address,
+                          doc.data().desc,
+                          task.all,
+                          task.completed
+                        )
+                      );
+                    })
+                    .then(() => {
+                      dispatch(setLoadingFalse()); // dispatching an action to set loading to false once the data has been loaded
+                    })
+                    .catch((err) => {
+                      dispatch(setErrors(err));
+                    });
+                })
+                .catch((err) => {
+                  dispatch(setErrors(err));
+                });
+            });
+          } else {
+            dispatch(setLoadingFalse());
+          }
+        })
+        .catch((err) => {
+          dispatch(setErrors(err));
+        });
     }
+  };
 }
 
+export function createTransaction(Transaction, people, user) {
+  return (dispatch) => {
+    dispatch(setLoadingTrue()); // dispatching an action to set loading to true
+
+    const newTransaction = {
+      name: Transaction.name,
+      address: Transaction.address,
+      desc: Transaction.desc,
+      admin: localStorage.getItem("userID"),
+      createdAt: myFirebase.firestore.FieldValue.serverTimestamp(),
+      assistView: [],
+    };
+
+    myFirestore
+      .collection("transactions")
+      .add(newTransaction)
+      .then((doc) => {
+        myFirestore
+          .doc(`transactions/${doc.id}`)
+          .collection("people")
+          .doc(user.email)
+          .set({
+            email: user.email,
+            name: `${user.firstName} ${user.lastName}`,
+            role: user.role,
+            uid: localStorage.getItem("userID"),
+            accepted: true,
+          })
+          .then(() => {
+            people.forEach((person) => {
+              myFirestore
+                .doc(`transactions/${doc.id}/people/${person.email}`)
+                .set(person);
+              /*invitationMail( // uncomment when sendgrid is implemented
+                        person.name,
+                        person.email,
+                        tid,
+                        doc.data().name,
+                        doc.data().address,
+                        person.role
+                    );*/
+            });
+          })
+          .then(() => {
+            myFirestore.doc(`users/${localStorage.getItem("userID")}`).update({
+              transactions: myFirebase.firestore.FieldValue.arrayUnion(doc.id),
+            });
+
+            dispatch(
+              addTransaction(
+                doc.id,
+                newTransaction.name,
+                newTransaction.address,
+                newTransaction.desc,
+                0,
+                0
+              )
+            );
+            dispatch(setLoadingFalse());
+          })
+          .catch((err) => {
+            dispatch(setErrors(err));
+          });
+      })
+      .catch((err) => {
+        dispatch(setErrors(err));
+      });
+  };
+}
 
 // Pure Reducer functions
-export function addTransaction(id, Name, Address, Description, People, allTask, completedTask){
-    return({
-        type: ADD_TRANSACTION,
-        id: id,
-        Name: Name,
-        Address: Address,
-        Description: Description,
-        People: People,
-        allTask,
-        completedTask
-    })
+export function addTransaction(
+  id,
+  Name,
+  Address,
+  Description,
+  allTask,
+  completedTask
+) {
+  return {
+    type: ADD_TRANSACTION,
+    id: id,
+    Name: Name,
+    Address: Address,
+    Description: Description,
+    allTask,
+    completedTask,
+  };
 }
 
-
-export function clearTransaction(){
-    return({
-        type: CLEAR_TRANSACTION_STORE
-    })
+export function clearTransaction() {
+  return {
+    type: CLEAR_TRANSACTION_STORE,
+  };
 }
