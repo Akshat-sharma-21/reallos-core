@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Typography, CircularProgress } from "@material-ui/core";
-import { AlertIcon } from '@primer/octicons-react';
+import { AlertIcon } from "@primer/octicons-react";
 import { myFirebase } from "../../Config/MyFirebase.js";
 import "./EmailHandlerComponent.css";
 
@@ -34,7 +34,7 @@ class VerifyEmail extends Component {
   }
 
   render() {
-    const { error, validCode, verifiedCode } = this.state;
+    const { validCode, verifiedCode } = this.state;
 
     let component;
     if (!verifiedCode) {
@@ -52,8 +52,9 @@ class VerifyEmail extends Component {
     } else if (verifiedCode && !validCode) {
       component = (
         <Typography variant="h6" align="center" style={{ color: "red" }}>
-          <AlertIcon size={40}/>
-          <br/><br/>
+          <AlertIcon size={40} />
+          <br />
+          <br />
           There is a problem, Please try Again
         </Typography>
       );

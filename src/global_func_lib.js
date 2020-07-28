@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { myFirebase } from './Config/MyFirebase';
+import axios from "axios";
+import { myFirebase } from "./Config/MyFirebase";
 
 /**
  * List of maps containing user roles in the form:
@@ -31,7 +31,7 @@ export const getRoleLabel = (roleValue) => {
   let roleLabel = null;
 
   USER_ROLES.map((role) => {
-    if (role.value == roleValue) {
+    if (role.value === roleValue) {
       roleLabel = role.label;
     }
   });
@@ -42,6 +42,7 @@ export const getRoleLabel = (roleValue) => {
 /**
  * Regex to validate email.
  */
+// eslint-disable-next-line
 export const emailValidationRegex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 /**
@@ -199,6 +200,8 @@ export const validateFormField = (textValue, fieldType) => {
       }
 
       break;
+
+    default:
   }
 
   return formFieldError;
@@ -223,61 +226,61 @@ export const bytesToSize = (bytes) => {
 
   let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
   return `${Math.round(bytes / Math.pow(1024, i), 2)} ${sizes[i]}`;
-}
+};
 
 /**
  * Returns `TransactionID` from **location** prop.
  * Will return `null` if the location does not have a TransactionID.
- * 
+ *
  * @param {object} locationObject
  * Object containing location data. You must pass either
  * `this.props.location` or a `useLocation` object.
- * 
+ *
  * @returns {string}
  * TransactionID as a string.
  */
 export const getTransactionID = (locationObject) => {
   let transactionID =
-    (locationObject.pathname.indexOf('transaction') != -1)
-      ? locationObject.pathname.split('/')[2]
+    locationObject.pathname.indexOf("transaction") !== -1
+      ? locationObject.pathname.split("/")[2]
       : null;
 
   return transactionID;
-}
+};
 
 /**
  * Returns the list of people involved in a transaction.
- * 
+ *
  * @param {string} transactionID
  * Transaction ID for which the people list has
  * to be fetched.
- * 
+ *
  * @returns {Promise<object[]>}
  */
 export const getPeopleInvolved = async (transactionID) => {
   // @TODO: Add error handling
-  
+
   const endpoint = `https://us-central1-reallos-382c7.cloudfunctions.net/api/get-all-people/${transactionID}`;
-  
+
   let response = await axios.get(endpoint, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('FBIdToken')}`
-    }
+      Authorization: `Bearer ${localStorage.getItem("FBIdToken")}`,
+    },
   });
 
   return response.data.peopleList;
-}
+};
 
 /**
  * Returns `currentUser` from `firebase.auth` namespace.
- * 
+ *
  * @returns {firebase.User}
  * Object containing details of the user currently
  * signed in. If no user is signed in, `null` is returned.
  */
 export const getCurrentUser = () => {
   return myFirebase.auth().currentUser;
-}
+};
 
 /**
  * Returns document name with the extension stripped off.
@@ -287,8 +290,8 @@ export const getCurrentUser = () => {
  */
 export const getEffectiveDocumentName = (docName) => {
   docName = String(docName);
-  return docName.replace(/\.pdf$/, '');
-}
+  return docName.replace(/\.pdf$/, "");
+};
 
 /**
  * Enum for access rights
@@ -296,5 +299,5 @@ export const getEffectiveDocumentName = (docName) => {
 export const accessRights = {
   NO_ACCESS: 0,
   READ_ACCESS: 1,
-  READ_EDIT_ACCESS: 2
-}
+  READ_EDIT_ACCESS: 2,
+};
