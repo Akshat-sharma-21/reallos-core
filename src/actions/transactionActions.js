@@ -27,51 +27,55 @@ export function getTransaction(userId) {
               doc.data().transactions
             )
           );
+          if (doc.data().transactions.length !== 0) {
+            // if there are transactions
+            doc.data().transactions.map((transId) => {
+              myFirestore
+                .doc(`transactions/${transId}`)
+                .get()
+                .then((doc) => {
+                  myFirestore
+                    .collection(`transactions/${transId}/tasks`)
+                    .get()
+                    .then((snapshot) => {
+                      let task = {
+                        all: 0,
+                        completed: 0,
+                      };
+                      snapshot.forEach((doc) => {
+                        if (doc.data().completed) {
+                          task.all++;
+                          task.completed++;
+                        } else {
+                          task.all++;
+                        }
+                      });
 
-          doc.data().transactions.map((transId) => {
-            myFirestore
-              .doc(`transactions/${transId}`)
-              .get()
-              .then((doc) => {
-                myFirestore
-                  .collection(`transactions/${transId}/tasks`)
-                  .get()
-                  .then((snapshot) => {
-                    let task = {
-                      all: 0,
-                      completed: 0,
-                    };
-                    snapshot.forEach((doc) => {
-                      if (doc.data().completed) {
-                        task.all++;
-                        task.completed++;
-                      } else {
-                        task.all++;
-                      }
+                      dispatch(
+                        addTransaction(
+                          transId,
+                          doc.data().name,
+                          doc.data().address,
+                          doc.data().desc,
+                          task.all,
+                          task.completed
+                        )
+                      );
+                    })
+                    .then(() => {
+                      dispatch(setLoadingFalse()); // dispatching an action to set loading to false once the data has been loaded
+                    })
+                    .catch((err) => {
+                      dispatch(setErrors(err));
                     });
-
-                    dispatch(
-                      addTransaction(
-                        transId,
-                        doc.data().name,
-                        doc.data().address,
-                        doc.data().desc,
-                        task.all,
-                        task.completed
-                      )
-                    );
-                  })
-                  .then(() => {
-                    dispatch(setLoadingFalse()); // dispatching an action to set loading to false once the data has been loaded
-                  })
-                  .catch((err) => {
-                    dispatch(setErrors(err));
-                  });
-              })
-              .catch((err) => {
-                dispatch(setErrors(err));
-              });
-          });
+                })
+                .catch((err) => {
+                  dispatch(setErrors(err));
+                });
+            });
+          } else {
+            dispatch(setLoadingFalse());
+          }
         })
         .catch((err) => {
           dispatch(setErrors(err));
@@ -82,50 +86,55 @@ export function getTransaction(userId) {
         .doc(`users/${localStorage.getItem("userID")}`)
         .get()
         .then((doc) => {
-          doc.data().transactions.map((transId) => {
-            myFirestore
-              .doc(`transactions/${transId}`)
-              .get()
-              .then((doc) => {
-                myFirestore
-                  .collection(`transactions/${transId}/tasks`)
-                  .get()
-                  .then((snapshot) => {
-                    let task = {
-                      all: 0,
-                      completed: 0,
-                    };
-                    snapshot.forEach((doc) => {
-                      if (doc.data().completed) {
-                        task.all++;
-                        task.completed++;
-                      } else {
-                        task.all++;
-                      }
-                    });
+          if (doc.data().transactions.length !== 0) {
+            // if there are any transactions
+            doc.data().transactions.map((transId) => {
+              myFirestore
+                .doc(`transactions/${transId}`)
+                .get()
+                .then((doc) => {
+                  myFirestore
+                    .collection(`transactions/${transId}/tasks`)
+                    .get()
+                    .then((snapshot) => {
+                      let task = {
+                        all: 0,
+                        completed: 0,
+                      };
+                      snapshot.forEach((doc) => {
+                        if (doc.data().completed) {
+                          task.all++;
+                          task.completed++;
+                        } else {
+                          task.all++;
+                        }
+                      });
 
-                    dispatch(
-                      addTransaction(
-                        transId,
-                        doc.data().name,
-                        doc.data().address,
-                        doc.data().desc,
-                        task.all,
-                        task.completed
-                      )
-                    );
-                  })
-                  .then(() => {
-                    dispatch(setLoadingFalse()); // dispatching an action to set loading to false once the data has been loaded
-                  })
-                  .catch((err) => {
-                    dispatch(setErrors(err));
-                  });
-              })
-              .catch((err) => {
-                dispatch(setErrors(err));
-              });
-          });
+                      dispatch(
+                        addTransaction(
+                          transId,
+                          doc.data().name,
+                          doc.data().address,
+                          doc.data().desc,
+                          task.all,
+                          task.completed
+                        )
+                      );
+                    })
+                    .then(() => {
+                      dispatch(setLoadingFalse()); // dispatching an action to set loading to false once the data has been loaded
+                    })
+                    .catch((err) => {
+                      dispatch(setErrors(err));
+                    });
+                })
+                .catch((err) => {
+                  dispatch(setErrors(err));
+                });
+            });
+          } else {
+            dispatch(setLoadingFalse());
+          }
         })
         .catch((err) => {
           dispatch(setErrors(err));
@@ -188,7 +197,8 @@ export function createTransaction(Transaction, people, user) {
                 newTransaction.name,
                 newTransaction.address,
                 newTransaction.desc,
-                people
+                0,
+                0
               )
             );
             dispatch(setLoadingFalse());
