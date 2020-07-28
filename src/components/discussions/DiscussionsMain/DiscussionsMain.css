@@ -6,7 +6,7 @@
 .list-div {
   background-color: #ffffff;
   border-radius: 10px 0 0 10px;
-  height: 92vh;
+  height: 95vh;
 }
 
 .list-header {
@@ -15,7 +15,7 @@
 }
 
 .discussions-reallos-logo {
-  height: 20px;
+  height: 4vh;
 }
 
 .large-text {
@@ -35,7 +35,7 @@
 .discussions-div {
   background-color: #d0cde4;
   border-radius: 0 10px 10px 0;
-  height: 92vh;
+  height: 95vh;
 }
 
 .discussions-empty-avatar-group {

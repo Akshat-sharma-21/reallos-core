@@ -17,15 +17,10 @@ export default class WelcomeBoard extends Component {
         <Grid item>
           <Box paddingTop={2}>
             <div className="discussions-heading">
-              <span style={{fontFamily: 'Gilroy', fontWeight: 900}}>
+              <span style={{ fontFamily: "Gilroy", fontWeight: 900 }}>
                 Reallos
               </span>
-
-              &nbsp;
-
-              <span>
-                Discussions
-              </span>
+              &nbsp;<span>Discussions</span>
             </div>
           </Box>
         </Grid>

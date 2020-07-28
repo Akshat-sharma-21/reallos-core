@@ -1,6 +1,5 @@
 .discussions-empty-image {
-  width: 400px;
-  /* height: 300px; */
+  width: 60vh;
 }
 
 .discussions-heading {
@@ -9,7 +8,7 @@
 }
 
 .discussions-subheading {
-  font-family: 'Roboto Slab' !important;
+  font-family: "Roboto Slab" !important;
   font-size: 20px !important;
   text-align: center;
   width: 450px;
