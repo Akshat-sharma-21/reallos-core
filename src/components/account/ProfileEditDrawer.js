@@ -1,12 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { editingUser } from '../../actions/userActions';
-import './ProfileEditDrawer.css';
-import SideDrawer from '../shared/drawer/SideDrawer';
-import Modal, { ModalActionFooter } from '../shared/modal/Modal';
-import UserAvatar from '../../assets/user.png';
-import { PencilIcon } from '@primer/octicons-react';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { editingUser } from "../../actions/userActions";
+import "./ProfileEditDrawer.css";
+import SideDrawer from "../shared/drawer/SideDrawer";
+import Modal, { ModalActionFooter } from "../shared/modal/Modal";
+import UserAvatar from "../../assets/user.png";
+import { PencilIcon } from "@primer/octicons-react";
+import PhotoUploadModal from "../photo-uploader/PhotoUploader";
 
 import {
   USER_ROLES,
@@ -31,6 +32,7 @@ import {
   FormControl,
   FormGroup,
   FormHelperText,
+  Snackbar,
 } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 
@@ -74,6 +76,8 @@ class ProfileEditDrawer extends React.Component {
       state: "",
       Loaded: false,
       isUpdateModalVisible: false,
+      isUploadModalVisible: false,
+      isSnackbarVisible: false,
       updateModalType: "",
       updateModalFieldErrors: {
         firstName: validateFormField("", "dummy"),
@@ -83,6 +87,10 @@ class ProfileEditDrawer extends React.Component {
         phone: validateFormField("", "dummy"),
       },
     };
+    this.showUploadModalVisibility = this.showUploadModalVisibility.bind(this);
+    this.dismissUploadModal = this.dismissUploadModal.bind(this);
+    this.showSnackbar = this.showSnackbar.bind(this);
+    this.dismissSnackbar = this.dismissSnackbar.bind(this);
   }
 
   static propTypes = {
@@ -165,6 +173,31 @@ class ProfileEditDrawer extends React.Component {
     this.setState({
       isUpdateModalVisible: false,
       ...stateData,
+    });
+  }
+
+  showUploadModalVisibility() {
+    this.setState({
+      isUploadModalVisible: true,
+    });
+  }
+
+  dismissUploadModal() {
+    this.setState({
+      isUploadModalVisible: false,
+    });
+  }
+
+  showSnackbar(message) {
+    this.setState({
+      isSnackbarVisible: true,
+      snackbarMessage: message,
+    });
+  }
+
+  dismissSnackbar() {
+    this.setState({
+      isSnackbarVisible: false,
     });
   }
 
@@ -578,6 +611,7 @@ class ProfileEditDrawer extends React.Component {
                   style={{
                     background: "#ffffff",
                   }}
+                  onClick={this.showUploadModalVisibility}
                 >
                   <PencilIcon />
                 </Fab>
@@ -652,6 +686,18 @@ class ProfileEditDrawer extends React.Component {
             </Button>
           </div>
         </SideDrawer>
+        <PhotoUploadModal
+          dismissCallback={this.dismissUploadModal}
+          visible={this.state.isUploadModalVisible}
+          showSnackbarCallback={this.showSnackbar}
+        />
+
+        <Snackbar
+          open={this.state.isSnackbarVisible}
+          onClose={this.dismissSnackbar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          message={this.state.snackbarMessage}
+        />
 
         {this.renderUpdateUserDataModal(this.state.updateModalType)}
       </div>

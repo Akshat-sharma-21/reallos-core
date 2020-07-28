@@ -1,0 +1,21 @@
+.upload-modal-inner-content {
+    cursor: pointer;
+    padding: 20px;
+    text-align: center;
+}
+
+.upload-modal-inner-content > img {
+    height: 100px;
+    margin-bottom: 20px;
+
+    transition: all 250ms ease;
+}
+
+.dropzone-active {
+    display: block !important;
+    /* margin-top: 20px !important; */
+}
+
+.dropzone-active > img {
+    transform: scale(1.2);
+}
