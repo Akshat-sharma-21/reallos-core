@@ -1,6 +1,7 @@
 import { setLoadingTrue, setLoadingFalse, setErrors } from "./utilsActions";
 import { addUser } from "./userActions";
 import { myFirestore, myFirebase } from "../Config/MyFirebase";
+import axios from "axios";
 
 export const ADD_TRANSACTION = "ADD_TRANSACTION"; // Adding the transaction to the reducer
 export const CLEAR_TRANSACTION_STORE = "CLEAR_TRANSACTION_STORE"; // clearing the transaction store
@@ -173,17 +174,30 @@ export function createTransaction(Transaction, people, user) {
           })
           .then(() => {
             people.forEach((person) => {
-              myFirestore
-                .doc(`transactions/${doc.id}/people/${person.email}`)
-                .set(person);
-              /*invitationMail( // uncomment when sendgrid is implemented
-                        person.name,
-                        person.email,
-                        tid,
-                        doc.data().name,
-                        doc.data().address,
-                        person.role
-                    );*/
+              if (user.email !== person.email) {
+                myFirestore
+                  .doc(`transactions/${doc.id}/people/${person.email}`)
+                  .set(person)
+                  .then(() => {
+                    axios
+                      .post("/send-email", {
+                        userName: person.name,
+                        email: person.email,
+                        tid: doc.id,
+                        name: newTransaction.name,
+                        address: newTransaction.address,
+                        role: person.role,
+                      })
+                      .catch((err) => {
+                        dispatch(setErrors(err));
+                      });
+                  })
+                  .catch((err) => {
+                    dispatch(setErrors(err));
+                  });
+              } else {
+                dispatch(setErrors("Cannot invite yourself"));
+              }
             });
           })
           .then(() => {

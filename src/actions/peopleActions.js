@@ -1,6 +1,7 @@
 import { setLoadingTrue, setLoadingFalse, setErrors } from "./utilsActions";
 import { addUser } from "./userActions";
-import { myFirestore, myFirebase } from "../Config/MyFirebase";
+import { myFirestore } from "../Config/MyFirebase";
+import axios from "axios";
 
 export const ADD_PEOPLE = "ADD_PEOPLE";
 export const DELETE_PEOPLE = "DELETE_PEOPLE";
@@ -62,11 +63,10 @@ export function getAllPeople(id, user) {
   };
 }
 
-export function addPerson(id, newPerson) {
+export function addPerson(id, newPerson, email) {
   // adding a new person to the redux store
   return (dispatch) => {
     dispatch(setLoadingTrue()); // dispatching an action to set loading to true
-
     const newPeople = {
       email: newPerson.email,
       accepted: false,
@@ -76,29 +76,47 @@ export function addPerson(id, newPerson) {
     };
 
     myFirestore
-      .doc(`transactions/${id}/people/${newPeople.email}`)
-      .set(newPeople)
-      .then(() => {
-        /*return invitationMail( // comment out when the invitation system is added
-          newPeople.name,
-          newPeople.email,
-          tid,
-          transactionData.name,
-          transactionData.address,
-          newPeople.role
-        ); */
-      })
-      .then(() => {
-        dispatch(
-          addPeople(
-            newPeople.accepted,
-            newPeople.email,
-            newPeople.name,
-            newPeople.role,
-            newPeople.uid
-          )
-        );
-        dispatch(setLoadingFalse());
+      .doc(`transactions/${id}`)
+      .get()
+      .then((transaction) => {
+        myFirestore
+          .doc(`transactions/${id}/people/${newPeople.email}`)
+          .set(newPeople)
+          .then(() => {
+            if (email !== newPeople.email) {
+              axios
+                .post(`/send-email`, {
+                  userName: newPeople.name,
+                  email: newPeople.email,
+                  tid: id,
+                  name: transaction.data().name,
+                  address: transaction.data().address,
+                  role: newPeople.role,
+                })
+                .catch((err) => {
+                  dispatch(setErrors(err));
+                });
+            } else {
+              dispatch(setErrors("Cannot invite yourself"));
+            }
+          })
+          .then(() => {
+            if (email !== newPeople.email) {
+              dispatch(
+                addPeople(
+                  newPeople.accepted,
+                  newPeople.email,
+                  newPeople.name,
+                  newPeople.role,
+                  newPeople.uid
+                )
+              );
+            }
+            dispatch(setLoadingFalse());
+          })
+          .catch((err) => {
+            dispatch(setErrors(err));
+          });
       })
       .catch((err) => {
         dispatch(setErrors(err));
