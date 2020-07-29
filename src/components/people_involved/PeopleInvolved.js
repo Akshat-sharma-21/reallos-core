@@ -154,7 +154,7 @@ class People extends Component {
         accepted: false,
       }; // creating a new person
 
-      this.props.addPerson(this.props.match.params.tid, newPerson);
+      this.props.addPerson(this.props.match.params.tid, newPerson, this.props.user.email);
       this.toggleModal();
     }
   }

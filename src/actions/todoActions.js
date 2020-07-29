@@ -1,7 +1,7 @@
-import axios from "axios";
 import { setLoadingTrue, setLoadingFalse, setErrors } from "./utilsActions";
-import { addPeople } from "./peopleActions";
+import { addPeople, clearPeople } from "./peopleActions";
 import { addUser } from "./userActions";
+import { myFirestore, myFirebase } from "../Config/MyFirebase";
 
 export const ADD_TODO = "ADD_TODO";
 export const DELETE_TODO = "DELETE_TODO";
@@ -17,87 +17,75 @@ export function getTask(id, peopleLength, user) {
 
     if (user === null) {
       // if the user isn't available
-      axios
-        .get(`/user-details`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("FBIdToken"),
-          },
-        })
-        .then((res) => {
+      myFirestore
+        .doc(`users/${localStorage.getItem("userID")}`)
+        .get()
+        .then((doc) => {
           dispatch(
             addUser(
-              // dispatching an action to add the user to the redux store
-              res.data.id,
-              res.data.firstName,
-              res.data.lastName,
-              res.data.email,
-              res.data.phone,
-              res.data.role,
-              res.data.state,
-              res.data.transaction
+              localStorage.getItem("userID"),
+              doc.data().firstName,
+              doc.data().lastName,
+              doc.data().email,
+              doc.data().phone,
+              doc.data().role,
+              doc.data().state,
+              doc.data().transactions
             )
           );
         })
         .catch((err) => {
-          console.error(err);
           dispatch(setErrors(err));
         });
     }
 
     if (peopleLength === 0) {
       // if the redux store has no people stored
-      axios
-        .get(`/get-all-people/${id}`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("FBIdToken"),
-          },
-        })
-        .then((res) => {
-          if (res.data.peopleList.length !== peopleLength) {
-            // If there has been any changes to people added
-            res.data.peopleList.map((person) => {
-              dispatch(
-                addPeople(
-                  person.accepted,
-                  person.email,
-                  person.name,
-                  person.role,
-                  person.uid
-                )
-              );
-            });
-          }
+      myFirestore
+        .collection(`transactions/${id}/people`)
+        .get()
+        .then((querySnapshot) => {
+          dispatch(clearPeople()); // dispatching an action to clear the people
+          querySnapshot.forEach((doc) => {
+            dispatch(
+              // adding the people to the redux store
+              addPeople(
+                doc.data().accepted,
+                doc.data().email,
+                doc.data().name,
+                doc.data().role,
+                doc.data().uid
+              )
+            );
+          });
         })
         .catch((err) => {
-          console.error(err);
-          dispatch(setErrors());
+          dispatch(setErrors(err));
         });
     }
 
-    axios
-      .get(`/get-all-tasks/${id}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("FBIdToken"),
-        },
-      })
-      .then((res) => {
-        res.data.todoList.map((todo) => {
+    myFirestore
+      .collection(`transactions/${id}/tasks`)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
           dispatch(
             addTodo(
-              todo.id,
-              todo.title,
-              todo.description,
-              todo.date,
-              todo.assignedTo,
-              todo.assignedBy,
-              todo.completed
+              doc.id,
+              doc.data().title,
+              doc.data().description,
+              doc.data().date,
+              doc.data().assignedTo,
+              doc.data().assignedBy,
+              doc.data().Completed
             )
           );
         });
-        dispatch(setLoadingFalse()); // dispatching an action to set loading to false
+      })
+      .then(() => {
+        dispatch(setLoadingFalse()); // Dispatching ana ction to set loading to false
       })
       .catch((err) => {
-        console.error(err);
         dispatch(setErrors(err)); // dispatching an action to set the errors
       });
   };
@@ -120,30 +108,35 @@ export function addTask(id, newTask) {
       assignedBy: From,
       assignedTo: To,
       title: newTask.Title,
+      completed: false,
+      createdAt: myFirebase.firestore.FieldValue.serverTimestamp(),
     };
     dispatch(setLoadingTrue()); // dispatching an action to set loading to true
-    axios
-      .post(`/add-task/${id}`, Task, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("FBIdToken"),
-        },
+
+    myFirestore
+      .doc(`transactions/${id}`)
+      .get()
+      .then(() => {
+        return myFirestore.collection(`transactions/${id}/tasks`).add(Task);
       })
-      .then((res) => {
+      .then((doc) => {
         dispatch(
           addTodo(
-            res.data.id,
+            doc.id,
             Task.title,
             Task.description,
             Task.date,
             Task.assignedTo,
-            Task.assignedBy
+            Task.assignedBy,
+            Task.completed
           )
         );
-        dispatch(setLoadingFalse()); // dispatching an action to set loading to false
+      })
+      .then(() => {
+        dispatch(setLoadingFalse());
       })
       .catch((err) => {
-        console.error(err);
-        dispatch(setErrors(err)); // dispatching an action to set errors to true
+        dispatch(setErrors(err));
       });
   };
 }
@@ -151,19 +144,15 @@ export function addTask(id, newTask) {
 export function deleteTask(id, taskid) {
   return (dispatch) => {
     dispatch(setLoadingTrue()); // dispatching an action to set loading to true
-    axios
-      .delete(`/delete-task/${id}/${taskid}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("FBIdToken"),
-        },
-      })
-      .then((res) => {
-        dispatch(deleteTodo(taskid)); // dispatching an action to delete the todo from the redux store
-        dispatch(setLoadingFalse()); // dispatching an action to set loading to false
+    myFirestore
+      .doc(`transactions/${id}/tasks/${taskid}`)
+      .delete()
+      .then(() => {
+        dispatch(deleteTodo(taskid));
+        dispatch(setLoadingFalse());
       })
       .catch((err) => {
-        console.error(err);
-        dispatch(setErrors()); // dispatching an action to set the errors
+        dispatch(setErrors(err));
       });
   };
 }
@@ -171,26 +160,24 @@ export function deleteTask(id, taskid) {
 export function editTask(id, Task) {
   return (dispatch) => {
     dispatch(setLoadingTrue()); // dispatching an action to set loading to true
+
     let editingTask = {
       title: Task.title,
       description: Task.description,
       assignedTo: Task.to,
       date: Task.date,
     };
-    axios
-      .put(`/update-task/${id}/${Task.id}`, editingTask, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("FBIdToken"),
-        },
-      })
-      .then((res) => {
+
+    myFirestore
+      .doc(`transactions/${id}/tasks/${Task.id}`)
+      .update(editingTask)
+      .then(() => {
         dispatch(
           editTodo(Task.id, Task.title, Task.description, Task.date, Task.to)
         );
         dispatch(setLoadingFalse());
       })
       .catch((err) => {
-        console.error(err);
         dispatch(setErrors(err));
       });
   };
@@ -201,18 +188,14 @@ export function completeTask(id, taskId) {
   return (dispatch) => {
     dispatch(setLoadingTrue()); // dispatching an action to set loading to true
 
-    axios
-      .put(`/task-done/${id}/${taskId}`, null, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("FBIdToken"),
-        },
-      })
+    myFirestore
+      .doc(`transactions/${id}/tasks/${taskId}`)
+      .update({ completed: true })
       .then(() => {
-        dispatch(completeTodo(taskId)); // dispatching an action to complete the task
+        dispatch(completeTodo(taskId));
         dispatch(setLoadingFalse());
       })
       .catch((err) => {
-        console.error(err);
         dispatch(setErrors(err));
       });
   };
