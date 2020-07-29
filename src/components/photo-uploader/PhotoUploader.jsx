@@ -4,7 +4,6 @@ import { myStorage } from "../../Config/MyFirebase.js";
 import UploadDropzone from "./UploadDropzone";
 import UploadStatus from "./UploadStatus";
 import "./PhotoUploader.css";
-import { getCurrentUser } from "../../global_func_lib";
 
 /**
  * Photo upload modal component.

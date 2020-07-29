@@ -75,6 +75,7 @@ class ProfileEditDrawer extends React.Component {
       phone: "",
       state: "",
       Loaded: false,
+      FileName: "",
       isUpdateModalVisible: false,
       isUploadModalVisible: false,
       isSnackbarVisible: false,
@@ -91,6 +92,8 @@ class ProfileEditDrawer extends React.Component {
     this.dismissUploadModal = this.dismissUploadModal.bind(this);
     this.showSnackbar = this.showSnackbar.bind(this);
     this.dismissSnackbar = this.dismissSnackbar.bind(this);
+
+    this.userId = localStorage.getItem("userID");
   }
 
   static propTypes = {
@@ -621,9 +624,9 @@ class ProfileEditDrawer extends React.Component {
                 horizontal: "right",
               }}
             >
-              <Avatar
+              <img
                 alt={`${this.state.firstName} ${this.state.lastName}`}
-                src={UserAvatar}
+                src={`Profile-Pictures/${this.userId}/${this.state.FileName}`}
                 style={{ width: 150, height: 150 }}
               />
             </Badge>
@@ -690,6 +693,11 @@ class ProfileEditDrawer extends React.Component {
           dismissCallback={this.dismissUploadModal}
           visible={this.state.isUploadModalVisible}
           showSnackbarCallback={this.showSnackbar}
+          onFileExistsCallback={(filename) => {
+            this.setState({
+              FileName: filename,
+            });
+          }}
         />
 
         <Snackbar
