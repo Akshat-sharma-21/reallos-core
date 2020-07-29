@@ -8,6 +8,7 @@ import Modal, { ModalActionFooter } from "../shared/modal/Modal";
 import UserAvatar from "../../assets/user.png";
 import { PencilIcon } from "@primer/octicons-react";
 import PhotoUploadModal from "../photo-uploader/PhotoUploader";
+import { myFirestore } from "../../Config/MyFirebase";
 
 import {
   USER_ROLES,
@@ -57,7 +58,6 @@ const mapDispatchToProps = (dispatch) => {
 class ProfileEditDrawer extends React.Component {
   constructor() {
     super();
-
     this.updateModalTextValues = {
       firstName: "",
       lastName: "",
@@ -75,7 +75,7 @@ class ProfileEditDrawer extends React.Component {
       phone: "",
       state: "",
       Loaded: false,
-      FileName: "",
+      PhotoURL: "",
       isUpdateModalVisible: false,
       isUploadModalVisible: false,
       isSnackbarVisible: false,
@@ -88,12 +88,29 @@ class ProfileEditDrawer extends React.Component {
         phone: validateFormField("", "dummy"),
       },
     };
+    this.getProfilePhoto = this.getProfilePhoto.bind(this);
     this.showUploadModalVisibility = this.showUploadModalVisibility.bind(this);
     this.dismissUploadModal = this.dismissUploadModal.bind(this);
     this.showSnackbar = this.showSnackbar.bind(this);
     this.dismissSnackbar = this.dismissSnackbar.bind(this);
 
     this.userId = localStorage.getItem("userID");
+  }
+
+  componentDidMount() {
+    this.getProfilePhoto();
+  }
+
+  getProfilePhoto() {
+    myFirestore
+      .collection("users")
+      .doc(this.userId)
+      .get()
+      .then((doc) => {
+        this.setState({
+          PhotoURL: doc.data().photoURL,
+        });
+      });
   }
 
   static propTypes = {
@@ -189,6 +206,7 @@ class ProfileEditDrawer extends React.Component {
     this.setState({
       isUploadModalVisible: false,
     });
+    this.getProfilePhoto();
   }
 
   showSnackbar(message) {
@@ -624,10 +642,13 @@ class ProfileEditDrawer extends React.Component {
                 horizontal: "right",
               }}
             >
+              {console.log(this.state.PhotoURL)}
               <img
                 alt={`${this.state.firstName} ${this.state.lastName}`}
-                src={`Profile-Pictures/${this.userId}/${this.state.FileName}`}
-                style={{ width: 150, height: 150 }}
+                src={
+                  this.state.photoURL || "https://via.placeholder.com/150x150"
+                }
+                style={{ width: 150, height: 150, borderRadius: "100%" }}
               />
             </Badge>
           </Grid>
@@ -693,11 +714,6 @@ class ProfileEditDrawer extends React.Component {
           dismissCallback={this.dismissUploadModal}
           visible={this.state.isUploadModalVisible}
           showSnackbarCallback={this.showSnackbar}
-          onFileExistsCallback={(filename) => {
-            this.setState({
-              FileName: filename,
-            });
-          }}
         />
 
         <Snackbar

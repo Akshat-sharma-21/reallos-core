@@ -57,6 +57,7 @@ function PhotoUploadModal({
     checkFileExists = async (fileRef) => {
       try {
         await fileRef.getDownloadURL();
+        console.log(fileRef.getDownloadURL());
         return true;
       } catch (e) {
         return false;

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import Auth from "../../account/Authenticate";
+import { myFirestore } from "../../../Config/MyFirebase.js";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { myFirebase } from '../../../Config/MyFirebase';
+import { myFirebase } from "../../../Config/MyFirebase";
 
 import {
   AppBar,
@@ -125,8 +126,10 @@ class RenderNav extends Component {
       documentsAnchor: null,
       tasksAnchor: null,
       isProfileEditDrawerVisible: false,
+      photoURL: null,
       authenticated: Auth.getAuth(),
     };
+    this.getProfilePhoto = this.getProfilePhoto.bind(this);
     this.openUserProfilePopup = this.openUserProfilePopup.bind(this);
     this.closeUserProfilePopup = this.closeUserProfilePopup.bind(this);
     this.openNotification = this.openNotification.bind(this);
@@ -138,6 +141,24 @@ class RenderNav extends Component {
     this.toggleProfileEditDrawer = this.toggleProfileEditDrawer.bind(this);
     this.signOut = this.signOut.bind(this);
     this.calculateCompleted = this.calculateCompleted.bind(this);
+
+    this.userId = localStorage.getItem("userID");
+  }
+
+  componentDidMount() {
+    this.getProfilePhoto();
+  }
+
+  getProfilePhoto() {
+    myFirestore
+      .collection("users")
+      .doc(this.userId)
+      .get()
+      .then((doc) => {
+        this.setState({
+          PhotoURL: doc.data().photoURL,
+        });
+      });
   }
 
   /* To open the profile popup */
@@ -237,27 +258,25 @@ class RenderNav extends Component {
     this.setState({
       authenticated: Auth.getAuth(),
     });
-    myFirebase.auth().signOut()
-    .then(()=>{
-      window.location.href = "/"; // redirecting to the home page with public access
-    })
-    .catch(err =>{
-      console.error(err);
-    })
+    myFirebase
+      .auth()
+      .signOut()
+      .then(() => {
+        window.location.href = "/"; // redirecting to the home page with public access
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   render() {
     let { classes } = this.props;
 
     if (this.state.authenticated === false) {
+      return <Redirect to="/" />;
+    } else {
       return (
-        <Redirect to="/" />
-      );
-    }
-
-    else {
-      return (
-        <div className="navbar-main" style={{marginTop: 20}}>
+        <div className="navbar-main" style={{ marginTop: 20 }}>
           <Grid container direction="row" justify="center" alignitems="center">
             <AppBar className="navbar-root" position="static">
               <Toolbar>
@@ -399,7 +418,7 @@ class RenderNav extends Component {
 
                       <a
                         className="profile-subheading-small profile-progress-link"
-                        href=""
+                        href="#"
                       >
                         <Box component="p" mt={1}>
                           {this.calculateCompleted()}% profile completed

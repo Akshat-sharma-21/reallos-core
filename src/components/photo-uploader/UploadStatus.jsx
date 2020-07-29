@@ -4,7 +4,7 @@ import { Button } from "@material-ui/core";
 import PhotoIcon from "../../assets/photo-icon.svg";
 import PauseIcon from "../../assets/pause-icon.svg";
 import { CheckIcon, UploadIcon } from "@primer/octicons-react";
-import { myFirestore } from "../../Config/MyFirebase";
+import { myFirestore, myStorage } from "../../Config/MyFirebase";
 import "./UploadStatus.css";
 
 /**
@@ -102,13 +102,17 @@ function UploadStatus({
   if (uploadStatus.progress === 100) {
     (async () => {
       let userId = localStorage.getItem("userID");
+      // let myURL = `https://firebasestorage.googleapis.com/b/o/Profile-Pictures/${userId}/${uploadStatus.filename}?alt=media`;
 
       if (!isSavingPhoto) {
-        await myFirestore
-          .collection("users")
-          .doc(userId)
-          .update({
-            photoURL: `Profile-Pictures/${userId}/${uploadStatus.filename}`,
+        myStorage
+          .ref()
+          .child(`Profile-Pictures/${userId}/${uploadStatus.filename}`)
+          .getDownloadURL()
+          .then((url) => {
+            myFirestore.collection("users").doc(userId).update({
+              photoURL: url,
+            });
           });
       }
 
