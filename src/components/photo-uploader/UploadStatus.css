@@ -1,0 +1,71 @@
+.upload-status-box-root {
+  position: relative;
+  height: 331px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+#upload-progress-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 10px;
+
+  transition: all 250ms ease;
+}
+
+#upload-progress-bg::after {
+  content: "";
+  height: 3px;
+  width: 100%;
+  position: absolute;
+  bottom: 80px;
+  left: 0;
+}
+
+.upload-info-root {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.upload-info-root > img {
+  height: 100px;
+}
+
+.upload-info {
+  margin-left: 20px;
+}
+
+.upload-info > .photo-name {
+  margin: 0 0 2px 0;
+}
+
+.upload-info > .upload-progress-info {
+  font-size: 18px;
+}
+
+#upload-status-indicator {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  height: 35px;
+  width: 35px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: all 250ms ease;
+}
+
+#upload-status-indicator svg {
+  fill: #ffffff;
+}
+
+#upload-status-indicator img {
+  height: 18px;
+}

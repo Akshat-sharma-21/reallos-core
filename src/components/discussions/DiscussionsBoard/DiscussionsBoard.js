@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import ReactLoading from "react-loading";
 import { myFirestore, myStorage } from "../../../Config/MyFirebase";
 import images from "../Themes/Images";
+import UserAvatar from "../../../assets/user.png";
 import "./DiscussionsBoard.css";
 import { AppString } from "../Const";
 import { Typography, Box, Avatar } from "@material-ui/core";
@@ -186,13 +187,13 @@ export default class ChatBoard extends Component {
   render() {
     return (
       <Box className="viewChatBoard">
-        {/* Header */}
         <Box className="headerChatBoard">
           <Avatar
             className="avatar"
             src={
-              require("../../../assets/user.png")
-              //this.props.currentPeerUser.photoUrl
+              this.props.currentPeerUser.photoUrl
+                ? this.props.currentPeerUser.photoUrl
+                : UserAvatar
             }
             alt="icon avatar"
           ></Avatar>

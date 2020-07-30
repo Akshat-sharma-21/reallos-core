@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import { myFirestore } from "../../../Config/MyFirebase";
 import WelcomeBoard from "../WelcomeBoard/WelcomeBoard";
+import UserAvatar from "../../../assets/user.png";
 import "./DiscussionsMain.css";
 import DiscussionsBoard from "../DiscussionsBoard/DiscussionsBoard";
 import NavRail from "../../shared/navigation_rail/TransactionNavRail";
@@ -87,7 +88,7 @@ class Chat extends Component {
             >
               <ListItemAvatar>
                 <img
-                  src={require("../../../assets/user.png")}
+                  src={item.data().photoURL ? item.data().photoURL : UserAvatar}
                   className={"avatar"}
                   alt="icon avatar"
                 ></img>
@@ -113,7 +114,7 @@ class Chat extends Component {
               <div className="discussions-empty-avatar-group">
                 <AvatarGroup>
                   <Avatar
-                    src={require("../../../assets/user.png")}
+                    src={UserAvatar}
                     className={classes.avatarNoParticipants}
                   />
 
