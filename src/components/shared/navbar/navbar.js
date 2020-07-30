@@ -126,7 +126,6 @@ class RenderNav extends Component {
       documentsAnchor: null,
       tasksAnchor: null,
       isProfileEditDrawerVisible: false,
-      photoURL: null,
       authenticated: Auth.getAuth(),
     };
     this.getProfilePhoto = this.getProfilePhoto.bind(this);
@@ -155,9 +154,11 @@ class RenderNav extends Component {
       .doc(this.userId)
       .get()
       .then((doc) => {
-        this.setState({
-          PhotoURL: doc.data().photoURL,
-        });
+        // document.querySelector("img").src = doc.data().photoURL;
+        var img_tags = document.querySelectorAll("img");
+        img_tags[0].src = doc.data().photoURL;
+        img_tags[1].src = doc.data().photoURL;
+        img_tags[2].src = doc.data().photoURL;
       });
   }
 

@@ -1,136 +1,138 @@
 .navbar-main {
-    background-color: #efefef;
+  background-color: #efefef;
 }
 
 .navbar-root {
-    border-radius: 10px;
-    background-color: white !important;
+  border-radius: 10px;
+  background-color: white !important;
 }
 
 .navbar-btn-group {
-    margin-left: auto !important;
+  margin-left: auto !important;
 }
 
 .navbar-btn-group > * {
-    margin-left: 10px !important;
+  margin-left: 10px !important;
 }
 
-.navbar-profile-menu-popup ul > div, .navbar-notification-popup ul > div {
-    outline: none;
+.navbar-profile-menu-popup ul > div,
+.navbar-notification-popup ul > div {
+  outline: none;
 }
 
 .navbar-notification-popup ul {
-    padding-top: 0;
+  padding-top: 0;
 }
 
 .notification-menu {
-    width: 320px !important;
+  width: 320px !important;
 }
 
 ul[role="menu"] {
-    padding-right: 0 !important;
+  padding-right: 0 !important;
 }
 
-.navbar-profile-menu-popup, .navbar-notification-popup {
-    font-family: 'Roboto Slab';
+.navbar-profile-menu-popup,
+.navbar-notification-popup {
+  font-family: "Roboto Slab";
 }
 
 .notification-popup-header {
-    width: 100%;
-    background: #150578;
-    color: #ffffff;
-    padding-top: 20px;
-    padding-bottom: 5px;
+  width: 100%;
+  background: #150578;
+  color: #ffffff;
+  padding-top: 20px;
+  padding-bottom: 5px;
 }
 
 .notification-popup-header > p {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .notification-popup-header > * {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .notification-list {
-    max-height: 350px;
-    overflow-y: auto;
+  max-height: 350px;
+  overflow-y: auto;
 }
 
 .profile-popup-info {
-    padding-top: 10px;
-    padding-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 }
 
 .navbar-logo {
-    font-family: 'Gilroy' !important;
-    padding-left: 20px !important;
-    font-weight: 900 !important;
-    font-size: 25px !important;
-    color: #150578 !important;
+  font-family: "Gilroy" !important;
+  padding-left: 20px !important;
+  font-weight: 900 !important;
+  font-size: 25px !important;
+  color: #150578 !important;
 }
 
 .navlink {
-    margin-left: 5px !important;
-    margin-top: 7px !important;
+  margin-left: 5px !important;
+  margin-top: 7px !important;
 }
 
 .menu-design {
-    width: 800px !important;
-    max-width: 400px;
+  width: 800px !important;
+  max-width: 400px;
 }
 
 .avatar-large {
-    height: 50px !important;
-    width: 50px !important;
+  height: 50px !important;
+  width: 50px !important;
 }
 
 .profile-padding h2 {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .profile-heading {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .profile-subheading {
-    font-size: 16px;
-    margin-bottom: 0;
+  font-size: 16px;
+  margin-bottom: 0;
 }
 
 .profile-subheading-small {
-    font-size: 13px;
-    margin-top: 10px !important;
+  font-size: 13px;
+  margin-top: 10px !important;
 }
 
 .profile-progress-link {
-    cursor: pointer;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: #000000;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #000000;
 }
 
 .profile-progress-bar {
-    margin-top: 10px;
-    border-radius: 5px !important;
-    height: 5px !important;
-    width: 90% !important;
+  margin-top: 10px;
+  border-radius: 5px !important;
+  height: 5px !important;
+  width: 90% !important;
 }
 
 .divider-profile {
-    width: 360px !important;
-    height: 2px !important;
+  width: 360px !important;
+  height: 2px !important;
 }
 
 .profile-popup-action-group {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 .profile-popup-action-group button {
-    padding-bottom: 5px !important;
-    font-family: 'Roboto Slab' !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
-    margin: 5px;
-    max-width: 150px;
+  padding-bottom: 5px !important;
+  font-family: "Roboto Slab" !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  margin: 5px;
+  max-width: 150px;
 }

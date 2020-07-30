@@ -75,7 +75,6 @@ class ProfileEditDrawer extends React.Component {
       phone: "",
       state: "",
       Loaded: false,
-      PhotoURL: "",
       isUpdateModalVisible: false,
       isUploadModalVisible: false,
       isSnackbarVisible: false,
@@ -107,9 +106,7 @@ class ProfileEditDrawer extends React.Component {
       .doc(this.userId)
       .get()
       .then((doc) => {
-        this.setState({
-          PhotoURL: doc.data().photoURL,
-        });
+        document.querySelector("img").src = doc.data().photoURL;
       });
   }
 
@@ -206,7 +203,7 @@ class ProfileEditDrawer extends React.Component {
     this.setState({
       isUploadModalVisible: false,
     });
-    this.getProfilePhoto();
+    this.componentDidMount();
   }
 
   showSnackbar(message) {
@@ -642,13 +639,10 @@ class ProfileEditDrawer extends React.Component {
                 horizontal: "right",
               }}
             >
-              {console.log(this.state.PhotoURL)}
-              <img
+              <Avatar
+                src={UserAvatar}
                 alt={`${this.state.firstName} ${this.state.lastName}`}
-                src={
-                  this.state.photoURL || "https://via.placeholder.com/150x150"
-                }
-                style={{ width: 150, height: 150, borderRadius: "100%" }}
+                style={{ width: 150, height: 150 }}
               />
             </Badge>
           </Grid>
