@@ -199,7 +199,7 @@ class ProfileEditDrawer extends React.Component {
     this.setState({
       isUploadModalVisible: false,
     });
-    this.componentDidMount();
+    this.getProfilePhoto();
   }
 
   showSnackbar(message) {

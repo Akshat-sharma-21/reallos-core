@@ -154,7 +154,11 @@ class People extends Component {
         accepted: false,
       }; // creating a new person
 
-      this.props.addPerson(this.props.match.params.tid, newPerson, this.props.user.email);
+      this.props.addPerson(
+        this.props.match.params.tid,
+        newPerson,
+        this.props.user.email
+      );
       this.toggleModal();
     }
   }
@@ -181,9 +185,9 @@ class People extends Component {
               <Box paddingLeft={6}>
                 <Card
                   className={
-                    (getDecodedHash(this.props.location) === `#${data.email}`)
-                      ? 'paper-highlight'
-                      : ''
+                    getDecodedHash(this.props.location) === `#${data.email}`
+                      ? "paper-highlight"
+                      : ""
                   }
                   elevation={3}
                   style={{ marginBottom: "10px" }}
@@ -391,14 +395,6 @@ class People extends Component {
                               <VerifiedIcon size={17} />
                             </Grid>
                             <Grid xs={11}>
-                              {/*<Select value={this.state.Role} fullWidth variant="outlined" label="Role" name="Role" onChange={this.handleChange} className="modal-right-field" style={{height: '40px', marginTop: '10px'}}>
-                                                      <MenuItem value='Buyer'>Buyer</MenuItem>
-                                                      <MenuItem value='Seller'>Seller</MenuItem>
-                                                      <MenuItem value='Buyer Agent'>Buyer Agent</MenuItem>
-                                                      <MenuItem value='Seller Agent'>Seller Agent</MenuItem>
-                                                      <MenuItem value='Buyer'>Home Inspector</MenuItem>
-                                                      <MenuItem value='Home Inspector'>Title Agent</MenuItem>
-                                                  </Select>*/}
                               <FormControl
                                 variant="outlined"
                                 className="modal-right-field"
@@ -575,14 +571,6 @@ class People extends Component {
                               <VerifiedIcon size={17} />
                             </Grid>
                             <Grid xs={11}>
-                              {/*<Select value={this.state.Role} fullWidth variant="outlined" label="Role" name="Role" onChange={this.handleChange} className="modal-right-field" style={{height: '40px', marginTop: '10px'}}>
-                                                      <MenuItem value='Buyer'>Buyer</MenuItem>
-                                                      <MenuItem value='Seller'>Seller</MenuItem>
-                                                      <MenuItem value='Buyer Agent'>Buyer Agent</MenuItem>
-                                                      <MenuItem value='Seller Agent'>Seller Agent</MenuItem>
-                                                      <MenuItem value='Buyer'>Home Inspector</MenuItem>
-                                                      <MenuItem value='Home Inspector'>Title Agent</MenuItem>
-                                                  </Select>*/}
                               <FormControl
                                 variant="outlined"
                                 className="modal-right-field"

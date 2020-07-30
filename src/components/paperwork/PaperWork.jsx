@@ -16,7 +16,7 @@ import {
   getEffectiveDocumentName,
   getCurrentUser,
   getPeopleInvolved,
-  getDecodedHash
+  getDecodedHash,
 } from "../../global_func_lib";
 
 import {
@@ -343,7 +343,6 @@ class PaperWork extends React.Component {
                   itemIndex * 25
                 }ms forwards`,
               }}
-
               key={docData.name}
             >
               <div className="doc-card-root">
@@ -365,12 +364,11 @@ class PaperWork extends React.Component {
                   <Card
                     className={
                       "doc-card " +
-                      ((getDecodedHash(this.props.location) === `#${docData.name}`)
-                        ? 'paper-highlight'
-                        : ''
-                      )
+                      (getDecodedHash(this.props.location) ===
+                      `#${docData.name}`
+                        ? "paper-highlight"
+                        : "")
                     }
-
                     title={docData.name}
                   >
                     <CardThumbnail
