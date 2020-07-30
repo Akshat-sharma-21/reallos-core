@@ -25,7 +25,6 @@ import {
 
 import {
   BellIcon,
-  InboxIcon,
   PencilIcon,
   BriefcaseIcon,
   SignOutIcon,
@@ -44,7 +43,6 @@ const styles = (theme) => ({
   },
 });
 
-
 const mapStateToProps = (state) => ({
   user: state.user,
 });
@@ -60,9 +58,9 @@ class RenderNav extends Component {
       tasksAnchor: null,
       isProfileEditDrawerVisible: false,
       authenticated: Auth.getAuth(),
-      notifications: null
+      notifications: null,
     };
-    
+
     this.getProfilePhoto = this.getProfilePhoto.bind(this);
     this.openUserProfilePopup = this.openUserProfilePopup.bind(this);
     this.closeUserProfilePopup = this.closeUserProfilePopup.bind(this);
@@ -71,18 +69,13 @@ class RenderNav extends Component {
     this.toggleProfileEditDrawer = this.toggleProfileEditDrawer.bind(this);
     this.signOut = this.signOut.bind(this);
     this.calculateCompleted = this.calculateCompleted.bind(this);
-
-    this.userId = localStorage.getItem("userID");
-  }
-
-  componentDidMount() {
-    this.getProfilePhoto();
   }
 
   getProfilePhoto() {
+    const userId = localStorage.getItem("userID");
     myFirestore
       .collection("users")
-      .doc(this.userId)
+      .doc(userId)
       .get()
       .then((doc) => {
         // document.querySelector("img").src = doc.data().photoURL;
@@ -94,32 +87,30 @@ class RenderNav extends Component {
   }
 
   componentDidMount() {
-    const userUid = localStorage.getItem('userID');
+    const userUid = localStorage.getItem("userID");
 
     // `onSnapshot` will return a function to unsubscribe
     // the listener.
-    this.unsubscribeNotificationListener =
-      myFirestore
-        .collection('users')
-        .doc(userUid)
-        .collection('notifications')
-        .orderBy('timestamp', 'desc')
-        .onSnapshot(snapshot => {
-          let notificationsList = [];
+    this.unsubscribeNotificationListener = myFirestore
+      .collection("users")
+      .doc(userUid)
+      .collection("notifications")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        let notificationsList = [];
 
-          snapshot.docs.forEach(notification => {
-            notificationsList.push(
-              Object.assign(
-                notification.data(),
-                { id: notification.id }
-              )
-            );
-          })
-
-          this.setState({
-            notifications: notificationsList
-          });
+        snapshot.docs.forEach((notification) => {
+          notificationsList.push(
+            Object.assign(notification.data(), { id: notification.id })
+          );
         });
+
+        this.setState({
+          notifications: notificationsList,
+        });
+      });
+
+    this.getProfilePhoto();
   }
 
   componentWillUnmount() {
@@ -189,9 +180,7 @@ class RenderNav extends Component {
   get getUnreadNotificationsCount() {
     if (this.state.notifications != null)
       return this.state.notifications.filter((data) => !data.isRead).length;
-
-    else
-      return 0;
+    else return 0;
   }
 
   /**
@@ -267,7 +256,7 @@ class RenderNav extends Component {
                       <Badge
                         variant="dot"
                         classes={
-                          (this.getUnreadNotificationsCount != 0)
+                          this.getUnreadNotificationsCount !== 0
                             ? {
                                 badge: classes.notificationBadge,
                               }

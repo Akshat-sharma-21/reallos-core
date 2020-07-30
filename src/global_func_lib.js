@@ -241,7 +241,7 @@ export const getDecodedHash = (locationObject) => {
   const decodedHash = decodeURIComponent(hash);
 
   return decodedHash;
-}
+};
 
 /**
  * Returns `TransactionID` from **location** prop.
@@ -304,26 +304,29 @@ export const getPeopleInvolved = async (transactionID) => {
  * @returns {Promise<string>}
  * Name of the user corresponding to the email.
  */
-export const getUserName = async (email, transactionID, peopleInvolvedObject) => {
-  console.log(validateFormField(email, 'email'))
+export const getUserName = async (
+  email,
+  transactionID,
+  peopleInvolvedObject
+) => {
+  console.log(validateFormField(email, "email"));
 
-  if (validateFormField(email, 'email'))
-    return;
+  if (validateFormField(email, "email")) return;
 
   if (peopleInvolvedObject == null) {
     if (transactionID)
       peopleInvolvedObject = await getPeopleInvolved(transactionID);
-
-    else
-      return;
+    else return;
   }
 
-  const filtered = peopleInvolvedObject.filter(person => person.email == email);
+  const filtered = peopleInvolvedObject.filter(
+    (person) => person.email === email
+  );
 
-  if (filtered.length != 0) {
+  if (filtered.length !== 0) {
     return filtered[0].name;
   }
-}
+};
 
 /**
  * Returns `currentUser` from `firebase.auth` namespace.
