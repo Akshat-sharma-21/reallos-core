@@ -1,7 +1,9 @@
-.search-bar{
-    background-color: white!important;
+.search-bar {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border-radius: 8px !important;
 }
 
-.search-icon{
-    align-self: center!important;
+.search-icon {
+    align-self: center !important;
+    fill: rgba(0, 0, 0, 0.5);
 }
