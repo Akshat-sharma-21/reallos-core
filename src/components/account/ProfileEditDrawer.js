@@ -67,7 +67,6 @@ class ProfileEditDrawer extends React.Component {
     };
 
     this.state = {
-      profilePic: "",
       firstName: "",
       lastName: "",
       role: "",
@@ -86,6 +85,7 @@ class ProfileEditDrawer extends React.Component {
         email: validateFormField("", "dummy"),
         phone: validateFormField("", "dummy"),
       },
+      profilePhoto: UserAvatar
     };
     this.getProfilePhoto = this.getProfilePhoto.bind(this);
     this.showUploadModalVisibility = this.showUploadModalVisibility.bind(this);
@@ -96,13 +96,27 @@ class ProfileEditDrawer extends React.Component {
     this.userId = localStorage.getItem("userID");
   }
 
+  componentDidMount() {
+    this.getProfilePhoto();
+  }
+
   getProfilePhoto() {
     myFirestore
       .collection("users")
       .doc(this.userId)
       .get()
       .then((doc) => {
-        document.querySelector("img").src = doc.data().photoURL;
+        try {
+          let profilePhotoURL = doc.data().photoURL;
+          console.log(profilePhotoURL)
+          
+          this.setState({
+            profilePhoto: profilePhotoURL
+          })
+        }
+        catch (err) {
+          // no-op
+        }
       });
   }
 
@@ -636,7 +650,7 @@ class ProfileEditDrawer extends React.Component {
               }}
             >
               <Avatar
-                src={UserAvatar}
+                src={this.state.profilePhoto}
                 alt={`${this.state.firstName} ${this.state.lastName}`}
                 style={{ width: 150, height: 150 }}
               />

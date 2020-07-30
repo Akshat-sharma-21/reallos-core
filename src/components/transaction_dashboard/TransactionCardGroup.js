@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   bottom: {
     opacity: '0.6',
@@ -54,8 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
   top: {
     position: 'absolute',
-    left: 0,
-  },
+  }
 }))
 
 function RenderCard(props) {
@@ -69,7 +72,7 @@ function RenderCard(props) {
   return (
     <div className="transaction-card-root">
       <GridList className={classes.gridList} cols={2.25}>
-        {props.transaction.map((transaction) =>
+        {props.transactions.map((transaction) =>
           <GridListTile className="transaction-card-item">
             <Card className="transaction-card" variant="outlined">
               <CardActionArea onClick={() => routeToTransaction(transaction.id)}>
@@ -84,23 +87,27 @@ function RenderCard(props) {
                     >
                       <Grid item md={4}>
                         <Box paddingLeft={1}>
-                          <Box position="relative" display="inline-flex" paddingLeft={2}>
-                            <div className={classes.root}>
-                              <CircularProgress
-                                variant="determinate"
-                                className={classes.bottom}
-                                size={100}
-                                thickness={7}
-                                value={100}
-                              />
-                              <CircularProgress
-                                variant="static"
-                                disableShrink
-                                className={classes.top}
-                                size={100}
-                                thickness={7}
-                                value={100} // Make this dynamic wrt the transaction
-                              />
+                          <Box position="relative" display="inline-flex" paddingLeft={2} style={{width: '78%'}}>
+                            <div className={classes.root} style={{width: '100%'}}>
+                              <div className={classes.root}>
+                                <CircularProgress
+                                  variant="determinate"
+                                  className={classes.bottom}
+                                  size={110}
+                                  thickness={7}
+                                  value={100}
+                                  // style={{ position: 'absolute' }}
+                                />
+                                <CircularProgress
+                                  variant="static"
+                                  className={classes.top}
+                                  disableShrink
+                                  size={110}
+                                  thickness={7}
+                                  value={100} // Make this dynamic wrt the transaction
+                                  // style={{ position: 'absolute' }}
+                                />
+                              </div>
                             </div>
                             <Box
                               top={0}
@@ -116,14 +123,21 @@ function RenderCard(props) {
                               <Typography variant="h6" component="div">{/* Add the dynamic % of completion here */}</Typography> 
                             </Box>
                           </Box>
-                          <Box marginTop={2}><Typography justify="center" variant="h5">
-                            {transaction.Name}
-                          </Typography></Box>
+                          <Box marginTop={2}>
+                            <div style={{
+                              fontFamily: 'Roboto Slab',
+                              fontWeight: 'bold',
+                              fontSize: 24,
+                              textAlign: 'center'
+                            }}>
+                              {transaction.Name}
+                            </div>
+                          </Box>
                         </Box>
                       </Grid>
                       <Grid item md={8}>
                         <Box paddingLeft={4}>
-                          <Typography style={{ fontSize: '24px' }}>
+                          <Typography style={{ fontSize: '24px', fontFamily: 'Roboto Slab', fontWeight: 'bold' }}>
                             <table>
                               <tr>
                                 <td style={{ paddingBottom: '4.5px', paddingRight: '24px' }}><VersionsIcon size={25} /></td>
@@ -133,7 +147,7 @@ function RenderCard(props) {
                           </Typography>
                         </Box>
                         <Box paddingLeft={11}>
-                          <Typography style={{ fontSize: '18px' }}>
+                          <Typography style={{ fontSize: '18px', fontFamily: 'Roboto Slab' }}>
                             <table>
                               <tr>
                                 <td style={{ paddingBottom: '4.5px', paddingRight: '18px' }}><CheckCircleIcon className="transaction-card-subicongreen" size={18} /></td>
@@ -148,7 +162,7 @@ function RenderCard(props) {
                         </Box>
                         <Box paddingLeft={4}>
                           <Typography style={{ fontSize: '24px' }}>
-                            <table>
+                            <table style={{fontFamily: 'Roboto Slab', fontWeight: 'bold'}}>
                               <tr>
                                 <td style={{ paddingBottom: '4.5px', paddingRight: '24px' }}><OrganizationIcon size={25} /></td>
                                 <td>Address</td>
@@ -157,7 +171,7 @@ function RenderCard(props) {
                           </Typography>
                         </Box>
                         <Box paddingLeft={11} style={{ fontSize: '18px' }}>
-                          <Typography noWrap>
+                          <Typography noWrap style={{fontFamily: 'Roboto Slab'}}>
                             {transaction.Address}
                           </Typography>
                         </Box>

@@ -11,7 +11,7 @@ import { ReallosLoaderWithOverlay } from "../shared/preloader/ReallosLoader";
 import { connect } from "react-redux";
 import { additionalInformation } from "../../actions/userActions";
 import { getTransaction } from "../../actions/transactionActions";
-import { validateFormField } from "../../global_func_lib";
+import { validateFormField, USER_ROLES } from "../../global_func_lib";
 import { bindActionCreators } from "redux";
 import {
   Button,
@@ -60,6 +60,7 @@ class TransactionDasboard extends Component {
         state: null,
       },
       validated: false,
+      filteredTransactionList: []
     };
     this.RenderTransactionBody = this.RenderTransactionBody.bind(this);
     this.changeStep = this.changeStep.bind(this);
@@ -116,13 +117,45 @@ class TransactionDasboard extends Component {
   RenderTransactionBody({ transaction }) {
     // Function to render the various transactions that belong to the user
     if (transaction && transaction.length) {
-      //If transactions exist
+      // If transactions exist
       return (
         <>
           <Grid container direction="row" justify="center" alignItems="center">
-            <SearchBar />
+            <SearchBar
+              list={transaction}
+              filterByField="Name"
+              onUpdate={(newTransactions) => this.setState({
+                filteredTransactionList: newTransactions
+              })}
+            />
           </Grid>
-          <TransactionCardGroup transaction={transaction} />
+
+          {this.state.filteredTransactionList.length != 0
+            ? <TransactionCardGroup transactions={this.state.filteredTransactionList} />
+            : <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 30
+              }}>
+                <div style={{ fontSize: 150, opacity: 0.5 }}>{"( >_< )"}</div>
+                <div style={{
+                  fontFamily: 'Gilroy',
+                  fontWeight: 'bold',
+                  fontSize: 30,
+                  marginTop: 50,
+                  marginBottom: 10,
+                }}>
+                  No Transactions Found
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  None of the transactions match the given search term.
+                  <br />
+                  Please check the search term.
+                </div>
+              </div>
+          }
         </>
       );
     } else {
@@ -264,13 +297,9 @@ class TransactionDasboard extends Component {
                       helperText={this.state.errors.role}
                       error={this.state.errors.role !== null}
                     >
-                      <MenuItem value="buyer">Buyer</MenuItem>
-                      <MenuItem value="seller">Seller</MenuItem>
-                      <MenuItem value="buyer-agent">Buyer Agent</MenuItem>
-                      <MenuItem value="seller-agent">Seller Agent</MenuItem>
-                      <MenuItem value="title-agent">Title Agent</MenuItem>
-                      <MenuItem value="Escrow-agent">Escrow Agent</MenuItem>
-                      <MenuItem value="Home Inspector">Home Inspector</MenuItem>
+                      {USER_ROLES.map((role) => {
+                        return <MenuItem value={role.value}>{role.label}</MenuItem>;
+                      })}
                     </Select>
                   </FormControl>
                   <FormControl
