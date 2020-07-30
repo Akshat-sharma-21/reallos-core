@@ -49,6 +49,20 @@ class Chat extends Component {
 
   componentDidMount() {
     this.getListUser();
+    this.getProfilePhoto();
+  }
+
+  getProfilePhoto() {
+    const userId = localStorage.getItem("userID");
+    myFirestore
+      .collection("users")
+      .doc(userId)
+      .get()
+      .then((doc) => {
+        // document.querySelector("img").src = doc.data().photoURL;
+        var img_tags = document.querySelectorAll("img");
+        img_tags[1].src = doc.data().photoURL;
+      });
   }
 
   getListUser = async () => {

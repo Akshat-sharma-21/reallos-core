@@ -96,10 +96,6 @@ class ProfileEditDrawer extends React.Component {
     this.userId = localStorage.getItem("userID");
   }
 
-  componentDidMount() {
-    this.getProfilePhoto();
-  }
-
   getProfilePhoto() {
     myFirestore
       .collection("users")
