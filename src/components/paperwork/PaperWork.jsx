@@ -11,7 +11,7 @@ import CardThumbnail from './CardThumbnail';
 import { NavLink } from 'react-router-dom';
 import { myStorage, myFirestore } from '../../Config/MyFirebase';
 import { withStyles } from '@material-ui/core/styles';
-import { getTransactionID, getEffectiveDocumentName, getCurrentUser, getPeopleInvolved } from '../../global_func_lib';
+import { getTransactionID, getEffectiveDocumentName, getCurrentUser, getPeopleInvolved, getDecodedHash } from '../../global_func_lib';
 
 import {
     Container,
@@ -158,6 +158,9 @@ class PaperWork extends React.Component {
 
     /**
      * Returns URL of thumbnail for a PDF.
+     * 
+     * @returns {Promise<string>}
+     * URL of the thumbnail
      */
     async getThumbnail(docName) {
         try {
@@ -320,13 +323,15 @@ class PaperWork extends React.Component {
             return (
                 <div className="doc-card-group">
                     {this.state.documents.map((docData, itemIndex) => (
-                        <div style={{
-                            opacity: 0,
-                            animation: `slide-up-anim 150ms ease-out ${itemIndex * 25}ms forwards`
-                        }}>
+                        <div
+                            key={docData.name}
+                            style={{
+                                opacity: 0,
+                                animation: `slide-up-anim 150ms ease-out ${itemIndex * 25}ms forwards`
+                            }}
+                        >
                             <div
                                 className="doc-card-root"
-                                key={docData.name}
                             >
                                 <IconButton
                                     className="doc-card-top-action-btn"
@@ -339,7 +344,16 @@ class PaperWork extends React.Component {
                                     pathname: `/transaction/${this.transactionID}/paperwork/${docData.name}`,
                                     state: docData
                                 }}>
-                                    <Card className="doc-card" title={docData.name}>
+                                    <Card
+                                        className={
+                                            "doc-card " +
+                                            ((getDecodedHash(this.props.location) === `#${docData.name}`)
+                                                ? 'paper-highlight'
+                                                : ''
+                                            )
+                                        }
+                                        title={docData.name}
+                                    >
                                         <CardThumbnail
                                             getThumbnailFunction={() => this.getThumbnail(docData.name)}
                                         />
