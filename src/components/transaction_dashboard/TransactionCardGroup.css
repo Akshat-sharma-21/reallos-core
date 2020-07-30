@@ -3,11 +3,12 @@
 }
 
 .transaction-card-item {
-    min-height: 290px;
+    min-height: 296px;
 }
 
 .transaction-card {
     min-height: 290px;
+    border-radius: 10px !important;
 }
 
 /*.transaction-card-heading{

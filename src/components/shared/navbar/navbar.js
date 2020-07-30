@@ -59,6 +59,7 @@ class RenderNav extends Component {
       isProfileEditDrawerVisible: false,
       authenticated: Auth.getAuth(),
       notifications: null,
+      profilePhoto: UserAvatar
     };
 
     this.getProfilePhoto = this.getProfilePhoto.bind(this);
@@ -79,10 +80,9 @@ class RenderNav extends Component {
       .get()
       .then((doc) => {
         if (doc.data().photoURL !== "") {
-          var img_tags = document.querySelectorAll("img");
-          img_tags[0].src = doc.data().photoURL;
-          img_tags[1].src = doc.data().photoURL;
-          img_tags[2].src = doc.data().photoURL;
+          this.setState({
+            profilePhoto: doc.data().photoURL
+          })
         }
       });
   }
@@ -277,7 +277,7 @@ class RenderNav extends Component {
                     TransitionComponent={Zoom}
                   >
                     <IconButton onClick={this.openUserProfilePopup}>
-                      <Avatar src={UserAvatar} />
+                      <Avatar src={this.state.profilePhoto} />
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -327,7 +327,7 @@ class RenderNav extends Component {
                       >
                         <Grid item>
                           <Box component="div" ml={2}>
-                            <Avatar src={UserAvatar} className="avatar-large" />
+                            <Avatar src={this.state.profilePhoto} className="avatar-large" />
                           </Box>
                         </Grid>
                         <Grid item justify="center" className="profile-padding">

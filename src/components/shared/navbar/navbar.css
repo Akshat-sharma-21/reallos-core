@@ -20,14 +20,6 @@
   outline: none;
 }
 
-.navbar-notification-popup ul {
-  padding-top: 0;
-}
-
-.notification-menu {
-  width: 320px !important;
-}
-
 ul[role="menu"] {
   padding-right: 0 !important;
 }
@@ -35,28 +27,6 @@ ul[role="menu"] {
 .navbar-profile-menu-popup,
 .navbar-notification-popup {
   font-family: "Roboto Slab";
-}
-
-.notification-popup-header {
-  width: 100%;
-  background: #150578;
-  color: #ffffff;
-  padding-top: 20px;
-  padding-bottom: 5px;
-}
-
-.notification-popup-header > p {
-  margin-top: 0;
-}
-
-.notification-popup-header > * {
-  display: flex;
-  align-items: center;
-}
-
-.notification-list {
-  max-height: 350px;
-  overflow-y: auto;
 }
 
 .profile-popup-info {

@@ -197,7 +197,11 @@ class Todo extends Component {
         <div style={{ paddingBottom: 30 }}>
           <Box paddingLeft={5}>
             <h1>Tasks</h1>
-            <SearchBar />
+            <SearchBar
+              list={[]}
+              filterByField=""
+              onUpdate={() => {}}
+            />
             {this.props.todo.map((todo) => (
               <Box component="div" marginTop={2}>
                 <Card
