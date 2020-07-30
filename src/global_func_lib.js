@@ -226,13 +226,28 @@ export const bytesToSize = (bytes) => {
 }
 
 /**
- * Returns `TransactionID` from **location** prop.
- * Will return `null` if the location does not have a TransactionID.
- * 
+ * Returns hash present in the URL of current page
+ * by decoding its URI encodings.
+ *
  * @param {object} locationObject
  * Object containing location data. You must pass either
  * `this.props.location` or a `useLocation` object.
- * 
+ */
+export const getDecodedHash = (locationObject) => {
+  const hash = locationObject.hash;
+  const decodedHash = decodeURIComponent(hash);
+
+  return decodedHash;
+}
+
+/**
+ * Returns `TransactionID` from **location** prop.
+ * Will return `null` if the location does not have a TransactionID.
+ *
+ * @param {object} locationObject
+ * Object containing location data. You must pass either
+ * `this.props.location` or a `useLocation` object.
+ *
  * @returns {string}
  * TransactionID as a string.
  */
@@ -247,18 +262,18 @@ export const getTransactionID = (locationObject) => {
 
 /**
  * Returns the list of people involved in a transaction.
- * 
+ *
  * @param {string} transactionID
  * Transaction ID for which the people list has
  * to be fetched.
- * 
+ *
  * @returns {Promise<object[]>}
  */
 export const getPeopleInvolved = async (transactionID) => {
   // @TODO: Add error handling
-  
+
   const endpoint = `https://us-central1-reallos-382c7.cloudfunctions.net/api/get-all-people/${transactionID}`;
-  
+
   let response = await axios.get(endpoint, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('FBIdToken')}`
@@ -269,8 +284,47 @@ export const getPeopleInvolved = async (transactionID) => {
 }
 
 /**
+ * Returns the username of a user using their email.
+ *
+ * @param {string} email
+ * Email of the user. If this parameter is left out or is not valid,
+ * `null` is returned by the function.
+ *
+ * @param {string?} transactionID
+ * ID of the transaction. Used to fetch `peopleInvolvedObject`.
+ * Use only if `peopleInvolvedObject` is not available.
+ *
+ * @param {object[]?} peopleInvolvedObject
+ * List of People Involved in a transaction.
+ * `transactionID` is not considered when this parameter is passed.
+ *
+ * @returns {Promise<string>}
+ * Name of the user corresponding to the email.
+ */
+export const getUserName = async (email, transactionID, peopleInvolvedObject) => {
+  console.log(validateFormField(email, 'email'))
+
+  if (validateFormField(email, 'email'))
+    return;
+
+  if (peopleInvolvedObject == null) {
+    if (transactionID)
+      peopleInvolvedObject = await getPeopleInvolved(transactionID);
+
+    else
+      return;
+  }
+
+  const filtered = peopleInvolvedObject.filter(person => person.email == email);
+
+  if (filtered.length != 0) {
+    return filtered[0].name;
+  }
+}
+
+/**
  * Returns `currentUser` from `firebase.auth` namespace.
- * 
+ *
  * @returns {firebase.User}
  * Object containing details of the user currently
  * signed in. If no user is signed in, `null` is returned.
