@@ -28,7 +28,7 @@ class SearchBar extends React.Component {
      * An array of filtered objects are passed to
      * the callback function.
      */
-    onUpdate: PropTypes.func
+    onUpdate: PropTypes.func.isRequired
   };
 
   componentDidMount() {
