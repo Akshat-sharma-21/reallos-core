@@ -8,7 +8,9 @@ class CardThumbnail extends React.Component {
         this.state = {
             thumbnailUrl: null
         }
+    }
 
+    componentDidMount() {
         this.updateThumbnail(this.props.getThumbnailFunction);
     }
 
@@ -29,13 +31,16 @@ class CardThumbnail extends React.Component {
                     backgroundColor: '#ffffff'
                 }}
             >
-                <CardMedia
-                    image={this.state.thumbnailUrl}
-                    style={{
-                        height: 200,
-                        backgroundPositionY: 'top'
-                    }}
-                />
+                {this.state.thumbnailUrl
+                    ? <CardMedia
+                        image={this.state.thumbnailUrl}
+                        style={{
+                            height: 200,
+                            backgroundPositionY: 'top'
+                        }}
+                    />
+                    : <></>
+                }
             </div>
         );
     }
