@@ -133,7 +133,6 @@ class TransactionAssist extends Component {
   }
 
   RenderExpansionPanel() {
-    console.log(this.props.assist);
     return (
       <Grid container direction="column" spacing={2}>
         <Grid item>
@@ -208,7 +207,13 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.escrow.setup}
-                        onClick={() => this.props.escrowStep("setup")}
+                        disabled={this.props.assist.escrow.setup ? true : false}
+                        onClick={() =>
+                          this.props.escrowStep(
+                            "setup",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Let everyone know if the Escrow account has been setup! Should be marked by the Listing agent"
@@ -225,7 +230,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.escrow.goodFaith}
-                        onClick={() => this.props.escrowStep("goodFaith")}
+                        disabled={
+                          this.props.assist.escrow.goodFaith ? true : false
+                        }
+                        onClick={() =>
+                          this.props.escrowStep(
+                            "goodFaith",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Has the Good Faith money been transafered by the Buyer? Buyer can let everyone know if it has"
@@ -242,7 +255,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.escrow.loanDocument}
-                        onClick={() => this.props.escrowStep("loanDocument")}
+                        disabled={
+                          this.props.assist.escrow.loanDocument ? true : false
+                        }
+                        onClick={() =>
+                          this.props.escrowStep(
+                            "loanDocument",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Buyer's loan documnets and property taxes documents recieved by the Escrow officer"
@@ -326,7 +347,17 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.titleSearch.titleReport}
-                        onClick={() => this.props.titleStep("report")}
+                        disabled={
+                          this.props.assist.titleSearch.titleReport
+                            ? true
+                            : false
+                        }
+                        onClick={() =>
+                          this.props.titleStep(
+                            "report",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Title Report ordered and recieved by the Escrow officer to check for issues"
@@ -343,7 +374,17 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.titleSearch.titleInsurance}
-                        onClick={() => this.props.titleStep("insurance")}
+                        disabled={
+                          this.props.assist.titleSearch.titleInsurance
+                            ? true
+                            : false
+                        }
+                        onClick={() =>
+                          this.props.titleStep(
+                            "insurance",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Title record transfered to the Buyer and Title Insurance is issued, completing the final step of Title Search and Insurance"
@@ -429,8 +470,16 @@ class TransactionAssist extends Component {
                         value={
                           this.props.assist.homeAppraisal.homeAppraisalAppointed
                         }
+                        disabled={
+                          this.props.assist.homeAppraisal.homeAppraisalAppointed
+                            ? true
+                            : false
+                        }
                         onClick={() =>
-                          this.props.homeAppraisalStep("appointed")
+                          this.props.homeAppraisalStep(
+                            "appointed",
+                            this.props.match.params.tid
+                          )
                         }
                       />
                     }
@@ -450,7 +499,17 @@ class TransactionAssist extends Component {
                         value={
                           this.props.assist.homeAppraisal.homeAppraisalReport
                         }
-                        onClick={() => this.props.homeAppraisalStep("report")}
+                        disabled={
+                          this.props.assist.homeAppraisal.homeAppraisalReport
+                            ? true
+                            : false
+                        }
+                        onClick={() =>
+                          this.props.homeAppraisalStep(
+                            "report",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Home Appraisal report has been generated and uploaded to the platform"
@@ -537,8 +596,17 @@ class TransactionAssist extends Component {
                           this.props.assist.homeInspection
                             .homeInspectionAppointed
                         }
+                        disabled={
+                          this.props.assist.homeInspection
+                            .homeInspectionAppointed
+                            ? true
+                            : false
+                        }
                         onClick={() =>
-                          this.props.homeInspectionStep("appointed")
+                          this.props.homeInspectionStep(
+                            "appointed",
+                            this.props.match.params.tid
+                          )
                         }
                       />
                     }
@@ -558,7 +626,17 @@ class TransactionAssist extends Component {
                         value={
                           this.props.assist.homeInspection.homeInspectionReport
                         }
-                        onClick={() => this.props.homeInspectionStep("report")}
+                        disabled={
+                          this.props.assist.homeInspection.homeInspectionReport
+                            ? true
+                            : false
+                        }
+                        onClick={() =>
+                          this.props.homeInspectionStep(
+                            "report",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Home Inspection report has been generated and uploaded to the platform"
@@ -633,7 +711,7 @@ class TransactionAssist extends Component {
                 <Grid item>
                   <FormControlLabel
                     className={
-                      this.props.assist.escrow.setup
+                      this.props.assist.loan.application
                         ? "action-text-completed"
                         : "action-text"
                     }
@@ -641,7 +719,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.loan.application}
-                        onClick={() => this.props.LoanStep("application")}
+                        disabled={
+                          this.props.assist.loan.application ? true : false
+                        }
+                        onClick={() =>
+                          this.props.LoanStep(
+                            "application",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Intital Loan Application is submitted and is under review "
@@ -650,7 +736,7 @@ class TransactionAssist extends Component {
                 <Grid item>
                   <FormControlLabel
                     className={
-                      this.props.assist.escrow.setup
+                      this.props.assist.loan.recieved
                         ? "action-text-completed"
                         : "action-text"
                     }
@@ -658,7 +744,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.loan.recieved}
-                        onClick={() => this.props.LoanStep("recieved")}
+                        disabled={
+                          this.props.assist.loan.recieved ? true : false
+                        }
+                        onClick={() =>
+                          this.props.LoanStep(
+                            "recieved",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Home Appraisal and Title report recieved by the Lender and is under review"
@@ -667,7 +761,7 @@ class TransactionAssist extends Component {
                 <Grid item>
                   <FormControlLabel
                     className={
-                      this.props.assist.escrow.setup
+                      this.props.assist.loan.approved
                         ? "action-text-completed"
                         : "action-text"
                     }
@@ -675,7 +769,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.loan.approved}
-                        onClick={() => this.props.LoanStep("approved")}
+                        disabled={
+                          this.props.assist.loan.approved ? true : false
+                        }
+                        onClick={() =>
+                          this.props.LoanStep(
+                            "approved",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Loan is approved by the lender"
@@ -757,7 +859,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.closing.walkthrough}
-                        onClick={() => this.props.closingStep("walkthrough")}
+                        disabled={
+                          this.props.assist.closing.walkthrough ? true : false
+                        }
+                        onClick={() =>
+                          this.props.closingStep(
+                            "walkthrough",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="The Final Walkthrough has been performed by the Buyer"
@@ -774,7 +884,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.closing.paperwork}
-                        onClick={() => this.props.closingStep("paperwork")}
+                        disabled={
+                          this.props.assist.closing.paperwork ? true : false
+                        }
+                        onClick={() =>
+                          this.props.closingStep(
+                            "paperwork",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="All the necessary paperwork has been Signed"
@@ -791,7 +909,15 @@ class TransactionAssist extends Component {
                       <Checkbox
                         color="primary"
                         value={this.props.assist.closing.final}
-                        onClick={() => this.props.closingStep("final")}
+                        disabled={
+                          this.props.assist.closing.final ? true : false
+                        }
+                        onClick={() =>
+                          this.props.closingStep(
+                            "final",
+                            this.props.match.params.tid
+                          )
+                        }
                       />
                     }
                     label="Close the deal!"

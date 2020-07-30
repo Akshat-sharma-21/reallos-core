@@ -55,6 +55,50 @@ function assistReducer(state = initialState, action) {
         ...state,
         modal: false,
       };
+    case actions.ASSIST_SETUP:
+      return {
+        ...state,
+        escrow: {
+          setup: action.escrow.setup,
+          goodFaith: action.escrow.goodFaith,
+          loanDocument: action.escrow.loanDocument,
+          completed: action.escrow.completed,
+          numberOfCompleted: action.escrow.numberOfCompleted,
+        },
+        titleSearch: {
+          titleReport: action.titleSearch.titleReport,
+          titleInsurance: action.titleSearch.titleInsurance,
+          completed: action.titleSearch.completed,
+          numberOfCompleted: action.titleSearch.numberOfCompleted,
+        },
+        homeAppraisal: {
+          homeAppraisalAppointed: action.homeAppraisal.homeAppraisalAppointed,
+          homeAppraisalReport: action.homeAppraisal.homeAppraisalReport,
+          completed: action.homeAppraisal.completed,
+          numberOfCompleted: action.homeAppraisal.numberOfCompleted,
+        },
+        homeInspection: {
+          homeInspectionAppointed:
+            action.homeInspection.homeInspectionAppointed,
+          homeInspectionReport: action.homeInspection.homeInspectionReport,
+          completed: action.homeInspection.completed,
+          numberOfCompleted: action.homeInspection.numberOfCompleted,
+        },
+        loan: {
+          application: action.loan.application,
+          recieved: action.loan.recieved,
+          approved: action.loan.approved,
+          completed: action.loan.completed,
+          numberOfCompleted: action.loan.numberOfCompleted,
+        },
+        closing: {
+          walkthrough: action.closing.walkthrough,
+          paperwork: action.closing.paperwork,
+          final: action.closing.final,
+          completed: action.closing.completed,
+          numberOfCompleted: action.closing.numberOfCompleted,
+        },
+      };
     case actions.ESCROW_SETUP:
       return {
         ...state,
