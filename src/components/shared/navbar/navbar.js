@@ -78,11 +78,12 @@ class RenderNav extends Component {
       .doc(userId)
       .get()
       .then((doc) => {
-        // document.querySelector("img").src = doc.data().photoURL;
-        var img_tags = document.querySelectorAll("img");
-        img_tags[0].src = doc.data().photoURL;
-        img_tags[1].src = doc.data().photoURL;
-        img_tags[2].src = doc.data().photoURL;
+        if (doc.data().photoURL !== "") {
+          var img_tags = document.querySelectorAll("img");
+          img_tags[0].src = doc.data().photoURL;
+          img_tags[1].src = doc.data().photoURL;
+          img_tags[2].src = doc.data().photoURL;
+        }
       });
   }
 

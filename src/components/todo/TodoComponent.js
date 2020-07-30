@@ -194,7 +194,7 @@ class Todo extends Component {
       );
     } else {
       return (
-        <div style={{paddingBottom: 30}}>
+        <div style={{ paddingBottom: 30 }}>
           <Box paddingLeft={5}>
             <h1>Tasks</h1>
             <SearchBar />
@@ -202,9 +202,9 @@ class Todo extends Component {
               <Box component="div" marginTop={2}>
                 <Card
                   className={
-                    (getDecodedHash(this.props.location) === `#${todo.id}`)
-                      ? 'paper-highlight'
-                      : ''
+                    getDecodedHash(this.props.location) === `#${todo.id}`
+                      ? "paper-highlight"
+                      : ""
                   }
                   elevation={3}
                 >
