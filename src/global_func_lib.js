@@ -37,7 +37,7 @@ export const getRoleLabel = (roleValue) => {
   });
 
   return roleLabel;
-};
+}
 
 /**
  * Regex to validate email.
@@ -205,7 +205,7 @@ export const validateFormField = (textValue, fieldType) => {
   }
 
   return formFieldError;
-};
+}
 
 /**
  * Converts bytes to other measurments of size.
@@ -226,7 +226,7 @@ export const bytesToSize = (bytes) => {
 
   let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
   return `${Math.round(bytes / Math.pow(1024, i), 2)} ${sizes[i]}`;
-};
+}
 
 /**
  * Returns hash present in the URL of current page
@@ -241,7 +241,7 @@ export const getDecodedHash = (locationObject) => {
   const decodedHash = decodeURIComponent(hash);
 
   return decodedHash;
-};
+}
 
 /**
  * Returns `TransactionID` from **location** prop.
@@ -261,7 +261,7 @@ export const getTransactionID = (locationObject) => {
       : null;
 
   return transactionID;
-};
+}
 
 /**
  * Returns the list of people involved in a transaction.
@@ -284,7 +284,7 @@ export const getPeopleInvolved = async (transactionID) => {
   });
 
   return response.data.peopleList;
-};
+}
 
 /**
  * Returns the username of a user using their email.
@@ -304,29 +304,26 @@ export const getPeopleInvolved = async (transactionID) => {
  * @returns {Promise<string>}
  * Name of the user corresponding to the email.
  */
-export const getUserName = async (
-  email,
-  transactionID,
-  peopleInvolvedObject
-) => {
-  console.log(validateFormField(email, "email"));
+export const getUserName = async (email, transactionID, peopleInvolvedObject) => {
+  console.log(validateFormField(email, 'email'))
 
-  if (validateFormField(email, "email")) return;
+  if (validateFormField(email, 'email'))
+    return;
 
   if (peopleInvolvedObject == null) {
     if (transactionID)
       peopleInvolvedObject = await getPeopleInvolved(transactionID);
-    else return;
+
+    else
+      return;
   }
 
-  const filtered = peopleInvolvedObject.filter(
-    (person) => person.email === email
-  );
+  const filtered = peopleInvolvedObject.filter(person => person.email == email);
 
-  if (filtered.length !== 0) {
+  if (filtered.length != 0) {
     return filtered[0].name;
   }
-};
+}
 
 /**
  * Returns `currentUser` from `firebase.auth` namespace.
@@ -337,7 +334,7 @@ export const getUserName = async (
  */
 export const getCurrentUser = () => {
   return myFirebase.auth().currentUser;
-};
+}
 
 /**
  * Returns document name with the extension stripped off.
@@ -348,7 +345,7 @@ export const getCurrentUser = () => {
 export const getEffectiveDocumentName = (docName) => {
   docName = String(docName);
   return docName.replace(/\.pdf$/, "");
-};
+}
 
 /**
  * Enum for access rights
@@ -357,4 +354,4 @@ export const accessRights = {
   NO_ACCESS: 0,
   READ_ACCESS: 1,
   READ_EDIT_ACCESS: 2,
-};
+}
