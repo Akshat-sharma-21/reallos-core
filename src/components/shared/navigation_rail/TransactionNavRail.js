@@ -1,9 +1,9 @@
 import React from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import './TransactionNavRail.css';
-import {useHistory} from 'react-router-dom';
+import "./TransactionNavRail.css";
+import { useHistory } from "react-router-dom";
 
 import {
   Drawer,
@@ -31,8 +31,8 @@ const navRailWidth = 300;
 const listItemTextProperties = {
   color: "#150578",
   marginLeft: 12,
-  fontSize: 16
-}
+  fontSize: 16,
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,11 +73,11 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   listItemText: {
-    ...listItemTextProperties
+    ...listItemTextProperties,
   },
   listItemTextActive: {
     fontWeight: "bold",
-    ...listItemTextProperties
+    ...listItemTextProperties,
   },
 }));
 
@@ -85,64 +85,64 @@ export default function NavRail() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const routerLocation = useLocation();
-  const transId = routerLocation.pathname.split('/')[2]; // getting the id from the pathname
+  const transId = routerLocation.pathname.split("/")[2]; // getting the id from the pathname
   let listItems = [
     {
-      icon: (<HomeIcon size={24} />),
-      label: 'Transaction Dashboard',
+      icon: <HomeIcon size={24} />,
+      label: "Transaction Dashboard",
       isActiveRoute: null,
-      linkTo: '/transaction'
+      linkTo: "/transaction",
     },
     {
-      icon: (<PackageIcon size={24} />),
-      label: 'Transaction Assist',
-      isActiveRoute: routerLocation.pathname.includes('assist'),
-      linkTo: '/transaction/'+transId+'/assist'
+      icon: <PackageIcon size={24} />,
+      label: "Transaction Assist",
+      isActiveRoute: routerLocation.pathname.includes("assist"),
+      linkTo: "/transaction/" + transId + "/assist",
     },
     {
-      icon: (<FileIcon size={24} />),
-      label: 'Paperwork',
-      isActiveRoute: routerLocation.pathname.includes('/paperwork'),
-      linkTo: '/transaction/'+transId+'/paperwork'
+      icon: <FileIcon size={24} />,
+      label: "Paperwork",
+      isActiveRoute: routerLocation.pathname.includes("/paperwork"),
+      linkTo: "/transaction/" + transId + "/paperwork",
     },
     {
-      icon: (<PersonIcon size={24} />),
-      label: 'People',
-      isActiveRoute: routerLocation.pathname.includes('/people'),
-      linkTo: '/transaction/'+transId+'/people'
+      icon: <PersonIcon size={24} />,
+      label: "People",
+      isActiveRoute: routerLocation.pathname.includes("/people"),
+      linkTo: "/transaction/" + transId + "/people",
     },
     {
-      icon: (<ChecklistIcon size={24} />),
-      label: 'Todo',
-      isActiveRoute: routerLocation.pathname.includes('/todo'),
-      linkTo: '/transaction/'+transId+'/todo'
+      icon: <ChecklistIcon size={24} />,
+      label: "Todo",
+      isActiveRoute: routerLocation.pathname.includes("/todo"),
+      linkTo: "/transaction/" + transId + "/todo",
     },
     {
-      icon: (<CommentDiscussionIcon size={24} />),
-      label: 'Discussions',
-      isActiveRoute: routerLocation.pathname.startsWith('/discussions'),
-      linkTo: '/transaction/'+transId+'/discussions'
+      icon: <CommentDiscussionIcon size={24} />,
+      label: "Discussions",
+      isActiveRoute: routerLocation.pathname.includes("/discussions"),
+      linkTo: "/transaction/" + transId + "/discussions",
     },
   ];
 
   /**
    * Builds a list item for navigation rail.
-   * 
+   *
    * @param {object} navRailItem
    * Object containing properties for building a
    * navigation rail list item.
-   * 
+   *
    * @param {JSX.Element} navRailItem.icon
    * A JSX element which has to be displayed as
    * an icon on the navigation rail
-   * 
+   *
    * @param {string} navRailItem.label
    * Label for the list item.
-   * 
+   *
    * @param {boolean} navRailItem.isActiveRoute
    * Applies a styling to the list item show
    * if a route is active.
-   * 
+   *
    * @param {string} navRailItem.linkTo
    * The URL to direct the user when the list item
    * is clicked.
@@ -154,28 +154,34 @@ export default function NavRail() {
     return (
       <ListItem
         button
-        style={{marginTop: 15, paddingLeft: 6}}
+        style={{ marginTop: 15, paddingLeft: 6 }}
         component="a"
         key={label}
-        onClick={()=>(
-          History.push(linkTo)
-        )}
+        onClick={() => History.push(linkTo)}
       >
-        <ListItemIcon className={(isActiveRoute) ? 'nav-rail-icon-active' : ''}>
+        <ListItemIcon className={isActiveRoute ? "nav-rail-icon-active" : ""}>
           <div className="nav-rail-indicator-container">
-            <div className={isActiveRoute ? "nav-rail-indicator-active" : "nav-rail-indicator-inactive"} />
+            <div
+              className={
+                isActiveRoute
+                  ? "nav-rail-indicator-active"
+                  : "nav-rail-indicator-inactive"
+              }
+            />
           </div>
-          { icon }
+          {icon}
         </ListItemIcon>
         <ListItemText
           primary={label}
           classes={{
-            primary: (isActiveRoute) ? classes.listItemTextActive : classes.listItemText
+            primary: isActiveRoute
+              ? classes.listItemTextActive
+              : classes.listItemText,
           }}
         />
       </ListItem>
     );
-  }
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -222,9 +228,7 @@ export default function NavRail() {
         </div>
         <Divider />
         <List>
-          {listItems.map(
-            listItemData => renderNavRailListItem(listItemData)
-          )}
+          {listItems.map((listItemData) => renderNavRailListItem(listItemData))}
         </List>
       </Drawer>
     </div>

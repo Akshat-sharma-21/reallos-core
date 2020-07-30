@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       getTransaction,
-      additionalInformation
+      additionalInformation,
     },
     dispatch
   );
@@ -342,7 +342,7 @@ class TransactionDasboard extends Component {
       lastName: this.state.lastName,
       phone: this.state.phone,
       role: this.state.role,
-      state: this.state.state
+      state: this.state.state,
     };
 
     this.props.additionalInformation(userInfo);
@@ -358,26 +358,20 @@ class TransactionDasboard extends Component {
   }
 
   SocialDetailModal() {
-    if(!this.props.utils.Loading){ // if the component is not loading
-      if(this.props.user.firstName){ // if the user is defined in the redux store
+    if (!this.props.utils.Loading) {
+      // if the component is not loading
+      if (this.props.user.firstName) {
+        // if the user is defined in the redux store
+        return <></>;
+      } else {
         return (
-          <></>
-        );
-      }
-      else{ 
-        return (
-          <Modal
-            title="Fill in Details"
-            visible={true}
-            modalWidth={500}
-          >
+          <Modal title="Fill in Details" visible={true} modalWidth={500}>
             <this.RenderStep />
           </Modal>
         );
       }
-    }
-    else{
-      return (<></>);
+    } else {
+      return <></>;
     }
   }
 
@@ -388,7 +382,7 @@ class TransactionDasboard extends Component {
         <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
         <Container>
           <NavBar />
-          <this.SocialDetailModal  />
+          <this.SocialDetailModal />
           <Grid
             container
             direction="row"

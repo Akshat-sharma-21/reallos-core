@@ -11,21 +11,17 @@ export default class WelcomeBoard extends Component {
             <img
               src={require("../../../assets/chat-empty.png")}
               className="discussions-empty-image"
+              alt="Empty Chat"
             />
           </Box>
         </Grid>
         <Grid item>
           <Box paddingTop={2}>
             <div className="discussions-heading">
-              <span style={{fontFamily: 'Gilroy', fontWeight: 900}}>
+              <span style={{ fontFamily: "Gilroy", fontWeight: 900 }}>
                 Reallos
               </span>
-
-              &nbsp;
-
-              <span>
-                Discussions
-              </span>
+              &nbsp;<span>Discussions</span>
             </div>
           </Box>
         </Grid>

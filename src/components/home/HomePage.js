@@ -57,10 +57,11 @@ function HomePage(props) {
           </Alert>
         </Snackbar>
       )}
-      <div className="dummy-page-container">
+      <div className="home-page-container">
         <img
           src={require("../../assets/reallos-logo-dark.svg")}
-          className="dummy-page-logo"
+          className="home-page-logo"
+          alt="Reallos Logo"
         />
         <Grid style={{ height: "100vh" }}>
           <Grid container direction="row" style={{ height: "100%" }}>
@@ -126,12 +127,13 @@ function HomePage(props) {
                 </Grid>
               </Box>
             </Grid>
+
             <Grid
               container
               md={6}
               alignItems="center"
               justify="center"
-              className="dummy-page-right-back"
+              className="home-page-right-back"
             >
               <Card
                 elevation={3}
@@ -139,7 +141,7 @@ function HomePage(props) {
                   width: "65%",
                   boxShadow: "20px -20px rgba(255,255,255,0.4)",
                 }}
-                className="dummy-page-right-card"
+                className="home-page-right-card"
               >
                 <Grid
                   container
@@ -163,30 +165,47 @@ function HomePage(props) {
                       <img
                         src={require("../../assets/small-r-dark-logo.png")}
                         height="75px"
+                        alt="Reallos Logo"
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={8} justify="center">
-                    <Box marginX={8}>
-                      <Grid container direction="column">
-                        <Grid item>
-                          <Box>
-                            <FileIcon size={30} className="icon-row-1" />
-                            <PackageIcon size={30} className="icon-row-1" />
-                            <ChecklistIcon size={30} />
-                          </Box>
-                        </Grid>
-                        <Grid item>
-                          <Box>
-                            <PersonIcon size={30} className="icon-row-2" />
-                            <CommentDiscussionIcon
-                              size={30}
-                              className="icon-row-2"
-                            />
-                          </Box>
-                        </Grid>
+                  <Grid item xs={8}>
+                    <Grid
+                      container
+                      direction="row"
+                      justify="center"
+                      alignItems="center"
+                    >
+                      <Grid item xs={3}></Grid>
+                      <Grid item xs={2}>
+                        <FileIcon size={30} />
                       </Grid>
-                    </Box>
+                      <Grid item xs={2}>
+                        <PackageIcon size={30} />
+                      </Grid>
+                      <Grid item xs={2}>
+                        <ChecklistIcon size={30} />
+                      </Grid>
+                      <Grid item xs={3}></Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justify="center"
+                      alignItems="center"
+                    >
+                      <Grid item xs={4}></Grid>
+                      <Grid item xs={2}>
+                        <PersonIcon size={30} className="icon-row-2" />
+                      </Grid>
+                      <Grid item xs={2}>
+                        <CommentDiscussionIcon
+                          size={30}
+                          className="icon-row-2"
+                        />
+                      </Grid>
+                      <Grid item xs={4}></Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Card>

@@ -1,34 +1,24 @@
 import React, { Component } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  FormControl,
-  TextField,
-  Card,
-  Button,
-} from "@material-ui/core";
+import { Box, Grid, Typography, Card } from "@material-ui/core";
 import "./EmailHandlerComponent.css";
 import { useLocation } from "react-router-dom";
-import { myFirebase } from '../../Config/MyFirebase.js';
-import VerifyEmail from './VerifyEmail.js';
-import ResetPassword from './ResetPassword.js';
-import InvitationAccept from './InvitationAccept.js';
+import VerifyEmail from "./VerifyEmail.js";
+import ResetPassword from "./ResetPassword.js";
+import InvitationAccept from "./InvitationAccept.js";
 
 class EmailHandler extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
+    this.state = {
       email: null,
-      password: '',
-      error: '',
+      password: "",
+      error: "",
       success: false,
       validCode: null,
       verifiedCode: false,
-      actionCode: '',
-      mode: '',
-    }
+      actionCode: "",
+      mode: "",
+    };
     this.RenderRightColumn = this.RenderRightColumn.bind(this);
   }
 
@@ -38,6 +28,7 @@ class EmailHandler extends Component {
         <img
           src={require("../../assets/reallos-logo-light.svg")}
           className="emailhandler-logo"
+          alt="Reallos Logo"
         />
         <Grid style={{ height: "100vh" }}>
           <Grid container direction="row" style={{ height: "100%" }}>
@@ -52,6 +43,7 @@ class EmailHandler extends Component {
                 <img
                   src={require("../../assets/emailhandler.png")}
                   className="right-image"
+                  alt="Email Handler"
                 />
               </Box>
             </Grid>
@@ -82,27 +74,20 @@ class EmailHandler extends Component {
     const actionCode = query.get("oobCode");
     console.log(actionCode);
     if (mode === "verifyEmail") {
-      return(
-        <VerifyEmail actionCode={actionCode}/>
-      );
+      return <VerifyEmail actionCode={actionCode} />;
     }
     if (mode === "resetPassword") {
+      return <ResetPassword actionCode={actionCode} />;
+    }
+    if (mode.indexOf("invitation") !== -1) {
+      return <InvitationAccept actionCode={actionCode} tid={mode.slice(10)} />;
+    } else {
       return (
-        <ResetPassword actionCode={actionCode}/>
-      );
-    }
-    if (mode.indexOf("invitation") !== -1){
-      return(
-        <InvitationAccept actionCode={actionCode} tid={mode.slice(10)} />
-      );
-    }
-    else{
-      return(
         <Typography
-            variant="h6"
-            style={{ width: "150%", marginBottom: "8px", color: "red" }}
-          >
-            Invalid Request 
+          variant="h6"
+          style={{ width: "150%", marginBottom: "8px", color: "red" }}
+        >
+          Invalid Request
         </Typography>
       );
     }

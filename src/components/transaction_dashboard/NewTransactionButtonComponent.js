@@ -302,7 +302,11 @@ class NewTransactionButton extends Component {
       address: this.state.Address,
       desc: this.state.Description,
     };
-    this.props.createTransaction(newTransaction, this.state.Invites); // dispatching an action with the appropriate payload
+    this.props.createTransaction(
+      newTransaction,
+      this.state.Invites,
+      this.props.user
+    ); // dispatching an action with the appropriate payload
   }
 
   /**

@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import MediaQuery from "react-responsive";
 import {
   addTask,
   deleteTask,
   editTask,
   getTask,
-  completeTask
+  completeTask,
 } from "../../actions/todoActions";
 import { ReallosLoaderWithOverlay } from "../shared/preloader/ReallosLoader";
 import {
@@ -65,7 +66,7 @@ const mapDispatchToProps = (dispatch) => {
       deleteTask,
       editTask,
       getTask,
-      completeTask
+      completeTask,
     },
     dispatch
   );
@@ -96,7 +97,7 @@ class Todo extends Component {
         date: "",
         to: {},
         from: {},
-        completed: false
+        completed: false,
       },
       validated: false,
     };
@@ -140,8 +141,9 @@ class Todo extends Component {
     }
   }
 
-  markCompleted(id, taskId){ // Marking the task completed
-    this.props.completeTask(id,taskId);
+  markCompleted(id, taskId) {
+    // Marking the task completed
+    this.props.completeTask(id, taskId);
     this.toggleModal();
   }
 
@@ -359,7 +361,7 @@ class Todo extends Component {
                   <td style={{ paddingLeft: "10px", paddingTop: "4px" }}>
                     {this.state.expandedTask.completed ? ( // If the task is completed, display completed
                       <Typography>Completed</Typography>
-                    ):(
+                    ) : (
                       this.getDeadlineText(this.state.expandedTask.date)
                     )}
                   </td>
@@ -447,11 +449,16 @@ class Todo extends Component {
             <Typography align="right">
               {this.state.expandedTask.completed ? (
                 <></>
-              ):(
+              ) : (
                 <Button
-                onClick={() => this.markCompleted(this.props.match.params.tid, this.state.expandedTask.id)}
-                startIcon={<CheckCircleFillIcon />}
-                style={{ backgroundColor: "#150578", color: "#fff" }}
+                  onClick={() =>
+                    this.markCompleted(
+                      this.props.match.params.tid,
+                      this.state.expandedTask.id
+                    )
+                  }
+                  startIcon={<CheckCircleFillIcon />}
+                  style={{ backgroundColor: "#150578", color: "#fff" }}
                 >
                   Completed
                 </Button>
@@ -618,7 +625,7 @@ class Todo extends Component {
         date: todo.Date,
         to: todo.To,
         from: todo.From,
-        completed: todo.Completed
+        completed: todo.Completed,
       },
     });
     this.toggleModal();
@@ -626,130 +633,283 @@ class Todo extends Component {
 
   render() {
     return (
-      <Container>
-        <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
-        <NavBar />
-        <NavRail />
-        <this.RenderToDoModal />
-        <SideDrawer
-          visible={this.state.isNewTaskFormOpen}
-          side="right"
-          dismissCallback={this.toggleNewTaskForm}
-          title="Add a Task"
-        >
-          <Typography className="sub-heading-task-form">
-            What is the task about?
-          </Typography>
-          <FormGroup row className="form-group">
-            <TagIcon size={30} className="tag-icon" />
-            <TextField
-              variant="outlined"
-              label="Title"
-              className="form-fields"
-              value={this.state.title}
-              name="title"
-              onChange={this.handleChange}
-              onBlur={this.handleChange}
-              helperText={this.state.errors.title}
-              error={this.state.errors.title !== null}
-            />
-          </FormGroup>
-          <FormGroup row className="form-group">
-            <PencilIcon size={30} className="tag-icon" />
-            <TextField
-              variant="outlined"
-              label="Description"
-              className="form-fields"
-              value={this.state.description}
-              multiline
-              name="description"
-              rows={8}
-              onChange={this.handleChange}
-              onBlur={this.handleChange}
-              helperText={this.state.errors.description}
-              error={this.state.errors.description !== null}
-            />
-          </FormGroup>
-          <FormGroup row className="form-group">
-            <CalendarIcon size={30} className="tag-icon" />
-            <TextField
-              variant="outlined"
-              type="date"
-              className="form-fields"
-              value={this.state.date}
-              onChange={this.handleChange}
-              onBlur={this.handleChange}
-              name="date"
-              helperText={this.state.errors.date}
-              error={this.state.errors.date !== null}
-            />
-          </FormGroup>
-          <Typography className="sub-heading-task-form-2">
-            Assign to Someone
-          </Typography>
-          <FormGroup row className="form-group">
-            <PersonIcon size={30} className="tag-icon" />
-            {
-              // Checking to see if the people dropdown should be disabled or not
-              this.props.people.length !== 0 ? (
-                <Select
-                  id="person_select"
-                  label="Select a person"
-                  className="form-fields"
-                  onChange={this.handleChange}
-                  onBlur={this.handleChange}
-                  value={this.state.to}
-                  name="to"
-                >
-                  {this.props.people.map((person) => (
-                    <MenuItem value={person}>{person.name}</MenuItem>
-                  ))}
-                </Select>
-              ) : (
-                <Select className="form-fields" disabled="true" />
-              )
-            }
-          </FormGroup>
-          <Grid container direction="row" justify="flex-end">
-            <Grid item>
-              <Grid container direction="row" spacing={2}>
-                <Grid item>
-                  <Button
-                    variant="outlined"
-                    onClick={this.cancelAddTask}
-                    className="cancel-back-button"
+      <MediaQuery minDeviceWidth={1450}>
+        {(matches) => {
+          if (matches) {
+            return (
+              <Box component="div">
+                <Container>
+                  <ReallosLoaderWithOverlay
+                    visible={this.props.utils.Loading}
+                  />
+                  <NavBar />
+                  <NavRail />
+                  <this.RenderToDoModal />
+                  <SideDrawer
+                    visible={this.state.isNewTaskFormOpen}
+                    side="right"
+                    dismissCallback={this.toggleNewTaskForm}
+                    title="Add a Task"
                   >
-                    cancel
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    onClick={this.validTask}
-                    disabled={!this.state.validated}
-                    className="next-button"
+                    <Typography className="sub-heading-task-form">
+                      What is the task about?
+                    </Typography>
+                    <FormGroup row className="form-group">
+                      <TagIcon size={30} className="tag-icon" />
+                      <TextField
+                        variant="outlined"
+                        label="Title"
+                        className="form-fields"
+                        value={this.state.title}
+                        name="title"
+                        onChange={this.handleChange}
+                        onBlur={this.handleChange}
+                        helperText={this.state.errors.title}
+                        error={this.state.errors.title !== null}
+                      />
+                    </FormGroup>
+                    <FormGroup row className="form-group">
+                      <PencilIcon size={30} className="tag-icon" />
+                      <TextField
+                        variant="outlined"
+                        label="Description"
+                        className="form-fields"
+                        value={this.state.description}
+                        multiline
+                        name="description"
+                        rows={8}
+                        onChange={this.handleChange}
+                        onBlur={this.handleChange}
+                        helperText={this.state.errors.description}
+                        error={this.state.errors.description !== null}
+                      />
+                    </FormGroup>
+                    <FormGroup row className="form-group">
+                      <CalendarIcon size={30} className="tag-icon" />
+                      <TextField
+                        variant="outlined"
+                        type="date"
+                        className="form-fields"
+                        value={this.state.date}
+                        onChange={this.handleChange}
+                        onBlur={this.handleChange}
+                        name="date"
+                        helperText={this.state.errors.date}
+                        error={this.state.errors.date !== null}
+                      />
+                    </FormGroup>
+                    <Typography className="sub-heading-task-form-2">
+                      Assign to Someone
+                    </Typography>
+                    <FormGroup row className="form-group">
+                      <PersonIcon size={30} className="tag-icon" />
+                      {
+                        // Checking to see if the people dropdown should be disabled or not
+                        this.props.people.length !== 0 ? (
+                          <Select
+                            id="person_select"
+                            label="Select a person"
+                            className="form-fields"
+                            onChange={this.handleChange}
+                            onBlur={this.handleChange}
+                            value={this.state.to}
+                            name="to"
+                          >
+                            {this.props.people.map((person) => (
+                              <MenuItem value={person}>{person.name}</MenuItem>
+                            ))}
+                          </Select>
+                        ) : (
+                          <Select className="form-fields" disabled="true" />
+                        )
+                      }
+                    </FormGroup>
+                    <Grid container direction="row" justify="flex-end">
+                      <Grid item>
+                        <Grid container direction="row" spacing={2}>
+                          <Grid item>
+                            <Button
+                              variant="outlined"
+                              onClick={this.cancelAddTask}
+                              className="cancel-back-button"
+                            >
+                              cancel
+                            </Button>
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              onClick={this.validTask}
+                              disabled={!this.state.validated}
+                              className="next-button"
+                            >
+                              <CheckIcon /> &nbsp; Add Task
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </SideDrawer>
+                  <this.RenderToDo />
+                  <Grid
+                    direction="row"
+                    justify="flex-end"
+                    alignItems="flex-end"
                   >
-                    <CheckIcon /> &nbsp; Add Task
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </SideDrawer>
-        <this.RenderToDo />
-        <Grid direction="row" justify="flex-end" alignItems="flex-end">
-          <Grid item>
-            <Fab
-              variant="extended"
-              className="reallos-fab"
-              size="large"
-              onClick={this.toggleNewTaskForm}
-            >
-              <PlusIcon className="fab-icon" size={20} /> &nbsp; New Task
-            </Fab>
-          </Grid>
-        </Grid>
-      </Container>
+                    <Grid item>
+                      <Fab
+                        variant="extended"
+                        className="reallos-fab"
+                        size="large"
+                        onClick={this.toggleNewTaskForm}
+                      >
+                        <PlusIcon className="fab-icon" size={20} /> &nbsp; New
+                        Task
+                      </Fab>
+                    </Grid>
+                  </Grid>
+                </Container>
+              </Box>
+            );
+          } else {
+            return (
+              <Box component="div" paddingLeft={8}>
+                <Container>
+                  <ReallosLoaderWithOverlay
+                    visible={this.props.utils.Loading}
+                  />
+                  <NavBar />
+                  <NavRail />
+                  <this.RenderToDoModal />
+                  <SideDrawer
+                    visible={this.state.isNewTaskFormOpen}
+                    side="right"
+                    dismissCallback={this.toggleNewTaskForm}
+                    title="Add a Task"
+                  >
+                    <Typography className="sub-heading-task-form">
+                      What is the task about?
+                    </Typography>
+                    <FormGroup row className="form-group">
+                      <TagIcon size={30} className="tag-icon" />
+                      <TextField
+                        variant="outlined"
+                        label="Title"
+                        className="form-fields"
+                        value={this.state.title}
+                        name="title"
+                        onChange={this.handleChange}
+                        onBlur={this.handleChange}
+                        helperText={this.state.errors.title}
+                        error={this.state.errors.title !== null}
+                      />
+                    </FormGroup>
+                    <FormGroup row className="form-group">
+                      <PencilIcon size={30} className="tag-icon" />
+                      <TextField
+                        variant="outlined"
+                        label="Description"
+                        className="form-fields"
+                        value={this.state.description}
+                        multiline
+                        name="description"
+                        rows={8}
+                        onChange={this.handleChange}
+                        onBlur={this.handleChange}
+                        helperText={this.state.errors.description}
+                        error={this.state.errors.description !== null}
+                      />
+                    </FormGroup>
+                    <FormGroup row className="form-group">
+                      <CalendarIcon size={30} className="tag-icon" />
+                      <TextField
+                        variant="outlined"
+                        type="date"
+                        className="form-fields"
+                        value={this.state.date}
+                        onChange={this.handleChange}
+                        onBlur={this.handleChange}
+                        name="date"
+                        helperText={this.state.errors.date}
+                        error={this.state.errors.date !== null}
+                      />
+                    </FormGroup>
+                    <Typography className="sub-heading-task-form-2">
+                      Assign to Someone
+                    </Typography>
+                    <FormGroup row className="form-group">
+                      <PersonIcon size={30} className="tag-icon" />
+                      {
+                        // Checking to see if the people dropdown should be disabled or not
+                        this.props.people.length !== 0 ? (
+                          <Select
+                            id="person_select"
+                            label="Select a person"
+                            className="form-fields"
+                            onChange={this.handleChange}
+                            onBlur={this.handleChange}
+                            value={this.state.to}
+                            name="to"
+                          >
+                            {this.props.people.map((person) => (
+                              <MenuItem value={person}>{person.name}</MenuItem>
+                            ))}
+                          </Select>
+                        ) : (
+                          <Select className="form-fields" disabled="true" />
+                        )
+                      }
+                    </FormGroup>
+                    <Grid container direction="row" justify="flex-end">
+                      <Grid item>
+                        <Grid container direction="row" spacing={2}>
+                          <Grid item>
+                            <Button
+                              variant="outlined"
+                              onClick={this.cancelAddTask}
+                              className="cancel-back-button"
+                            >
+                              cancel
+                            </Button>
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              onClick={this.validTask}
+                              disabled={!this.state.validated}
+                              className="next-button"
+                            >
+                              <CheckIcon /> &nbsp; Add Task
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </SideDrawer>
+                  <this.RenderToDo />
+                  <Grid
+                    direction="row"
+                    justify="flex-end"
+                    alignItems="flex-end"
+                  >
+                    <Grid item>
+                      <Fab
+                        variant="extended"
+                        className="reallos-fab"
+                        size="large"
+                        onClick={this.toggleNewTaskForm}
+                      >
+                        <PlusIcon className="fab-icon" size={20} /> &nbsp; New
+                        Task
+                      </Fab>
+                    </Grid>
+                  </Grid>
+                </Container>
+              </Box>
+            );
+          }
+        }}
+      </MediaQuery>
     );
   }
 }

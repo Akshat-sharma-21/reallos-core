@@ -19,10 +19,9 @@ import {
   Button,
   Avatar,
 } from "@material-ui/core";
-
 import { AvatarGroup } from "@material-ui/lab";
-
-import { KebabHorizontalIcon, PersonIcon } from "@primer/octicons-react";
+import { PersonIcon } from "@primer/octicons-react";
+import MediaQuery from "react-responsive";
 
 const styles = (theme) => ({
   avatarNoParticipants: {
@@ -156,63 +155,139 @@ class Chat extends Component {
 
   render() {
     return (
-      <Box component="div">
-        <Container>
-          <NavRail />
-          <Box component="div" mt={2} mb={2} className="discussions-root">
-            <Grid container>
-              <Grid item xs={4}>
-                <Box className="list-div">
-                  <List className="list-header">
-                    <ListItem>
-                      <Grid
-                        container
-                        direction="row"
-                        justify="space-between"
-                        alignItems="center"
-                      >
-                        <Grid item>
-                          <Box ml={2} component="a" href="#">
-                            <img
-                              src={require("../../../assets/reallos-logo.svg")}
-                              alt={"Reallos"}
-                              className="discussions-reallos-logo"
-                            />
-                          </Box>
-                        </Grid>
-                        <Grid item>
-                          <IconButton size="medium">
-                            <Avatar src={require("../../../assets/user.png")} />
-                          </IconButton>
-                          <IconButton>
-                            <KebabHorizontalIcon size={24} />
-                          </IconButton>
-                        </Grid>
+      <MediaQuery minDeviceWidth={1450}>
+        {(matches) => {
+          if (matches) {
+            return (
+              <Box component="div">
+                <Container>
+                  <NavRail />
+                  <Box
+                    component="div"
+                    mt={2}
+                    mb={2}
+                    className="discussions-root"
+                  >
+                    <Grid container>
+                      <Grid item xs={4}>
+                        <Box className="list-div">
+                          <List className="list-header">
+                            <ListItem>
+                              <Grid
+                                container
+                                direction="row"
+                                justify="space-between"
+                                alignItems="center"
+                              >
+                                <Grid item>
+                                  <Box ml={2} component="a" href="#">
+                                    <img
+                                      src={require("../../../assets/reallos-logo.svg")}
+                                      alt={"Reallos"}
+                                      className="discussions-reallos-logo"
+                                    />
+                                  </Box>
+                                </Grid>
+                                <Grid item>
+                                  <IconButton size="medium">
+                                    <Avatar
+                                      src={require("../../../assets/user.png")}
+                                    />
+                                  </IconButton>
+                                </Grid>
+                              </Grid>
+                            </ListItem>
+                          </List>
+                          <List>{this.renderListUser()}</List>
+                        </Box>
                       </Grid>
-                    </ListItem>
-                  </List>
-                  <List>{this.renderListUser()}</List>
-                </Box>
-              </Grid>
-              <Grid item xs={8}>
-                <Box component="div" className="discussions-div">
-                  {this.state.currentPeerUser ? (
-                    <DiscussionsBoard
-                      currentPeerUser={this.state.currentPeerUser}
-                      transId={this.transId}
-                    />
-                  ) : (
-                    <WelcomeBoard
-                      currentUserName={this.currentUserName}
-                      currentUserAvatar={this.currentUserAvatar}
-                    />
-                  )}
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        </Container>
-      </Box>
+                      <Grid item xs={8}>
+                        <Box component="div" className="discussions-div">
+                          {this.state.currentPeerUser ? (
+                            <DiscussionsBoard
+                              currentPeerUser={this.state.currentPeerUser}
+                              transId={this.transId}
+                            />
+                          ) : (
+                            <WelcomeBoard
+                              currentUserName={this.currentUserName}
+                              currentUserAvatar={this.currentUserAvatar}
+                            />
+                          )}
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Container>
+              </Box>
+            );
+          } else {
+            return (
+              <Box component="div" paddingLeft={8}>
+                <Container>
+                  <NavRail />
+                  <Box
+                    component="div"
+                    mt={2}
+                    mb={2}
+                    className="discussions-root"
+                  >
+                    <Grid container>
+                      <Grid item xs={4}>
+                        <Box className="list-div">
+                          <List className="list-header">
+                            <ListItem>
+                              <Grid
+                                container
+                                direction="row"
+                                justify="space-between"
+                                alignItems="center"
+                              >
+                                <Grid item>
+                                  <Box ml={2} component="a" href="#">
+                                    <img
+                                      src={require("../../../assets/reallos-logo.svg")}
+                                      alt={"Reallos"}
+                                      className="discussions-reallos-logo"
+                                    />
+                                  </Box>
+                                </Grid>
+                                <Grid item>
+                                  <IconButton size="medium">
+                                    <Avatar
+                                      src={require("../../../assets/user.png")}
+                                    />
+                                  </IconButton>
+                                </Grid>
+                              </Grid>
+                            </ListItem>
+                          </List>
+                          <List>{this.renderListUser()}</List>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={8}>
+                        <Box component="div" className="discussions-div">
+                          {this.state.currentPeerUser ? (
+                            <DiscussionsBoard
+                              currentPeerUser={this.state.currentPeerUser}
+                              transId={this.transId}
+                            />
+                          ) : (
+                            <WelcomeBoard
+                              currentUserName={this.currentUserName}
+                              currentUserAvatar={this.currentUserAvatar}
+                            />
+                          )}
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Container>
+              </Box>
+            );
+          }
+        }}
+      </MediaQuery>
     );
   }
 }
