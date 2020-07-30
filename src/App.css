@@ -123,6 +123,11 @@ a:active, .link:active {
   }
 }
 
+.paper-highlight {
+  border: #0088ff solid 1.5px;
+  box-shadow: #0088ff30 0 0 0 4px !important;
+}
+
 /* WARNING: Not a cross-browser solution for scrollbar */
 
 ::-webkit-scrollbar {

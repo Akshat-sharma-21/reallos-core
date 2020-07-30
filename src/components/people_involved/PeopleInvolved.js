@@ -36,7 +36,7 @@ import {
   VerifiedIcon,
 } from "@primer/octicons-react";
 import Modal from "../shared/modal/Modal";
-import { validateFormField } from "../../global_func_lib";
+import { validateFormField, getDecodedHash } from "../../global_func_lib";
 import "./PeopleInvolved.css";
 import MediaQuery from "react-responsive";
 
@@ -179,7 +179,15 @@ class People extends Component {
           >
             <Grid item paddingLeft={6} style={{ width: "100%" }}>
               <Box paddingLeft={6}>
-                <Card elevation={3} style={{ marginBottom: "10px" }}>
+                <Card
+                  className={
+                    (getDecodedHash(this.props.location) === `#${data.email}`)
+                      ? 'paper-highlight'
+                      : ''
+                  }
+                  elevation={3}
+                  style={{ marginBottom: "10px" }}
+                >
                   <Grid
                     container
                     direction="row"
@@ -498,7 +506,7 @@ class People extends Component {
             );
           } else {
             return (
-              <Box component="div" paddingLeft={8}>
+              <Box component="div" paddingLeft={8} paddingBottom={30}>
                 <Container>
                   <ReallosLoaderWithOverlay
                     visible={this.props.utils.Loading}
