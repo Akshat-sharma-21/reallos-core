@@ -36,7 +36,7 @@ import {
   VerifiedIcon,
 } from "@primer/octicons-react";
 import Modal from "../shared/modal/Modal";
-import { validateFormField } from "../../global_func_lib";
+import { validateFormField, getDecodedHash } from "../../global_func_lib";
 import "./PeopleInvolved.css";
 
 const mapStateToProps = (state) => ({
@@ -181,7 +181,15 @@ class People extends Component {
           >
             <Grid item paddingLeft={6} style={{ width: "100%" }}>
               <Box paddingLeft={6}>
-                <Card elevation={3} style={{ marginBottom: "10px" }}>
+                <Card
+                  className={
+                    (getDecodedHash(this.props.location) === `#${data.email}`)
+                      ? 'paper-highlight'
+                      : ''
+                  }
+                  elevation={3}
+                  style={{ marginBottom: "10px" }}
+                >
                   <Grid
                     container
                     direction="row"
@@ -312,7 +320,7 @@ class People extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{paddingBottom: 30}}>
         <Container>
           <ReallosLoaderWithOverlay visible={this.props.utils.Loading} />
           <NavBar />
