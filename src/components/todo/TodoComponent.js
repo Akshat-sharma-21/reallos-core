@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import MediaQuery from "react-responsive";
 import {
   addTask,
   deleteTask,
@@ -42,10 +43,9 @@ import SideDrawer from "../shared/drawer/SideDrawer";
 import NavBar from "../shared/navbar/navbar";
 import NavRail from "../shared/navigation_rail/TransactionNavRail";
 import SearchBar from "../shared/searchbar/SearchBarComponent";
-import "./Todo.css";
 import Modal from "../shared/modal/Modal";
-import { validateFormField } from "../../global_func_lib";
-import MediaQuery from "react-responsive";
+import { validateFormField, getDecodedHash } from "../../global_func_lib";
+import "./Todo.css";
 
 const mapStateToProps = (state) => {
   // mapping the state of the store to the props of the component
@@ -194,13 +194,20 @@ class Todo extends Component {
       );
     } else {
       return (
-        <div>
+        <div style={{paddingBottom: 30}}>
           <Box paddingLeft={5}>
             <h1>Tasks</h1>
             <SearchBar />
             {this.props.todo.map((todo) => (
               <Box component="div" marginTop={2}>
-                <Card elevation={3}>
+                <Card
+                  className={
+                    (getDecodedHash(this.props.location) === `#${todo.id}`)
+                      ? 'paper-highlight'
+                      : ''
+                  }
+                  elevation={3}
+                >
                   <Grid
                     container
                     direction="row"

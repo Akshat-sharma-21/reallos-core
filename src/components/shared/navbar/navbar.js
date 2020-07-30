@@ -19,13 +19,11 @@ import {
   Box,
   Divider,
   LinearProgress,
-  List,
   Tooltip,
   Zoom,
 } from "@material-ui/core";
 
 import {
-  ChecklistIcon,
   BellIcon,
   InboxIcon,
   PencilIcon,
@@ -36,9 +34,7 @@ import {
 
 import UserAvatar from "../../../assets/user.png";
 import ProfileEditDrawer from "../../account/ProfileEditDrawer.js";
-import NotificationListItem from "./NotificationListItem.js";
-import DocumentListItem from "./DocumentListItem.js";
-import TaskListItem from "./TasksListItem.js";
+import NotificationPopup from "./notifications/NotificationPopup.jsx";
 import "./navbar.css";
 
 const styles = (theme) => ({
@@ -48,70 +44,6 @@ const styles = (theme) => ({
   },
 });
 
-// DUMMY DATA
-// @TODO: Change names to User ID
-
-let dummyData = [
-  {
-    type: "TASK_DUE_SOON",
-    task: "Task 2",
-    days_passed: 2,
-    isRead: false,
-  },
-  {
-    type: "TASK_COMPLETED",
-    task: "Task 3",
-    completed_by: "John Doe",
-    completed_on: 1592658849.414344,
-    isRead: true,
-  },
-  {
-    type: "CHAT_MESSAGE",
-    from: "John Doe",
-    message: "Will get it done by Friday",
-    isRead: false,
-  },
-  {
-    type: "TASK_OVERDUE",
-    task: "Task 1",
-    due_date: 1592658849.414344,
-    isRead: false,
-  },
-  {
-    type: "DOC_UPLOADED",
-    transaction: "Transaction 1",
-    doc_name: "Document 8",
-    isRead: true,
-  },
-];
-
-let docData = [
-  {
-    id: 0,
-    transaction: "Transaction 1",
-    DocName: "SampleForm.pdf",
-  },
-  {
-    id: 1,
-    transaction: "Transaction 2",
-    DocName: "SampleAAAAAAAAAAAAAAAAAAForm.pdf",
-  },
-];
-
-let tasksData = [
-  {
-    id: 0,
-    transaction: "Transaction 1",
-    TaskName: "Fill the Document",
-    Date: "27-06-2020",
-  },
-  {
-    id: 1,
-    transaction: "Transaction 2",
-    TaskName: "Fill the Document AAAAAAAAAAAAAAAAAA.pdf",
-    Date: "27-06-2020",
-  },
-];
 
 const mapStateToProps = (state) => ({
   user: state.user,
@@ -120,6 +52,7 @@ const mapStateToProps = (state) => ({
 class RenderNav extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       userProfileAnchor: null,
       notificationAnchor: null,
@@ -127,16 +60,14 @@ class RenderNav extends Component {
       tasksAnchor: null,
       isProfileEditDrawerVisible: false,
       authenticated: Auth.getAuth(),
+      notifications: null
     };
+    
     this.getProfilePhoto = this.getProfilePhoto.bind(this);
     this.openUserProfilePopup = this.openUserProfilePopup.bind(this);
     this.closeUserProfilePopup = this.closeUserProfilePopup.bind(this);
     this.openNotification = this.openNotification.bind(this);
     this.closeNotification = this.closeNotification.bind(this);
-    this.openDocuments = this.openDocuments.bind(this);
-    this.closeDocuments = this.closeDocuments.bind(this);
-    this.openTasks = this.openTasks.bind(this);
-    this.closeTasks = this.closeTasks.bind(this);
     this.toggleProfileEditDrawer = this.toggleProfileEditDrawer.bind(this);
     this.signOut = this.signOut.bind(this);
     this.calculateCompleted = this.calculateCompleted.bind(this);
@@ -162,15 +93,57 @@ class RenderNav extends Component {
       });
   }
 
-  /* To open the profile popup */
+  componentDidMount() {
+    const userUid = localStorage.getItem('userID');
+
+    // `onSnapshot` will return a function to unsubscribe
+    // the listener.
+    this.unsubscribeNotificationListener =
+      myFirestore
+        .collection('users')
+        .doc(userUid)
+        .collection('notifications')
+        .orderBy('timestamp', 'desc')
+        .onSnapshot(snapshot => {
+          let notificationsList = [];
+
+          snapshot.docs.forEach(notification => {
+            notificationsList.push(
+              Object.assign(
+                notification.data(),
+                { id: notification.id }
+              )
+            );
+          })
+
+          this.setState({
+            notifications: notificationsList
+          });
+        });
+  }
+
+  componentWillUnmount() {
+    // Unsubscribe database change listener when the
+    // component is about to unmount.
+    this.unsubscribeNotificationListener();
+  }
+
+  /**
+   * Opens **User Profile Edit** Side Drawer
+   *
+   * @param {Event} event
+   * The Mouse Click Event of "Profile" Button.
+   */
   openUserProfilePopup = (event) => {
     this.setState({
       userProfileAnchor: event.currentTarget,
     });
   };
 
-  /* To close the profile popup */
-  closeUserProfilePopup = (event) => {
+  /**
+   * Closes **User Profile Edit** Side Drawer
+   */
+  closeUserProfilePopup = () => {
     this.setState({
       userProfileAnchor: null,
     });
@@ -188,42 +161,42 @@ class RenderNav extends Component {
     });
   }
 
+  /**
+   * Opens Notification Popup.
+   *
+   * @param {Event} event
+   * The Mouse Click Event of "Notifications" Icon Button.
+   */
   openNotification = (event) => {
     this.setState({
       notificationAnchor: event.currentTarget,
     });
   };
 
-  closeNotification = (event) => {
+  /**
+   * Closes Notification Popup.
+   */
+  closeNotification = () => {
     this.setState({
       notificationAnchor: null,
     });
   };
 
-  openDocuments = (event) => {
-    this.setState({
-      documentsAnchor: event.currentTarget,
-    });
-  };
+  /**
+   * Computes number of unread notifications from
+   * notification data.
+   */
+  get getUnreadNotificationsCount() {
+    if (this.state.notifications != null)
+      return this.state.notifications.filter((data) => !data.isRead).length;
 
-  closeDocuments = (event) => {
-    this.setState({
-      documentsAnchor: null,
-    });
-  };
+    else
+      return 0;
+  }
 
-  openTasks = (event) => {
-    this.setState({
-      tasksAnchor: event.currentTarget,
-    });
-  };
-
-  closeTasks = (event) => {
-    this.setState({
-      tasksAnchor: null,
-    });
-  };
-
+  /**
+   * Returns user profile completion percentage.
+   */
   calculateCompleted() {
     // calculating the percentage of the profile || Can be edited in the future
     let score = 2; // assuming 20% of the application is already completed
@@ -242,18 +215,14 @@ class RenderNav extends Component {
     if (this.props.user.initials != null) {
       score += 2;
     }
+
     let percentage = (score / 10) * 100;
     return percentage;
   }
 
   /**
-   * Computes number of unread notifications from
-   * notification data.
+   * Signs out the current user.
    */
-  get getUnreadNotificationsCount() {
-    return dummyData.filter((data) => !data.isRead).length;
-  }
-
   signOut() {
     Auth.signout(); // Signing out of the application
     this.setState({
@@ -298,7 +267,7 @@ class RenderNav extends Component {
                       <Badge
                         variant="dot"
                         classes={
-                          this.getUnreadNotificationsCount
+                          (this.getUnreadNotificationsCount != 0)
                             ? {
                                 badge: classes.notificationBadge,
                               }
@@ -307,30 +276,6 @@ class RenderNav extends Component {
                       >
                         <BellIcon size={20} />
                       </Badge>
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip
-                    title={
-                      <Typography style={{ fontSize: "15px" }}>
-                        Documents
-                      </Typography>
-                    }
-                    TransitionComponent={Zoom}
-                  >
-                    <IconButton onClick={this.openDocuments}>
-                      <InboxIcon size={20} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip
-                    title={
-                      <Typography style={{ fontSize: "15px" }}>
-                        Tasks
-                      </Typography>
-                    }
-                    TransitionComponent={Zoom}
-                  >
-                    <IconButton onClick={this.openTasks}>
-                      <ChecklistIcon size={20} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip
@@ -506,147 +451,11 @@ class RenderNav extends Component {
                     </Grid>
                   </Grid>
                 </Menu>
-                <Menu
-                  className="navbar-notification-popup"
-                  anchorEl={this.state.notificationAnchor}
-                  keepMounted
-                  open={Boolean(this.state.notificationAnchor)}
-                  onClose={this.closeNotification}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "center",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                  }}
-                  PaperProps={{
-                    style: {
-                      borderRadius: 10,
-                    },
-                  }}
-                >
-                  <Grid
-                    direction="column"
-                    alignContent="center"
-                    className="notification-menu"
-                  >
-                    <Grid
-                      item
-                      className="notification-popup-header"
-                      justify="center"
-                    >
-                      <Box component="p" style={{ justifyContent: "center" }}>
-                        You have
-                      </Box>
-                      <Box
-                        component="h3"
-                        mt={-1.5}
-                        style={{ justifyContent: "center" }}
-                      >
-                        {this.getUnreadNotificationsCount
-                          ? `${this.getUnreadNotificationsCount} Unread Notifications`
-                          : "No Unread Notifications"}
-                      </Box>
-                    </Grid>
-                    <List className="notification-list">
-                      {dummyData.map((data) => (
-                        <NotificationListItem notificationData={data} />
-                      ))}
-                    </List>
-                  </Grid>
-                </Menu>
-                <Menu
-                  className="navbar-notification-popup"
-                  anchorEl={this.state.documentsAnchor}
-                  keepMounted
-                  open={Boolean(this.state.documentsAnchor)}
-                  onClose={this.closeDocuments}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "center",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                  }}
-                  PaperProps={{ style: { borderRadius: 10 } }}
-                >
-                  <Grid
-                    direction="column"
-                    alignContent="center"
-                    className="notification-menu"
-                  >
-                    <Grid
-                      item
-                      className="notification-popup-header"
-                      justify="center"
-                    >
-                      <Box component="p" style={{ justifyContent: "center" }}>
-                        You have
-                      </Box>
-                      <Box
-                        component="h3"
-                        mt={-1.5}
-                        style={{ justifyContent: "center" }}
-                      >
-                        {docData.length} Document
-                      </Box>
-                    </Grid>
-                    <List className="notification-list">
-                      {docData.map((data) => (
-                        <DocumentListItem documentData={data} />
-                      ))}
-                    </List>
-                  </Grid>
-                </Menu>
-                <Menu
-                  className="navbar-notification-popup"
-                  anchorEl={this.state.tasksAnchor}
-                  keepMounted
-                  open={Boolean(this.state.tasksAnchor)}
-                  onClose={this.closeTasks}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "center",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                  }}
-                  PaperProps={{ style: { borderRadius: 10 } }}
-                >
-                  <Grid
-                    direction="column"
-                    alignContent="center"
-                    className="notification-menu"
-                  >
-                    <Grid
-                      item
-                      className="notification-popup-header"
-                      justify="center"
-                    >
-                      <Box component="p" style={{ justifyContent: "center" }}>
-                        You have
-                      </Box>
-                      <Box
-                        component="h3"
-                        mt={-1.5}
-                        style={{ justifyContent: "center" }}
-                      >
-                        {docData.length} Tasks
-                      </Box>
-                    </Grid>
-                    <List className="notification-list">
-                      {tasksData.map((data) => (
-                        <TaskListItem taskData={data} />
-                      ))}
-                    </List>
-                  </Grid>
-                </Menu>
+                <NotificationPopup
+                  notificationAnchor={this.state.notificationAnchor}
+                  dismissCallback={this.closeNotification}
+                  notifications={this.state.notifications}
+                />
               </Toolbar>
             </AppBar>
           </Grid>

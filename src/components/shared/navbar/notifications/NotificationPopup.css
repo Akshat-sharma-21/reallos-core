@@ -1,0 +1,43 @@
+.notification-popup-header {
+    width: 100%;
+    background: #150578;
+    color: #ffffff;
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+
+.notification-menu {
+    width: 450px !important;
+}
+
+.notification-popup-header > p {
+    margin-top: 0;
+}
+
+.notification-popup-header > * {
+    display: flex;
+    align-items: center;
+}
+
+.notification-list {
+    height: 450px;
+    overflow-y: auto;
+}
+
+.notifications-no-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 450px;
+    text-align: center;
+    padding: 0 40px 0 40px;
+}
+
+.notifications-no-list-container .bell-icon {
+    fill: #00000080;
+}
+
+.navbar-notification-popup ul {
+    padding-top: 0;
+}

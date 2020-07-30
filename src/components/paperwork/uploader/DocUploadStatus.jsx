@@ -5,9 +5,12 @@ import { Button } from "@material-ui/core";
 import PdfIcon from "../../../assets/pdf_icon_duotone.svg";
 import PauseIcon from "../../../assets/pause-icon.svg";
 import { CheckIcon, UploadIcon } from "@primer/octicons-react";
-import { myFirestore } from "../../../Config/MyFirebase";
+import { myFirestore, myFirebase } from "../../../Config/MyFirebase";
 import { getTransactionID, getCurrentUser } from "../../../global_func_lib";
 import "./DocUploadStatus.css";
+
+// Locks further upload trigger when one is already running
+let isBusyUploading = false;
 
 /**
  * Renders upload status progress interface inside
@@ -56,7 +59,7 @@ function DocUploadStatus({
   isSavingDocument = false,
 }) {
   let location = useLocation();
-  
+
   /**
    * Pause upload task.
    */
@@ -109,20 +112,45 @@ function DocUploadStatus({
       let transactionID = getTransactionID(location);
       let currentEmail = getCurrentUser().email;
 
-      if (!isSavingDocument) {
-        await myFirestore
+      if (!isBusyUploading) {
+        if (!isSavingDocument) {
+          isBusyUploading = true;
+
+          await myFirestore
+            .collection('transactions')
+            .doc(transactionID)
+            .collection('paperwork')
+            .doc(uploadStatus.filename)
+            .set({
+              creator: currentEmail,
+              accessData: {},
+              path: `${transactionID}/paperworks/${uploadStatus.filename}`,
+              lastModified: {
+                email: currentEmail,
+                timestamp: myFirebase.firestore.FieldValue.serverTimestamp()
+              }
+            });
+        }
+
+        else {
+          isBusyUploading = true;
+
+          await myFirestore
           .collection('transactions')
           .doc(transactionID)
           .collection('paperwork')
           .doc(uploadStatus.filename)
-          .set({
-            creator: currentEmail,
-            accessData: {},
-            path: `${transactionID}/paperworks/${uploadStatus.filename}`
+          .update({
+            lastModified: {
+              email: currentEmail,
+              timestamp: myFirebase.firestore.FieldValue.serverTimestamp()
+            }
           });
+        }
       }
 
       setTimeout(() => {
+        isBusyUploading = false;
         dismissCallback();
         resetUploadStateCallback();
         showSnackbarCallback(

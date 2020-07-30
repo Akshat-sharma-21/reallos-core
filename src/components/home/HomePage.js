@@ -82,6 +82,7 @@ function HomePage(props) {
                       color: "#150578",
                       fontWeight: 900,
                       marginBottom: "35px",
+                      fontFamily: 'Gilroy'
                     }}
                   >
                     Welcome to Reallos!
@@ -89,12 +90,17 @@ function HomePage(props) {
                   <Typography
                     align="center"
                     variant="h6"
-                    style={{ color: "#150578", marginBottom: "35px" }}
+                    style={{
+                      color: "#150578",
+                      marginBottom: "35px",
+                      marginRight: 'auto',
+                      marginLeft: 'auto',
+                      width: 400,
+                      fontFamily: 'Roboto Slab'
+                    }}
                   >
-                    Let us handle your hassle for managing your
-                    <br />
+                    Let us handle your hassle for managing your 
                     Real Estate. Get Started now.
-                    <br />
                   </Typography>
                 </Grid>
               </Box>
