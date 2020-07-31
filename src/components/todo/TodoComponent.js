@@ -100,6 +100,7 @@ class Todo extends Component {
         completed: false,
       },
       validated: false,
+      filteredTodoList: []
     };
 
     this.RenderToDo = this.RenderToDo.bind(this);
@@ -173,6 +174,148 @@ class Todo extends Component {
     }
   }
 
+  RenderTodoItem(todo) {
+    return (
+      <Box component="div" marginTop={2}>
+        <Card
+          className={
+            getDecodedHash(this.props.location) === `#${todo.id}`
+              ? "paper-highlight"
+              : ""
+          }
+          elevation={3}
+        >
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            justify="space-around"
+            spacing={1}
+          >
+            <div
+              onClick={() => this.expandTask(todo)}
+              style={{
+                width: "91.6%",
+                cursor: "pointer",
+                marginTop: "5px",
+                marginBottom: "5px",
+              }}
+            >
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justify="space-around"
+                spacing={1}
+              >
+                <Grid item>
+                  <Box paddingLeft={2}>{this.getIcon(todo.Date)}</Box>
+                </Grid>
+                <Grid item>
+                  <Box marginY={2}>
+                    {false ? ( // fetch the image of the person here
+                      <Avatar
+                        src={process.env.PUBLIC_URL + todo.From.img}
+                      ></Avatar>
+                    ) : (
+                      <Avatar style={{ backgroundColor: "#150578" }}>
+                        {todo.From.name[0]}
+                      </Avatar>
+                    )}
+                  </Box>
+                </Grid>
+                <Grid item>
+                  <ArrowRightIcon size={24} />
+                </Grid>
+                <Grid item>
+                  <Box marginY={2}>
+                    {false ? ( // fetch the image of the person here
+                      <Avatar
+                        src={process.env.PUBLIC_URL + todo.to.img}
+                      ></Avatar>
+                    ) : (
+                      <Avatar style={{ backgroundColor: "#150578" }}>
+                        {todo.To.name[0]}
+                      </Avatar>
+                    )}
+                  </Box>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography
+                    noWrap
+                    align="center"
+                    style={{
+                      color: "#150578",
+                      fontWeight: 800,
+                      fontSize: "20px",
+                    }}
+                  >
+                    {todo.Title}
+                  </Typography>
+                </Grid>
+                <Grid item xs={5}>
+                  <Box textOverflow="ellipsis">
+                    <Typography
+                      noWrap
+                      align="center"
+                      style={{
+                        color: "#150578",
+                        fontWeight: 500,
+                        fontSize: "17px",
+                      }}
+                    >
+                      {todo.Description}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={1}>
+                  <Typography
+                    align="left"
+                    style={{ color: "#150578", fontSize: "16px" }}
+                  >
+                    {todo.Date}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </div>
+            <Grid item xs={1}>
+              {todo.From.email === this.props.user.email ? ( // ternary operator used to make sure only the person assiging the task has the right to edit it
+                <>
+                  <IconButton onClick={() => this.editTask(todo)}>
+                    <PencilIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      this.props.deleteTask(
+                        this.props.match.params.tid,
+                        todo.id
+                      )
+                    }
+                  >
+                    <XIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                  <IconButton
+                    onClick={() =>
+                      this.props.deleteTask(
+                        this.props.match.params.tid,
+                        todo.id
+                      )
+                    }
+                  >
+                    <XIcon />
+                  </IconButton>
+                </>
+              )}
+            </Grid>
+          </Grid>
+        </Card>
+      </Box>
+    )
+  }
+
   RenderToDo() {
     if (this.props.todo.length === 0) {
       // If no todo exists in the server || have to replace this with an image
@@ -198,149 +341,47 @@ class Todo extends Component {
           <Box paddingLeft={5}>
             <h1>Tasks</h1>
             <SearchBar
-              list={[]}
-              filterByField=""
-              onUpdate={() => {}}
+              list={this.props.todo}
+              filterByFields={[
+                "Title",
+                "Description",
+                "To.name",
+                "To.email",
+                "From.name",
+                "From.email"
+              ]}
+              onUpdate={(filteredTodoList) => this.setState({ filteredTodoList })}
+              placeholder="Search tasks by title, description, name or email"
             />
-            {this.props.todo.map((todo) => (
-              <Box component="div" marginTop={2}>
-                <Card
-                  className={
-                    getDecodedHash(this.props.location) === `#${todo.id}`
-                      ? "paper-highlight"
-                      : ""
-                  }
-                  elevation={3}
-                >
-                  <Grid
-                    container
-                    direction="row"
-                    alignItems="center"
-                    justify="space-around"
-                    spacing={1}
-                  >
-                    <div
-                      onClick={() => this.expandTask(todo)}
-                      style={{
-                        width: "91.6%",
-                        cursor: "pointer",
-                        marginTop: "5px",
-                        marginBottom: "5px",
-                      }}
-                    >
-                      <Grid
-                        container
-                        direction="row"
-                        alignItems="center"
-                        justify="space-around"
-                        spacing={1}
-                      >
-                        <Grid item>
-                          <Box paddingLeft={2}>{this.getIcon(todo.Date)}</Box>
-                        </Grid>
-                        <Grid item>
-                          <Box marginY={2}>
-                            {false ? ( // fetch the image of the person here
-                              <Avatar
-                                src={process.env.PUBLIC_URL + todo.From.img}
-                              ></Avatar>
-                            ) : (
-                              <Avatar style={{ backgroundColor: "#150578" }}>
-                                {todo.From.name[0]}
-                              </Avatar>
-                            )}
-                          </Box>
-                        </Grid>
-                        <Grid item>
-                          <ArrowRightIcon size={24} />
-                        </Grid>
-                        <Grid item>
-                          <Box marginY={2}>
-                            {false ? ( // fetch the image of the person here
-                              <Avatar
-                                src={process.env.PUBLIC_URL + todo.to.img}
-                              ></Avatar>
-                            ) : (
-                              <Avatar style={{ backgroundColor: "#150578" }}>
-                                {todo.To.name[0]}
-                              </Avatar>
-                            )}
-                          </Box>
-                        </Grid>
-                        <Grid item xs={2}>
-                          <Typography
-                            noWrap
-                            align="center"
-                            style={{
-                              color: "#150578",
-                              fontWeight: 800,
-                              fontSize: "20px",
-                            }}
-                          >
-                            {todo.Title}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={5}>
-                          <Box textOverflow="ellipsis">
-                            <Typography
-                              noWrap
-                              align="center"
-                              style={{
-                                color: "#150578",
-                                fontWeight: 500,
-                                fontSize: "17px",
-                              }}
-                            >
-                              {todo.Description}
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={1}>
-                          <Typography
-                            align="left"
-                            style={{ color: "#150578", fontSize: "16px" }}
-                          >
-                            {todo.Date}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </div>
-                    <Grid item xs={1}>
-                      {todo.From.email === this.props.user.email ? ( // ternary operator used to make sure only the person assiging the task has the right to edit it
-                        <>
-                          <IconButton onClick={() => this.editTask(todo)}>
-                            <PencilIcon />
-                          </IconButton>
-                          <IconButton
-                            onClick={() =>
-                              this.props.deleteTask(
-                                this.props.match.params.tid,
-                                todo.id
-                              )
-                            }
-                          >
-                            <XIcon />
-                          </IconButton>
-                        </>
-                      ) : (
-                        <>
-                          <IconButton
-                            onClick={() =>
-                              this.props.deleteTask(
-                                this.props.match.params.tid,
-                                todo.id
-                              )
-                            }
-                          >
-                            <XIcon />
-                          </IconButton>
-                        </>
-                      )}
-                    </Grid>
-                  </Grid>
-                </Card>
-              </Box>
-            ))}
+            {(this.state.filteredTodoList.length > 0)
+              ? this.state.filteredTodoList.map((todo) => (
+                  this.RenderTodoItem(todo)
+                ))
+
+              : <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 30
+                }}>
+                  <div style={{ fontSize: 150, opacity: 0.5 }}>{"( >_< )"}</div>
+                  <div style={{
+                    fontFamily: 'Gilroy',
+                    fontWeight: 'bold',
+                    fontSize: 30,
+                    marginTop: 50,
+                    marginBottom: 10,
+                  }}>
+                    No Tasks Found
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    None of the tasks match the given search term.
+                    <br />
+                    Please check the search term.
+                  </div>
+                </div>
+            }
           </Box>
         </div>
       );
