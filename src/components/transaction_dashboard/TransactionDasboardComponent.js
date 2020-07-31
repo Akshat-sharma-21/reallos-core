@@ -122,8 +122,9 @@ class TransactionDasboard extends Component {
         <>
           <Grid container direction="row" justify="center" alignItems="center">
             <SearchBar
+              placeholder="Search transactions by name or address"
               list={transaction}
-              filterByField="Name"
+              filterByFields={["Name", "Address"]}
               onUpdate={(newTransactions) => this.setState({
                 filteredTransactionList: newTransactions
               })}
