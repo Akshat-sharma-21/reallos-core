@@ -59,7 +59,7 @@ class RenderNav extends Component {
       isProfileEditDrawerVisible: false,
       authenticated: Auth.getAuth(),
       notifications: null,
-      profilePhoto: UserAvatar
+      profilePhoto: UserAvatar,
     };
 
     this.getProfilePhoto = this.getProfilePhoto.bind(this);
@@ -79,10 +79,12 @@ class RenderNav extends Component {
       .doc(userId)
       .get()
       .then((doc) => {
-        if (doc.data().photoURL !== "") {
-          this.setState({
-            profilePhoto: doc.data().photoURL
-          })
+        if (doc.exists) {
+          if (doc.data().photoURL !== "") {
+            this.setState({
+              profilePhoto: doc.data().photoURL,
+            });
+          }
         }
       });
   }
@@ -327,7 +329,10 @@ class RenderNav extends Component {
                       >
                         <Grid item>
                           <Box component="div" ml={2}>
-                            <Avatar src={this.state.profilePhoto} className="avatar-large" />
+                            <Avatar
+                              src={this.state.profilePhoto}
+                              className="avatar-large"
+                            />
                           </Box>
                         </Grid>
                         <Grid item justify="center" className="profile-padding">
