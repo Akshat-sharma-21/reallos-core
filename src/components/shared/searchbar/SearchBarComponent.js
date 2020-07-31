@@ -14,7 +14,7 @@ class SearchBar extends React.Component {
     super(props);
     this.searchValue = '';
   }
-  
+
   static propTypes = {
     /**
      * List of objects.
@@ -24,6 +24,14 @@ class SearchBar extends React.Component {
     /**
      * Array of the fields to filter through the
      * list of objects.
+     *
+     * You can also get the value of a deeply nested key
+     * by providing the key names separated with a `.`
+     *
+     * **Example:**
+     * ```
+     * ["field1", "field2.nestedField1", ...]
+     * ```
      */
     filterByFields: PropTypes.arrayOf(PropTypes.string),
 
@@ -57,6 +65,28 @@ class SearchBar extends React.Component {
   }
 
   /**
+   * Returns corresponding value of a given key.
+   *
+   * You can also get the value of a deeply nested key
+   * by providing the key names separated with a `.`
+   *
+   * @param {object} item
+   * @param {string} key
+   */
+  _getObjectValue(item, key) {
+    const delimeter = '.';
+    const keyTokens = key.split(delimeter);
+    let value = null;
+
+    keyTokens.forEach(_key => {
+      if (value == null) value = item[_key];
+      else value = value[_key];
+    });
+
+    return value;
+  }
+
+  /**
    * Filters and updates the list.
    *
    * @param {string} value
@@ -78,12 +108,12 @@ class SearchBar extends React.Component {
    * Iterates through the `filterByFields` array and
    * returns `true` if the `item` object matches as per
    * at least one of these filters.
-   * 
+   *
    * Returns `false` otehrwise.
-   * 
+   *
    * @param {object} item
    * The item to be checked for search criteria matching
-   * 
+   *
    * @returns {boolean}
    * If the `item` matches the search criteria
    */
@@ -91,7 +121,7 @@ class SearchBar extends React.Component {
     for (let i = 0; i < this.props.filterByFields.length; i++) {
       let filter = this.props.filterByFields[i];
 
-      if (item[filter].toLowerCase().indexOf(this.searchValue) !== -1)
+      if (this._getObjectValue(item, filter).toLowerCase().indexOf(this.searchValue) !== -1)
         return true;
     }
 
