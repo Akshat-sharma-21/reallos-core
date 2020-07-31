@@ -230,7 +230,7 @@ export const bytesToSize = (bytes) => {
 
 /**
  * Returns hash present in the URL of current page
- * by decoding its URI encodings.
+ * with decoded URI encodings.
  *
  * @param {object} locationObject
  * Object containing location data. You must pass either
