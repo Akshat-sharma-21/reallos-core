@@ -5,7 +5,7 @@
   font-family: "Gilroy";
   font-style: normal;
   font-weight: bold;
-  src: local("Gilroy Extrabold"), url("./fonts/Gilroy-Extrabold.woff2") format("woff2"), 
+  src: local("Gilroy Extrabold"), url("./fonts/Gilroy-Extrabold.woff2") format("woff2");
 }
 
 .App {
