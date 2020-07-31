@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes, { object } from 'prop-types';
+import { isEqual } from 'lodash';
 import { OutlinedInput, FormControl, InputAdornment} from '@material-ui/core';
 import { SearchIcon } from '@primer/octicons-react';
 import './searchbar.css';
@@ -9,6 +10,11 @@ import './searchbar.css';
  * @augments {React.Component<Props>}
  */
 class SearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.searchValue = '';
+  }
+  
   static propTypes = {
     /**
      * List of objects.
@@ -31,18 +37,27 @@ class SearchBar extends React.Component {
     onUpdate: PropTypes.func.isRequired
   };
 
+  shouldComponentUpdate(newProps) {
+    return !isEqual(newProps.list, this.props.list);
+  }
+
   componentDidMount() {
     this.props.onUpdate(this.props.list);
+  }
+
+  componentDidUpdate() {
+    this.updateList(this.searchValue);
   }
 
   /**
    * Filters and updates the list.
    *
-   * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} ev
-   * The `onChange` event for search bar text field.
+   * @param {string} value
+   * The search value to be used for filtering
    */
-  updateList(ev) {
-    let value = ev.currentTarget.value.toLowerCase();
+  updateList(value) {
+    // Update the `seachValue` property to be used when component updates
+    this.searchValue = value;
     let filtered = [];
 
     this.props.list.forEach(item => {
@@ -68,7 +83,7 @@ class SearchBar extends React.Component {
             </InputAdornment>
           }
           placeholder="Search"
-          onChange={(ev) => this.updateList(ev)}
+          onChange={(ev) => this.updateList(ev.currentTarget.value.toLowerCase())}
         />
       </FormControl>
     );
