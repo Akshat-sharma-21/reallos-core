@@ -155,6 +155,46 @@ export function createTransaction(Transaction, people, user) {
       admin: localStorage.getItem("userID"),
       createdAt: myFirebase.firestore.FieldValue.serverTimestamp(),
       assistView: [],
+      // Adding all the field values of transaction assist
+      escrow: {
+        setup: false,
+        goodFaith: false,
+        loanDocument: false,
+        completed: false,
+        numberOfCompleted: 0,
+      },
+      titleSearch: {
+        titleReport: false,
+        titleInsurance: false,
+        completed: false,
+        numberOfCompleted: 0,
+      },
+      homeAppraisal: {
+        homeAppraisalAppointed: false,
+        homeAppraisalReport: false,
+        completed: false,
+        numberOfCompleted: 0,
+      },
+      homeInspection: {
+        homeInspectionAppointed: false,
+        homeInspectionReport: false,
+        completed: false,
+        numberOfCompleted: 0,
+      },
+      loan: {
+        application: false,
+        recieved: false,
+        approved: false,
+        completed: false,
+        numberOfCompleted: 0,
+      },
+      closing: {
+        walkthrough: false,
+        paperwork: false,
+        final: false,
+        completed: false,
+        numberOfCompleted: 0,
+      },
     };
 
     myFirestore
